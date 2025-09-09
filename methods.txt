@@ -1,0 +1,75 @@
+1. parseFloat()
+    - accepts string and converts floating number
+    - if first character in a string not a number it returns - NaN
+    example:
+        parseFloat("3.14"); // 3.14
+        parseFloat("sa12"); // NaN
+        parseFloat(true); // NaN
+        parseFloat(null); // NaN
+        parseFloat(undefined); // NaN
+        parseFloat("12abc"); // 12
+        parseFloat([]); // NaN
+
+2. toFixed()
+    - converts number to string
+    - rounds the value 
+    - toFixed on string will return error
+    - example:
+        let num = 234.345
+        console.log(num.toFixed()); // 234
+        console.log(num.toFixed(2)); // 234.34
+
+3. Math.round()
+    - converts string to number
+    - Rounds the number to nearest integer
+    - example
+        console.log(Math.round('11.34')); // 11
+        console.log(Math.round([])); // 0
+        console.log(Math.round({})); // NaN
+        console.log(Math.round(true)); // 1
+        console.log(Math.round(null)); // 0
+        console.log(Math.round('sa12')); // NaN
+        console.log(Math.round('12sa')); // NaN
+        console.log(Math.round(undefined)); // NaN
+
+4. Math.sign() - used to know the sign of the number
+    - returns 1 if number is positive
+    - returns -1 if number is negative
+    - returns 0 if number is 0
+    - returns NaN if value is not a number
+    example:
+        console.log(Math.sign(3)); // 1
+        console.log(Math.sign(-3)); // -1
+        console.log(Math.sign(0)); // 0
+        console.log(Math.sign('3')); // 1
+        console.log(Math.sign('-3')); // -1
+        console.log(Math.sign('sa3')); // NaN
+        console.log(Math.sign([])); // 0
+        console.log(Math.sign({})); // NaN
+        console.log(Math.sign(null)); // 0
+        console.log(Math.sign(true)); // 1
+        console.log(Math.sign(undefined)); // NaN
+
+5. Math.random() - generates random number between 0 and 1
+    - to generate random number between two numbers use below formula
+        Math.random() * (max - min) + min
+
+6. Math.max() - returns the largest of zero or more numbers
+    - if no arguments are given, the result is -Infinity
+    - if any argument is NaN, the result is NaN
+
+7. Math.min() - returns the smallest of zero or more numbers
+    - if no arguments are given, the result is Infinity
+    - if any argument is NaN, the result is NaN
+
+8. Math.pow() - returns the base to the exponent power, that is, base^exponent
+        console.log(Math.pow(2, 3)); // 8
+
+9. Math.floor() - returns the smallest integer 
+
+10. Math.ceil() - returns the larget integer given number  
+
+11. Math.sqrt() - returns the square root of a number
+        console.log(Math.sqrt(16)); // 4
+        console.log(Math.sqrt(-4)); // NaN
+        console.log(Math.sqrt('sa16')); // NaN

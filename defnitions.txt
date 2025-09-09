@@ -1,0 +1,1282 @@
+1. GLOBAL EXECUTION CONTEXT
+
+Whenever JS program is executed, it creates a global execution context.
+It has 2 phases - Memory Creation Phase(Variable environment) and Code Execution Phase
+
+In Memory Creation Phase - it allocates memory each variables and functions with a place holder value
+for variables it assigns `UNDEFINED` and for functions(declaritions) it assigns function code itself
+
+In Code Execution Phase - It executes code line by line
+It initializes the variables with a actual value
+
+For function invocations - it creates a individaul Execution Context and do the same above steps like allocating memory 
+and assigns value - once all the code executed the execution context will get removed from the CALLSTACK.
+
+WHENEVER ANY EXECUTION CONTEXT CREATED IT GOT PUSHED INTO *CALLSTACK*
+
+2. CALLSTACK
+
+CallStack is maintain the execution of Execution Context
+
+3. HOISTING
+
+Hoisting is a phinomina in JS which by accessing a variables and functions before it initialized (from memory creation phase)
+
+console.log(a) // UNDEFINED
+greet() // 'hello world'
+fn1(); // Error : fn1 is not a function - because (fn1) it is stored as a variable in memory
+fn2(); // Error : fn2 is not a function - because (fn2) it is stored as a variable in memory
+
+var a = 10;
+function greet () {
+    console.log('hello world);
+}
+var fn1 = () => {
+    console.log('Arrow Function');
+}
+var fn2 = function () {
+    console.log('Normal Function');
+}
+
+4. SHORTEST JS PROGRAM & GLOBAL OBJECT
+
+Shortest JS program in JS is an empty file - because if nothing is there in a file -
+it creates a global execution context and global space - which is called a WINDOW (Global space)
+
+Global space is getting created along with Global Execution Context when JS program runs
+If we are defing any function or variables not inside any function which are will be present in Global space
+in other words we can say - The variables which are not inside any function that called global space variables
+
+var a = 10;
+console.log(window.a) // 10
+console.log(this.a) // 10
+console.log(a) // 10
+
+5. UNDEFINED
+
+UNDEFINED is a special keyword in JS - it is placeholder value which assigned to variable in memory creation space 
+before it get initialized with actual value
+
+NOT DEFINED - variable itself not defined 
+
+6. SCOPE && LEXICAL && LEXICAL ENVIRONMENT && SCOPE CHAIN
+
+Scope is directly related to a lexical Environment - Scope means where we can access specific variables or functions in a code.
+
+Lexical means hierarchy - where exactly a function or variable is defined in the code.
+For example, if function c is defined inside another function, it sits lexically inside that function.
+
+Lexical Environment - is a local memory (variable environment) along with a reference to its parent lexical environment.
+It’s created when the execution context is created.
+
+Scope Chain - is the process of finding a variable or function by looking through the current local memory and then 
+its parent lexical environments step by step until it reaches the global environment.
+
+7. TEMPORAL DEAD ZONE
+
+let and const are hoisted - but memory was not allocated in global object instead it was allocated in a script - 
+if we try to access the variables/functions which are in script before it got initialized - we will get referenceerror
+
+The time since let/const variables are hoisted and till the variables are assigned with the value - that is called Temporal Dead Zone
+
+We cant access let/const variables using global window/this - as these values present in the script not in the window object — 
+they exist in the script or block scope.
+
+8. VAR && LET && CONST
+
+VAR
+    Function-scoped
+    Can be redeclared and reassigned
+    Hoisted and initialized with undefined
+    Accessible before initialization (will return undefined)
+    Gets attached to the global object (window) when declared globally
+
+LET
+    Block-scoped
+    Can be reassigned, but cannot be redeclared in the same scope
+    Hoisted, but remains in the Temporal Dead Zone (TDZ) until initialized
+    Not attached to the global object
+
+CONST
+    Block-scoped
+    Cannot be reassigned or redeclared - object & array values we can mutate - not completely replacing
+    Must be initialized at the time of declaration
+    Also in the TDZ until initialized
+    Not attached to the global object
+
+9. REFERENCEERROR && SYNTAXERROR && TYPEERROR
+
+REFERENCEERROR
+    Trying to access a variable that is not defined
+    Accessing let or const before initialization (during Temporal Dead Zone)
+    console.log(x); // ❌ ReferenceError: x is not defined
+    console.log(a); // ❌ ReferenceError: Cannot access 'a' before initialization
+    let a = 5; 
+
+SYNTAXERROR
+    Declaring let or const variables with duplicate names in the same scope
+    Declaring a const without initializing it
+    Any general invalid JavaScript syntax
+    let a = 10;
+    let a = 20; // ❌ SyntaxError: Identifier 'a' has already been declared
+    const b; // ❌ SyntaxError: Missing initializer in const declaration
+
+TYPEERROR
+    Reassigning a value to a const variable
+    Trying to use a non-function as a function
+    const x = 5;
+    x = 10; // ❌ TypeError: Assignment to constant variable
+    let y = undefined;
+    y(); // ❌ TypeError: y is not a function
+
+10. BLOCK && BLOCK SCOPE && SHADOWING && ILLEGAL SHADOWING
+
+BLOCK 
+    A block (also called a compound statement) is used to group multiple statements together.
+    Used in places where JavaScript expects a single statement, such as in if, for, or while.
+    {
+        // This is a block
+        let a = 10;
+        console.log(a);
+    }
+
+BLOCK SCOPE 
+    The set of variables and constants accessible inside a block is called its block scope.
+    let and const are block-scoped, meaning they exist only within the block they are declared in.
+    Block scope also follows lexical environment rules (it sees its parent scope if needed).
+    {
+        let a = 5;
+        {
+            console.log(a); // ✅ accessible here
+        }
+    }
+    console.log(a); // ❌ ReferenceError: a is not defined
+
+SHADOWING
+    When a variable declared in a local (inner) scope has the same name as a variable in the outer scope, 
+    the inner variable shadows the outer one.
+    let x = 10;
+    {
+        let x = 20; // ✅ shadows outer x
+        console.log(x); // 20
+    }
+    console.log(x); // 10
+    var b = 10;
+    {
+        let b = 20; // ✅ legal shadowing
+        console.log(b); // 20
+    }
+
+ILLEGAL SHADOWING
+    When a var declaration illegally shadows a let or const from an outer scope in the same block or function.
+    let a = 10;
+    {
+        var a = 20; // ❌ Illegal Shadowing — SyntaxError
+    }
+
+11. CLOSURES
+
+    Function along with its lexical environment bundled together forms a closure
+
+    When a function is returned from another function, and then later invoked elsewhere, 
+    it remembers the environment in which it was originally created.
+
+    This means it has access to variables from its outer function, even after the outer function has finished executing.
+
+    function outer() {
+        let count = 4;
+        return function inner() {
+            count++;
+            console.log(count);
+        };
+    }
+    const counter = outer();
+    counter(); // 5
+    counter(); // 6
+
+    ADVANTAGE : Data Hiding | Private variables
+    DISADVANTAGE : Over consumption of memory | Closed over variables not garbage collected
+
+12. HOW SETTIMEOUT WORKS
+
+    When JavaScript encounters a setTimeout, it does the following:
+
+        It registers the callback function and forms a closure with its lexical environment 
+        (the variables in scope where it was defined).
+
+        The callback, along with its environment, is sent to the Web API (browser) and is associated with a timer.
+
+        Meanwhile, the rest of the code continues to execute without waiting for the timer to finish. 
+        JavaScript is non-blocking, so it doesn't pause.
+
+        Once the timer expires, the callback is moved to the callback queue.
+
+        The event loop then pushes it to the call stack only when the stack is empty 
+        (i.e., after all synchronous code has run).
+
+        Because the callback is a closure, it remembers the values of variables from its original environment—even 
+        if those variables have changed.
+
+    function x () {
+      var i = 1;
+        setTimeout(function () {
+            console.log(i); // 2
+        }, 3000);
+        console.log('Hello, World!');
+        i++;
+    }
+    x();
+
+13. SETTIMEOUT WITH FOR LOOP + LET && VAR
+
+    for (var i = 1; i <= 5; i++) {
+        setTimeout(function () {
+            console.log(i); // 6, 6, 6, 6, 6
+        }, i * 1000);
+    }
+
+    for (let i = 1; i <= 5; i++) {
+        setTimeout(function () {
+            console.log(i); // 1, 2, 3, 4, 5
+        }, i * 1000);
+    }
+
+    ✅ let (block-scoped):
+
+        let is block scoped, meaning a new i is created for each iteration of the loop.
+
+        Each callback function closes over a different copy of i.
+
+        Therefore, the correct value of i is logged each time.
+
+    🚫 var (function-scoped):
+
+        var is function scoped, so there is only one i shared across all iterations.
+
+        All the callbacks reference the same i, and by the time the setTimeout callbacks execute (after the loop finishes), i has become 6.
+
+        So, all log statements print 6.
+
+    FIX THIS WITHOUT LET
+
+        To fix this without using let, we need to create a new copy of i for each iteration. 
+        We can do this by wrapping the setTimeout call in an immediately invoked function expression (IIFE) and passing i as an argument.
+
+        for (var i = 1; i <= 5; i++) {
+            (function (j) {
+                setTimeout(function () {
+                console.log(j); // Output: 1, 2, 3, 4, 5
+                }, j * 1000);
+            })(i);
+        }
+
+14. USE OF DOUBLE PARANTHESIS ()() in JS
+
+    It refers to immediately invokes a function - in nested functions - it used to call inner function
+
+15. DATA HIDING & ENCAPSUTION USING CLOSURES
+
+    - if we have a variable - we want that variable should be get updated by other functions - we can acive this by using closure
+
+    - We can create private variables using Closures that are not accessible outside - but it can be read or modified using its
+    inner functions.
+
+    function counter() {
+
+        var count = 0; // It wont be accessible outside
+
+        return function increment() {
+            count++;
+        }
+    } 
+
+    var counter1 = counter();
+    counter1(); // 1 = Updated from returned function
+
+16. CONSTRUCTOR FUNCTION IN JS
+
+    Constructor function in JS is a regular function used to create a multiple instances with same properties and methods
+    Similar to Class
+
+    function Counter () {
+        var count = 0;
+
+        this.increment = function () {
+            count++;
+            console.log(count)
+        }
+
+        this.decrement = function () {
+            count--;
+            console.log(count)
+        }
+    }
+
+    var counter1 = new Counter();
+    counter1.increment(); // 1
+    counter1.increment(); // 2
+    counter1.decrement(); // 1
+
+17. MEMORY LEAKS IN JS
+
+    Memory Leak occurs when application uses a memory but fails to release it eventhough no longer needed
+
+    Example : Global variables | Closure references
+        When you declare a variable with var - it attached global memory - it never gets garbage collected
+
+18. GARBAGE COLLECTOR
+
+    It is an automatic process that frees up memory by removing data that are no longer reachable.
+
+19. FUNCTION STATEMENT
+
+    A way of defining a function using function keyword and function name
+
+    function greet() {
+        console.log('Hello JS')
+    }
+
+
+20. FUNCTION EXPRESSION
+
+    - We can assign a function to a variable as a value - this is called function expression
+    - Functions acts like a value
+
+    var func = function () {
+        console.log('expression')
+    }
+
+21. WHAT IS THE DIFFERENCE BETWEEN FUNCTION STATEMENT AND FUNCTION EXPRESSION
+
+    - Hoisting is the difference
+    - We can access function statement before it initialized but if we trying to access function expression before it initialized - 
+        it will throw error
+
+22. FUNCTION DECLARATION
+
+    - Function Declarition is nothing but same as Function Statement
+
+23. ANONYMOUS FUNCTION
+
+    - A function without a name is called anonymous function
+    - Anonymous functions used when functions are used as a value
+    - If we are directly defining a anonymous function - not assigning to any variable - it will throw an error
+
+    function () {
+        console.log('I am Anonymous')
+    }
+
+24. NAMED FUNCTION EXPRESSION
+
+    - A function expression with a name
+
+    var c = function xyz() {
+        console.log('XYZ')
+    }
+
+    c(); // XYZ
+    xyz(); //  It will throw an error - not defined
+
+25. DIFFERENCE BETWEEN PARAMETERS AND ARGUMENTS
+
+    - Parameters - A placeholders or identifiers defined in function declaration - 
+    - function x (a, b) - a,b are the parameters 
+
+    - Arguments - Actual values that you are passing to a function when you are calling it
+    - x(2,3) - 2,3 are the arguments
+
+26. FIRST CLASS FUNCTION
+
+    - Functions are passed as arguments to another function
+    - Functions can be returned from a function
+    - Ability to use a function as values
+
+    Which is called First Class Function - First Class Citizens
+
+27. CALLBACK FUNCTIONS
+
+    - A callback function is a function passed as an argument to another function and is executed later, 
+      typically after some operation completes
+    - Commonly used in asynchronous operations such as reading files, making network requests, or timers.
+    - Can also be used in synchronous code for reusability or customization.
+
+      // SYNCHRONOUS
+      function x (y) {
+        console.log('x');
+        y(); // callback
+      }
+
+      x(function y() { console.log('y') })
+
+      // ASYNCHRONOUS
+      setTimeout(function () {
+        console.log('timer')
+      }, 4000); // example
+
+      - Callbacks are a way to control execcution order in async programing
+      - Excessive nested callbacks will lead into CALLBACK HELL, making code hard to read and maintain
+      - We can use Promises or Async/Await to avoid callback hell
+
+28. BLOCKING A MAIN THREAD
+
+    - JavaScript runs on a single Call Stack (Main Thread) — meaning it executes one thing at a time.
+    - All code execution happens through this main thread in a synchronous manner.
+    - If a task takes too long to finish, it blocks the main thread, preventing other code 
+      (including user interactions, rendering, etc.) from running — this is called blocking the main thread.
+    
+    // This blocks the main thread for ~5 seconds 
+    let start = Date.now();
+
+    while(Date.now() - start < 5000) {
+        // 
+    }
+
+    console.log('Done')
+
+29. EVENT LISTENERS
+
+    - Event Listener is a function that waits for a specific event occurs in a DOM nad runs a CALLBACK function
+      when that event occurs
+
+      element.addEventListener(evetnType, callback, options)
+
+      btn.addEventListener('click', function() {
+        console.log('clicked')
+      }, {once: true})
+
+30. WHY DO WE NEED TO REMOVE EVENT LISTENERS
+
+    - To stop memory leaks.
+    - An event listener remembers:
+        The element it’s attached to.
+        Any variables it uses inside the function.
+
+    - Even if the element is removed from the page, the event listener still stays in memory unless you remove it.
+    -This means:
+        Extra memory is used for no reason.
+        Your page can get slower over time.
+
+31. ASYNCHRONOUS JAVASCRIPT
+
+    - JavaScript is single threaded 
+    - This means it can do one thing at a time
+    - If something takes a long time, everything else must wait
+
+    ASYNC
+    - Start the task which takes time, do other work in the meantime, come back when it is ready
+
+    TEAM TO PERFORM ASYNC TASKS
+    - CALLSTACK - Where all JS code executes
+    - WEB API's - Browser provided helper for timers | network calls | console | DOM events
+    - CALLBACK QUEUE - A line which finished async tasks wait
+    - EVENT LOOP - A supervisor who moves tasks from queue to callstack when it is empty
+
+32. WEB API
+
+    - When JS runs in a browser it gets extra built-in tools from browser
+      These tools are called WEB API'S
+      - setTimeout
+      - fetch
+      - DOM events
+      - console
+      - localStorage
+
+    - JS can access these powers by using global object - window
+
+33. CALLBACK QUEUE
+
+    - Callback queue is a line where finished async tasks are wait until they can be moved to the call stack
+
+34. MICRO TASK QUEUE
+
+    - The Microtask Queue is another waiting line for async tasks, like the Callback Queue, but with higher priority.
+    - Tasks in the Microtask Queue always go to the Call Stack before tasks in the Callback Queue.
+    - Fetch | Promises | MutationObserver (DOM Tree changes)
+
+    fetch('https://jsonplaceholder.typicode.com/posts') // returns promise as it is asynchronous
+    .then(function res(response) {
+        return response.json(); // returns Promise
+    }).then(function data(json) {
+        console.log('data fetched', json);
+    })
+
+    - why two then blocks - because it returns Promises
+
+35. EVENT LOOP
+
+    - Event Loop is a supervisor who moves taks from queue to callstack when callstack ios empty
+    - It constantly checks:
+        “Is the Call Stack empty?”
+        If yes → Move the first task from the Callback Queue to the Call Stack.
+
+36. FUNCTION STARVATION
+
+    - Function starvation happens when some tasks never get a chance to run because other tasks keep taking priority
+
+37. JAVASCRIPT RUNTIME ENVIRONMENT
+
+    - JavaScript Runtime Environment is the complete infrastructure that allows JavaScript code to execute
+    - It inculdes everything need for
+        - Running JS Code
+        - Interacting with external resources(DMO,fetch)
+        - Managing Asynchronous operations
+    - Key Components of JSRE
+        - JSEngine
+        - WebAPI'S
+        - Queues
+        - Event Loop
+    - JSEngine
+        - Responsible parsing | compiling and executing the code
+        - Example - V8(google) | SpiderMonkey(firefox - first JSEngine)
+        JSEngine consists 
+            - Memory Heap - where variables and objects stored
+            - CallStack - where execcution contexts tracked 
+    - How It Works Together
+        - You run JS code → added to the call stack.
+        - Synchronous code runs first.
+        - Async operations (timers, network) are handed off to Web APIs.
+        - When complete, callbacks go to task queues.
+        - Event Loop picks tasks → pushes them onto the stack → executes.
+
+38. INTERPRETTED && COMPILED LANGUAGES
+
+    - Interpreted Languages
+        - Execute code line-by-line.
+        - No separate compilation step before execution.
+        - Slower in some cases because code is translated as it runs.
+        - Examples: Early JavaScript, Python, Ruby.
+
+    - Compiled Languages
+        - Source code is first translated into machine code by a compiler.
+        - The resulting binary is executed directly by the CPU.
+        - Faster runtime performance (after compilation).
+        - Examples: C, C++, Rust.
+
+    - JavaScript Today:
+        - Historically interpreted, but modern JS engines compile and optimize code before execution 
+          using Just-In-Time (JIT) compilation.
+
+39. JUST IN TIME COMPILATION
+
+    - JIT is a hybrid approach between interpreted and compiled execution.
+
+40. JSENGINE
+
+    - A JavaScript Engine is the program that executes JavaScript code inside a given environment.
+    - Takes the code as input
+    - JSEngine has 3 phases
+        - Parsing - parse the code as tokens and generating Abstract Syntax Code
+        - Compilation - Uses JIT for compiling the code
+        - Execution - Execute the code by using Memory Heap and CallStack
+
+41. HIGHER ORDER FUNCTIONS
+
+    - A function which takes function as an argument or return a function from it known as HOF
+    - A function which takes function as an argument is higher order function
+    - A function passed to it is callback function - which called later in the execution
+
+    function x () {
+        console.log('X called')
+    }
+
+    function y(x) {
+        x() // X called
+    }
+
+    x - is callback function
+    y - is higher order function
+
+42. MAP && FILTER && REDUCE
+
+    - Map, Filter and Reduce are Higher Order Functions
+
+    Map - used for transfrom the array;
+        - returns new array wont modify existing array
+
+    ex: let arr = [1, 2]
+        let double = arr.map(x => x * 2); // [2, 4]  
+
+    Filter - used the filter values inside array
+           - returns new array wont modify existing array
+    
+    ex - let arr = [1,2,3,4,5,6]
+         let above3 = arr.filter(x => x > 3) // [4,5,6]
+
+    Reduce - used where take all array elements as input and come up with single value
+           - returns single value
+    
+    ex - let arr = [1,3];
+         let sum = arr.reduce(function(acc, curr){
+            acc = acc + curr
+            return acc;
+         },0) // 4
+
+    - We can also chain the filters
+    - users.filter(user => user.age <= 30).map(user => user.firstName);
+
+43. CALLBACK && CALLBACK HELL
+
+    CALLBACK  
+        - A callback is a function passed as an argument to another function, 
+          which is executed later—often after some operation completes.
+
+    IMPORTANCE
+        - Essential in asynchronous programming
+        - Without callbacks, async behavior in JavaScript would be hard to manage.
+
+        ex - setTimeout(function cb() {
+            console.log('Callback Function)
+        }, 5000)
+
+        - cb is an callback function
+
+    ISSUES
+    
+        CALLBACK HELL 
+            - Occurs when multiple callbacks are nested inside each other.
+            - Makes code hard to read, debug, and maintain.
+            - Also called Pyramid of Doom because of its indentation shape.
+
+        INVERSION OF CONTROL
+            - When you pass a function to another function, you give up control over when and how it is executed.
+            - The receiving function may:
+                - Call it multiple times
+                - Not call it at all
+                - Call it with wrong parameters
+
+44. PROMISES
+
+    - Promises are used to handle async operations
+    - A Promise is an object that represents the eventual completion (or failure) 
+      of an asynchronous operation and its resulting value.
+
+    - Why Promises?
+        - Avoids Callback Hell (deeply nested callbacks).
+        - Avoids Inversion of Control — you attach callbacks instead of passing them.
+        - Executes the attached callbacks exactly once after settling.
+
+    - States of Promises
+        - pending - Initial State
+        - fulfiled - Successfully Completed
+        - rejected - Failed
+        - Once fulfiled or rejected, the Promise is IMMUTABLE
+    
+    - Promise Chain
+        - Chain .then calls to execute tasks in sequence without nesting
+        - Each then block returns promise 
+    
+    - Error Handling
+        - By using .catch() block we use handle the errors
+        - If .then() block returns rejected Promise, control jumps to nearest .catch() block
+        - In a chain with one .catch() at the end, any error in earlier .then() blocks will skip the rest and go straight to that .catch().
+        - To allow later tasks to still run, attach individual .catch() to each step.
+        - .finally() runs regardless of success or failure — useful for cleanup.
+
+45. ASYNC/AWAIT
+
+    - ASYNC
+        - async is a keyword used before a function declaration/expression to define an asynchronous function.
+        - An async function always returns a Promise.
+            - If you return a non-promise value, it will be wrapped inside a resolved Promise.
+            - If you return a Promise, it is returned as-is.
+
+            async function getData() {
+                return "Namaste";
+            }
+
+            const data = getData();
+            console.log(data); // { Promise }
+            console.log(data.then(res => console.log(res))); // Namaste
+
+    - AWAIT
+        - await can only be used inside an async function.
+        - Suspends execution of the function until the Promise is fulfilled or rejected.
+        - After the Promise resolves, execution resumes from where it was paused.
+
+            const p = new Promise(resolve => {
+                setTimeout(() => resolve("Promise Resolved"), 2000);
+            });
+
+            async function handlePromise() {
+                console.log("Before await");
+                const value = await p; 
+                console.log("After await:", value);
+            }
+            handlePromise();
+
+            - Without await:
+                function handlePromiseNoAwait() {
+                    p.then(res => console.log(res));
+                    console.log("No await here");
+                }
+                handlePromiseNoAwait();
+                // "No await here"
+                // "Promise Resolved"
+
+    - ERROR HANDLING
+        - Use try...catch for synchronous-looking async error handling.
+        - async function getUserData() {
+            try {
+                const data = await fetch('https://invalid-url.com');
+                const json = await data.json();
+                console.log(json);
+            } catch (error) {
+                console.error("Error:", error);
+            }
+        }
+        getUserData();
+
+46. FETCH
+
+    - fetch() is a built-in browser API to make HTTP requests.
+    - Returns a Promise that resolves to a Response object.
+    - Response contains a readable stream of the body — must be converted to usable format (.json(), .text(), .blob(), etc.).
+    - .json() also returns a Promise.
+
+        const API_URL = "https://api.github.com/users/octocat";
+
+        async function handlePromise() {
+            const data = await fetch(API_URL);   // Promise -> Response object
+            const result = await data.json();    // Promise -> JSON object
+            console.log(result);
+        }
+        handlePromise();
+
+47. PROMISE API's
+
+    - PROMISE.ALL
+        - Takes array of promises as input - runs parrallely all promises
+        - It will wait all the promises to execute then return the array results
+        - If any one failed - it will not wait - it throws an error - There will be no result
+
+    - PROMISE.ALLSETTLED
+        - Takes array of promises as input - runs parrallely all promises
+        - It will wait all the promises to execute then return the array results
+        - It will only return results only after all promises settled
+        - If any one failed - still it will wait then returns the result with responses and rejections
+        - There will be define result
+        - Results will be array objects
+
+        - [{ status: fulfilled, value : 'P1 Success' }]
+    
+    - PROMISE.RACE
+        - Takes array of promises as input - runs parrallely all promises
+        - Returns the result any one promise settled
+        - Returns the first settled promise as a result whenther success or reject
+
+    - PROMISE.ANY
+        - Takes array of promises as input - runs parrallely all promises
+        - Returns the first successful promise as a result
+        - If any one fails - waits for next success 
+        - If everything fails - it returns aggregate error [err1, err2...] - this will present in err.errors
+        - Known as FIRST SUCCESS SEEKING API
+
+48. CALL && APPLY && BIND
+
+    - All three are used for function borrowing (reusing one object’s method for another object).
+    - They explicitly set the this value when invoking functions.
+
+    - CALL
+        - Invokes the function immediately
+        - First argument → object to use as this.
+        - Subsequent arguments → passed as comma-separated values.
+
+        let name = {
+            firstName: 'Sakthivel',
+            lastName: 'Munusami'
+            printFullName : function () {
+                console.log(this.firstName + " " + this.lastName)
+            }
+        }
+
+        name.printFullName(); // Sakthivel Munusami
+
+        let name2 = {
+            firstName: "MS",
+            lastName: "Dhoni"
+        }
+
+        name.printFullName.call(name2); // name2 is reference to this // MS Dhoni
+
+    - APPLY
+        - Same as call(), but arguments are passed as an array (or array-like object).
+        - Throws TypeError if arguments are not in an array.
+
+        -  name.printFullName.apply(name2, [arg1, arg2]);
+
+    - BIND
+        - Does not call immediately.
+        - Returns a new function with this bound permanently.
+        - Useful for callbacks or event handlers.
+        - Multiple .bind() calls — only the first one matters for this.
+        - Once bound, this can’t be overridden with call or apply.
+
+        - function sayAge() {
+            console.log(this.age);
+        }
+
+        const obj1 = { age: 20 };
+        const obj2 = { age: 30 };
+
+        const bound = sayAge.bind(obj1).bind(obj2);
+        bound(); // 20
+
+        let myFunc = name.printFullName.bind(name2, arg1, arg2)
+
+    - 💡 Interview Tips:
+
+        call → comma args, immediate execution.
+
+        apply → array args, immediate execution.
+
+        bind → returns new function (lazy execution).
+
+49. THIS KEYWORD
+
+    - this in JavaScript is dynamic — its value depends on how the function is called, not where it is defined.
+
+    - In Global Space
+        - In Global Space `this` represents global object (window(browser), global(nodejs))
+        - In can be different based on where we are running Javascript
+
+    - In Function
+        - Inside function `this` keyword works differently in `strict mode` and `non-strict` mode
+        -In Strict Mode
+            - In strict mode `this` keyword inside function is `undefined`
+        -In Non-Strict Mode
+            - In non-strict mode `this` keyword inside function is `window` globalObject
+        - This Substitution
+            - In non-strict mode - wherever the `this` keyword becomes `undefined` - it will get replaced with globalObject 
+
+            "use strict"
+
+            function x () {
+                console.log(this);
+            }
+
+            x(); // undefined - because it is in strict mode
+
+        - Also the value of `this` keyword depends on how the function is called
+            -window.x(); // globalObject - because of function called on window
+
+    - In Object Methods
+
+        - In Object methods `this` keyword refers to the object
+
+            let obj = {
+                a: 10,
+                b: function () {
+                    console.log(this);
+                }
+            }
+
+            obj.b(); // { a: 10, b: {...} } - it refers to the object
+
+    - In Call | Apply | Bind - sharing methods
+
+        - We can share the object methods to other objects
+
+        let studen1 = {
+            name: 'Sakthi',
+            printName: function () {
+                console.log(this.name)
+            }
+        }
+
+        studen1.printName(); // 
+
+        let student2 = {
+            name: "Velu"
+        }
+
+        student1.printName.call(student2); // `this` value inside printName method is `student2`
+    
+    - In Arrow Functions
+
+        - Arrow functions does not have their own `this` value
+        - It remains the value it `enclosed lexical context`
+
+            - let obj = {
+                a: 10,
+                m : () => {
+                    console.log(this.a) // undefined - in lexical context there is no a
+                }
+            }
+    
+    - In DOM
+
+        - It will be reference to HTMLElement 
+
+
+50. DIFFERENCE BETWEEN FUNCTION AND METHOD
+
+    - Function: A standalone block of code.
+    - Method: A function attached to an object (property).
+
+    If we are making function as part of an object, then it is known as METHOD
+
+    let obj : {
+        a: 10,
+        b : function () {
+            console.log('test')
+        }
+    }
+    - b is the method of obj
+
+51. PROTOTYPE
+
+    - In JavaScript each function, object and array has hidden refference to another object called its PROTOTYPE
+    - This prototype used to share properties and methods so we dont need to duplicate them
+
+    PROTOTYPAL INHERITANCE
+
+        - Means objects inherit properties and methods from other objects
+
+    PROTOTYPE CHAIN
+
+        - When we try to access property from an object
+            - JavaScript looks at object itself
+            - If not found, it looks at the prototype(__proto__)
+            - If still not found, it goes further up the chain
+            - And it stops at null
+
+        - This sequence is known as prototype chain
+
+    __proto__
+
+        - It is property that gives access to prototype object
+
+    INHERITANCE
+
+        - It is the concept of reuse code by letting object access the properties and methods of another
+
+52. POLYFILL
+
+    - Polyfill is a piece of code that implements a feature which browser may not support natively
+    - We can create custom functions to Array|Object - then we can include that in that prototype
+
+    - Array.includes() - maybe in some browser does not have this feature - we can create polyfill for this    
+
+    let names = {
+        firstname: 'Sakthivel',
+        lastname: 'Munusami'
+    }
+
+    function printName(hometown, state, country) {
+        console.log(this.firstname + " " + this.lastname + " ," + hometown + " , " + state + " , " + country)
+    }
+
+    let printMyName = printName.bind(names, "DPI", "TamilNadu");
+    printMyName("India");
+
+    Function.prototype.mybind = function (...args) {
+        let obj = this;
+        let params = args.slice(1)
+        return function(...args2) {
+            obj.apply(args[0],[...params, ...args2])
+        }
+    }
+
+    let printMyName2 = printName.mybind(names, "DPI", "TamilNadu");
+    printMyName2("India")
+
+53. FUNCTION CURRYING
+
+    - It is a phinomina of transforming a function that takes multiple arguments into sequence of functions each taking single argument
+        until all arguments are provided.
+    - It is useful for creating functions that can be partially applied
+    - It is useful for creating functions with preset arguments
+    - We can do currying using bind and closure methods
+
+        - // function multiply(x, y) {
+        //   console.log(x * y);
+        // }
+
+        // let byTwo = multiply.bind(this, 2);
+        // byTwo(3)
+
+        // let byThree = multiply.bind(this, 3);
+        // byThree(3)
+
+        function multiply(x) {
+            return function(y) {
+                console.log(x * y)
+            }
+        }
+
+        let by2 = multiply(2)
+        by2(4)
+
+        let by3 = multiply(3)
+        by3(4)
+
+54. DEBOUNCING
+
+    - Debounce is a programming pattern that ensures that the function is only executed after certain period
+    - Execution depends on the time gap between two consecutive events.
+    - If the debounce function called again before delay ends - it will reset the timer
+    - Reduces unneccessary function calls
+    - Improves performance
+
+    - function debounce (fn, delay) {
+
+        let timer;
+
+        return function (...args) {
+            
+            clearTimeout(timer);
+
+            let context = this;
+
+            timer = setTimeout(function() {
+            
+                fn.apply(context, args)
+
+                }, delay)
+            }
+        }
+
+        const doSearch = debounce(onSearch, 400);
+
+55. THROTTLING
+
+    - Throttling is a performance optimization technique.
+    - It ensures that a function executes at most once in a given interval, no matter how many times the event is triggered.
+    - Execution depends on the time passed since the last execution.
+    - Useful for events that fire very frequently (e.g., scroll, resize, mousemove).
+
+    - 
+        function scolling() {
+            console.log('scolling....')
+        }
+
+        function throttle(fn, delay) {
+            let flag = true;
+            return function(...args) {
+                let context = this;
+                if(flag) {
+                    fn.apply(context, args)
+                    flag = false;
+                    setTimeout(() => {
+                        flag = true;
+                    }, delay)
+                }
+            }
+        }
+
+        const handleScroll = throttle(scolling, 500)
+
+        document.addEventListener('scroll', handleScroll)
+
+56. DIFFERENCE BETWEEN DEBOUNCING AND THROTTLING
+
+    - Both used for performance improvements
+    - Both reduces the function executions
+    - Debouncing - makes an function execution depends on time gap between two events
+    - Throttling - makes an function execcution depends on the time of when the function is executed before
+
+57. ASYNC || DEFER in SCRIPT
+
+    - Async and defer are boolean values used along with script tags to load the external scripts into our webpage
+
+    - When a webpage loads, two main processes happen in parallel:
+        - 1. HTML Parsing (building the DOM)
+        - 2. Loading Scripts ( Fetching script, Executing the script )
+
+    - Normal - <script src=""></script>
+        - When parser finds <script>, HTML parsing pauses.
+        - Script is fetched + executed immediately, then HTML parsing resumes.
+
+        HTML Parse ----[STOP]-- Fetch → Execute --[RESUME Parsing]----
+
+    - Async - <script async src=""></script>
+        - Script is fetched in parallel with HTML parsing.
+        - Once script is ready, parsing pauses, script executes, then parsing continues
+        - Multiple async scripts → execution order is NOT guaranteed.
+        
+        HTML P ------------<script>-----           -----continues parsing----
+                            ----Fetch----Execute----
+
+      - Defer - <script defer src=""></script>
+        - Script is fetched in parallel with HTML parsing.
+        - Scripts run only after HTML parsing finishes.
+        - Multiple defer scripts → execution order is preserved (top to bottom)
+
+        HTML P ------------<script>----------continues parsing----
+                                                                    ----Fetch----Execute----
+
+58. EVENT BUBBLING(UP) AND CAPTURING (TRICKILING DOWN)
+
+    - When an event occurs on an element, it doesn’t just affect that element — 
+        it can propagate through the DOM tree in two ways:
+
+        1. Event Bubbling (Default)
+            - Event starts from the target element and bubbles up to its ancestors (parent → grandparent → ... → document).
+            - Order: Target → Parent → Ancestors → Document
+  
+        2. Event Capturing (Trickling Down)
+            - Event travels from the top of DOM → down to target element.
+            - Order: Document → Ancestors → Parent → Target
+            - To enable capturing, pass true as the third argument in addEventListener.
+        
+        3. Stopping Propagation
+            - We can stop events from propagating further using:
+                - event.stopPropagation() → stops event from moving further in current phase.
+
+    - By default Event propogates form target to top - means bubbling happens
+    - If we want capturing we need to send true value in the event listener
+
+    document.getElementById("elem").addEventListener("click", () => {
+        console.log("clicked")
+    }, useCapture);
+
+        - capturing by default false
+
+59. EVENT DELEGATION
+
+    - Event Delegation is a technique to handle event listeners better
+    - What actually means is - instead of attaching event listeners to multiple child elements individually
+        we can attach single event listener to a PARENT element and use Event Bubbling to handle events for children
+
+        - lets say i have 3 level nesting divs
+        - i have added event listener to first div not added anything for other two divs
+        - whenever i click on any div my first div event listener callback is getting called bcoz of event bubbling
+        - in that i can use event.target - to get element which i clicked
+
+        <div id="gparent">
+            <div id="parent">
+                <div id="child"></div>
+            </div>
+        </div
+
+        document.getElementById("gparent").addEventListener("click", (e) => {
+            console.log(e.target)
+        })
+    
+    - Benefits
+        - Memory - because of single event listener
+        - Writing less code for attaching event listeners
+        - DOM Manipulation - instead of attaching each childs - we added only its parent - in later if any new child - no worries
+
+    - Limitations
+        - All the events are not bubbled up - focus | blur| resize | scroll
+        - If we use stopPropagation - delegation wont work
+
+60. event.target && event.currentTarget
+
+    - event.target: Actual element clicked (deepest).
+    - event.currentTarget: Element that owns the listener.
+
+61. RECURSIVE FUNCTION
+
+    - It is a function that calls itself until certain condition met or loop ended
+
+62. WEB STORAGE API
+
+    - Web storage api is used by developers to store some data in browser
+    - the data will be key : value pairs
+
+    - In two ways we can do that
+
+    - SESSION STORAGE
+        - the data will persisted only for the particular session
+        - when user visits web app - as soon as he visited the site - the session is started
+        - the data stored in session storage only available until he is in the webpage - once he closes tab or browser - data gone
+        - we can store more data than cokkies - 4MB
+
+    - LOCAL STORAGE
+        - same as session storage - but it does clear the storage itself - need to clean manually
+        - there is no expiration
+        - it follows same origin policy
+        - for storing object - we need to stringify first then store
+        - for accessing we need to parse it again
+
+63. MEMOIZATION
+    
+    - Memoization is a performance optimization technique
+    - It caches the result of expensive function call - if the function called again with same inputs 
+        it will return a cached value instead of recomputin
+
+        👉 Think: "Don’t repeat work, reuse stored results."
+    
+    - function addTo100(num) {
+        return 100 + num;
+        }
+        // console.log(addTo100(100))
+        // console.log(addTo100(200))
+        // console.log(addTo100(100))
+
+        function memoAddTo100() {
+        let cache = {};
+        return function (num) {
+            if(cache[num]) {
+            console.log('number present in cache');
+            return cache[num];
+            }
+            cache[num] = 100 + num;
+            return cache[num]
+        }
+        }
+
+        let memoFunc = memoAddTo100()
+
+        console.log(memoFunc(100))
+        console.log(memoFunc(200))
+        console.log(memoFunc(100))
+
+64. DESTRUCTURING
+
+    - Destructuring is a syntax that allows unpacking values from arrays or properties from objects into distinct variables.
+    - It makes code cleaner and more readable by reducing the need for repetitive variable assignments.
+
+    - Array Destructuring
+        const arr = [1, 2, 3];
+        const [a, b, c] = arr; // a = 1, b = 2, c = 3
+
+    - Object Destructuring
+        const obj = { x: 10, y: 20 };
+        const { x, y } = obj; // x = 10, y = 20
+
+65. SHALLOW COPY VS DEEP COPY
+
+    - SHALLOW
+        - Shallow copy only copies the first level of the array/object
+        - Nested objects/arrays are still referenced
+
+        let arr1 = [1, 2, [3, 4]]
+        let arr2 = [...arr1]
+        arr2[0] = 10
+        arr2[2][0] = 30
+
+        console.log(arr1) // [1, 2, [30, 4]]
+        console.log(arr2) // [10, 2, [30, 4]] - // still reference
+
+    - DEEP
+        - Deep copy creates a completely independent copy of the entire structure
+        - Changes to nested objects/arrays do not affect the original
+
+        let arr1 = [1, 2, [3, 4]]
+        let arr2 = JSON.parse(JSON.stringify(arr1))
+        arr2[0] = 10
+        arr2[2][0] = 30
+
+        console.log(arr1) // [1, 2, [3, 4]]
+        console.log(arr2) // [10, 2, [30, 4]] - // no reference 
+
+66. LOCALECOMPARE
+
+    - The localeCompare() method compares two strings in the current locale.
+    - The locale is based on the language settings of the browser.
+    - It returns a number indicating whether the reference string comes before, after, or is the same as the given string in sort order.
+
+    - Return Values
+        - Negative number: Reference string is sorted before the compared string.
+        - Positive number: Reference string is sorted after the compared string.
+        - Zero: Both strings are considered equal in sort order.
+
+    - Syntax
+        str1.localeCompare(str2, locales, options)
+
+        ex-  'a'.localeCompare('b') // -1
+              'b'.localeCompare('a') // 1
+              'a'.localeCompare('a') // 0

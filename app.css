@@ -1,0 +1,11 @@
+.notification {
+    background-color: green;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.item {
+    height: 100px;
+}
