@@ -1,0 +1,329 @@
+1. WHAT IS VUEJS?
+    - Vue.js is a Javascript frameqwork used for building user interfaces and single page applications.
+
+2. WHY VUEJS?
+    - Vue.js is easy to learn and integrate with other libraries or existing projects.
+    - It provides a reactive and component-based architecture, making it easier to manage and scale applications.
+
+3. KEY FEATURES OF VUEJS
+    - Reactive Data Binding: Vue.js uses a reactive data binding system that automatically updates the DOM when the underlying data changes.
+    - Component-Based Architecture: Vue.js allows to create reusable components, making it easier to manage and scale applications.
+    - Directives: Vue.js provides a set of built-in directives (e.g., v-if, v-for, v-bind) that simplify DOM manipulation.
+    - Vue CLI: Vue.js offers a command-line interface (CLI) tool that helps scaffold and manage Vue.js projects.
+    - Vue Router: Vue.js has an official router library for building single-page applications with navigation.
+    - Vuex: Vue.js provides a state management library for managing application state in a centralized manner.
+
+4. VUEJS ECOSYSTEM
+    - Vue.js has a rich ecosystem of libraries and tools that enhance its functionality, including:
+        - Vue Router: For handling routing in single-page applications.
+        - Vuex: For state management.
+        - Vue CLI: For scaffolding and managing Vue.js projects.
+        - Vuetify, BootstrapVue, and Element: UI component libraries for building responsive and visually appealing applications.
+        - Nuxt.js: A framework for building server-side rendered Vue.js applications.
+      
+5. USE OF `type=module` IN INDEX.HTML
+    - The `type="module"` attribute in a script tag indicates that the script should be treated as a JavaScript module.
+    - This allows the use of `import` and `export` statements within the script, enabling modular code organization and reuse.
+    - When using `type="module"`, the script is executed in strict mode by default, which helps catch common coding errors and improves performance.
+    - Modules are deferred by default, meaning they will not block the HTML parsing and will execute after the document has been fully parsed.
+    - Example:
+      ```html
+      <script type="module" src="main.js"></script>
+      ```
+    - In this example, `main.js` can import other modules and export functionality to be used elsewhere in the application.
+
+6. CREATEAPP
+    - `createApp` is a method provided by Vue.js to create a new Vue application instance.
+    - It is used to initialize the application and mount it to a specific DOM element.
+    - Example:
+      ```javascript
+      import { createApp } from 'vue';
+      import App from './App.vue';
+
+      const app = createApp(App);
+      app.mount('#app');
+      ```
+    - In this example, a new Vue application is created using the `App` component and mounted to the DOM element with the ID `app`.
+    - The `createApp` method allows for configuring the application instance, such as adding plugins, components, and directives before mounting it to the DOM.
+        - app.component('MyComponent', MyComponent);
+        - app.use(MyPlugin);
+        - app.directive('my-directive', MyDirective);
+        - app.use(router);
+        - app.use(store);
+    - After configuring the application instance, the `mount` method is called to attach the Vue application to the specified DOM element, making it reactive and interactive.
+
+7. COMPONENTS IN VUE 3
+    - Components are reusable and self-contained building blocks in Vue.js that encapsulate their own structure, style and behaviour.
+    - In Vue 3, components can be defined using the `defineComponent` function or as plain objects.
+
+    WHY USE COMPONENTS?
+        - Reusablity
+        - Encapsulation
+        - Composition - Easier to manage complex UIs by breaking them down into smaller, manageable pieces.
+
+    TYPES OF COMPONENTS
+        - Root Component: The main component that serves as the entry point of the application. `App.vue`
+        - Local Component: A component that is registered and used within another component.
+        - Global Component: A component that is registered globally and can be used throughout the application.
+            app.component('MyComponent', MyComponent);
+    
+8. ASYNC COMPONENTS
+    - Async components are components that are loaded asynchronously when they are needed, rather than being included in the initial bundle.
+    - This can help improve the performance of the application by reducing the initial load time and allowing for code splitting.
+
+    CREATING ASYNC COMPONENTS
+        - Using defineAsyncComponent:
+            ```javascript
+            import { defineAsyncComponent } from 'vue';
+
+            const AsyncComponent = defineAsyncComponent({
+              loader: () => import('./MyComponent.vue'),
+              loadingComponent: LoadingComponent,
+              errorComponent: ErrorComponent,
+              delay: 200,
+              timeout: 3000
+            });
+            ```
+9. FUNCTIONAL COMPONENTS
+    - Functional components are stateless components that do not have their own instance or lifecycle methods.
+    - Components without state, lifecycle hooks, or reactivity can be defined as functional components.
+
+    // Divider.js
+    import { h } from 'vue'
+    export default () => h('hr', { class: 'my-divider' })
+
+    <template>
+        <div>
+            <h2>Section One</h2>
+            <Divider />
+            <h2>Section Two</h2>
+        </div>
+    </template>
+
+    <script setup>
+        import Divider from './Divider.js'
+    </script>
+
+10 WAYS OF WRITING COMPONENTS
+
+    - Option API
+        - We define a component logic's using an object of options like data, methods, computed, watch, lifecycle hooks etc.
+        - Properties defined by options are exposed on `this` inside functions.
+        - `this` refers to the component instance.
+    - Composition API
+        - We define components logics using imported API functions like `ref`, `reactive`, `computed`, `watch`, `onMounted` etc.
+        - In SFC's Composition API is used inside `<script setup>` block.
+        - Properties defined inside `<script setup>` are directly accessible in the template without `this`.
+
+    *NOTE* - Options API built on top of Composition API.
+
+11. FLOW OF A VUE 3 APPLICATION
+    - main.js is the entry point of the application.
+    - main.js creates a Vue application instance using `createApp` and mounts it to a specific DOM element.
+    - The root component (App.vue) is rendered inside the mounted DOM element.
+    - createApp method accepts the root component as an argument.
+    - .mount('#app') method mounts the application to the DOM element with the ID `app`.
+
+12. USE OF `<script setup>` 
+
+    - If we are not using `<script setup>`, we need to explicitly return the properties we want to expose to the template.
+
+    <script>
+        import { ref } from 'vue';
+        export default {
+            setup() {
+                const message = ref('Hello World');
+                return { message };
+            }
+        }
+    </script>
+
+    - With `<script setup>`, we don't need to return the properties, they are automatically exposed to the template.
+    <script setup>
+        import { ref } from 'vue';
+        const message = ref('Hello World');
+    </script>
+
+13. TEMPLATE SYNTAX
+
+    - Text Interpolation
+        - {{ message }} - Interpolates the value of `message` variable.
+    
+    - Attribute Binding
+        - v-bind:src="imageSrc" or :src="imageSrc" - Binds the `src` attribute of an image to the value of `imageSrc` variable.
+        - Dynamic arguments - v-bind:[attrName]="attrValue" or :[attrName]="attrValue"
+            - <div v-bind:[attrName]="attrValue"></div>
+            - If attrName is "id" and attrValue is "my-div", it will render as <div id="my-div"></div>
+        - Multiple attributes - v-bind="attributes"
+            - <div v-bind="attributes"></div>
+            - If attributes is { id: 'my-div', class: 'my-class' }, it will render as <div id="my-div" class="my-class"></div>
+
+    - HTML Binding
+        - v-html="rawHtml" - Binds the inner HTML of an element to the value of `rawHtml` variable.
+
+    - JS Expressions
+        - {{ number + 1 }} - Evaluates the expression and interpolates the result.
+        - :title="`Count is ${count}`" - Evaluates the expression and binds the result to the `title` attribute.
+
+    - Event Handling
+        - v-on:click="handleClick" or @click="handleClick" - Binds the `click` event to the `handleClick` method.
+
+14. REACTIVITY OF DATA 
+
+    - In three ways we can bind data to the template.
+
+        1. Without ref or reactive
+            - Data is not reactive.
+            - Changes to the data will not be reflected in the template.
+            - Example
+            <script setup>
+                let count = 0
+                function inc() { count++ }
+            </script>
+
+            <template>
+                <p>{{ count }}</p> <!-- ❌ won't update -->
+                <button @click="inc">+</button>
+            </template>
+
+        2. With ref
+            - Data is reactive.
+            - Used for primitive values (string, number, boolean).
+            - Changes to the data will be reflected in the template.
+            - Also works for objects/arrays if you want to replace the whole thing.
+            - .value is used to access or modify the value of a ref.
+            - Example
+            <script setup>
+                import { ref } from 'vue'
+
+                const count = ref(0)
+                function inc() { count.value++ }
+            </script>
+
+            <template>
+                <p>{{ count }}</p> <!-- ✅ reactive -->
+                <button @click="inc">+</button>
+            </template>
+
+        3. With reactive
+            - Data is reactive.
+            - Used for objects and arrays you want to mutate internally.
+            - Wont work with primitive data types.
+            - Changes to the data will be reflected in the template.
+            - No need to use .value to access or modify the properties of a reactive object.
+            - We can directly access or modify the properties of a reactive object.
+            - If you replace the whole object/array → ❌ breaks reactivity.
+            - Example
+            <script setup>
+                import { reactive } from 'vue'
+
+                const state = reactive({ count: 0 })
+                function inc() { state.count++ }
+            </script>
+
+            <template>
+                <p>{{ state.count }}</p> <!-- ✅ updates -->
+                <button @click="inc">+</button>
+            </template>
+
+15. COMPUTED PROPERTIES
+    - Normally we can write simple expressions in the template.
+    - For complex logic, we can use methods or computed properties.
+    - Methods are re-evaluated every time the component re-renders.
+    - Computed properties are cached based on their reactive dependencies.
+    - Computed properties are only re-evaluated when their dependencies change.
+    - Computed properties are defined using the `computed` function from Vue.
+    - Example
+    <script setup>
+        import { ref, computed } from 'vue'
+        const count = ref(0)
+        const doubleCount = computed(() => count.value * 2)
+        function inc() { count.value++ }
+    </script>
+    <template>
+        <p>Count: {{ count }}</p>
+        <p>Double Count: {{ doubleCount }}</p>
+        <button @click="inc">+</button>
+    </template>
+    - Computed properties are read-only by default.
+    - We can define a setter for a computed property to make it writable.
+    - Example
+    <script setup>
+        import { ref, computed } from 'vue'
+        const count = ref(0)
+        const doubleCount = computed({
+            get: () => count.value * 2,
+            set: (val) => count.value = val / 2
+        })
+        function inc() { count.value++ }
+    </script>
+    <template>
+        <p>Count: {{ count }}</p>
+        <p>Double Count: {{ doubleCount }}</p>
+        <button @click="inc">+</button>
+        <input v-model="doubleCount" />
+    </template>
+
+16. BINDING CLASS
+    - We can bind class to an element using `:class` directive.
+    - We can bind class using string, object or array.
+    - String
+        - :class="'my-class'"
+    - Object
+        - :class="{ 'my-class': isActive, 'another-class': isAnotherActive }"
+    - Array
+        - :class="[class1, class2]"
+    - Example
+    <script setup>
+        import { ref } from 'vue'
+        const isActive = ref(true)
+        const isAnotherActive = ref(false)
+        const class1 = 'class-one'
+        const class2 = 'class-two'
+    </script>
+    <template>
+        <div :class="'my-class'">String Class</div>
+        <div :class="{ 'my-class': isActive, 'another-class': isAnotherActive }">Object Class</div>
+        <div :class="[class1, class2]">Array Class</div>
+    </template>
+
+17. BINDING STYLE
+    - We can bind style to an element using `:style` directive.
+    - We can bind style using object or array.
+    - Object
+        - :style="{ color: textColor, fontSize: fontSize + 'px' }"
+    - Array
+        - :style="[style1, style2]"
+    - Example
+    <script setup>
+        import { ref } from 'vue'
+        const textColor = ref('red')
+        const fontSize = ref(16)
+        const style1 = { color: 'blue' }
+        const style2 = { fontSize: '20px' }
+    </script>
+    <template>
+        <div :style="{ color: textColor, fontSize: fontSize + 'px' }">Object Style</div>
+        <div :style="[style1, style2]">Array Style</div>
+    </template>
+
+18. WHAT HAPPENS WHEN I PASS CLASS ATTR IN CHILD COMPONENT CALL 
+    - When we pass class attribut where we call the child component, the class is added to the root element of the child component.
+    - If the child component has multiple root elements, it will not added to any elements, it will show the warning in the console.
+    - If we want to add the class to a specific element we can use :class="$attrs.class".
+    - Example
+    // ParentComponent.vue
+    <template>
+        <ChildComponent class="my-class" />
+    </template>
+    <script setup>
+        import ChildComponent from './ChildComponent.vue'
+    </script>
+    // ChildComponent.vue
+    <template>
+        <div class="my-class"> <!-- ❌ won't work if multiple root elements -->
+            <h2>Child Component</h2>
+        </div>
+    </template>
+    <script setup>
+    </script>

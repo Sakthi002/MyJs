@@ -901,7 +901,7 @@ ILLEGAL SHADOWING
                 m : () => {
                     console.log(this.a) // undefined - in lexical context there is no a
                 }
-            }
+            }CURRY
     
     - In DOM
 
@@ -1280,3 +1280,21 @@ ILLEGAL SHADOWING
         ex-  'a'.localeCompare('b') // -1
               'b'.localeCompare('a') // 1
               'a'.localeCompare('a') // 0
+
+67. PARTIAL FUNCTION
+
+    - Means fixing some arguments if a function and returning a new function to take the remaining arguments
+
+    function multiply(x, y, z) {
+        console.log(x * y * z)
+    }
+
+    function multiplyByTwo(x,y) {
+        return multiply(2, x, y);
+    }
+
+    function partial(func, ...fixedArgs) {
+        return function(...remainingArgs) {
+            return func(...fixedArgs, ...remainingArgs);
+        }
+    }
