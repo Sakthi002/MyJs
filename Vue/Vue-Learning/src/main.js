@@ -9,7 +9,9 @@ import App from './App.vue'
 // import ListRendering from './components/ListRendering.vue';
 // import EventHandling from './components/EventHandling.vue';
 // import FormInputs from './components/FormInputs.vue';
-import WatchComponent from './components/WatchComponent.vue';
+// import WatchComponent from './components/WatchComponent.vue';
+// import WatchEffect from './components/WatchEffect.vue';
+// import LifeCycle from './components/LifeCycle.vue';
 
 const app = createApp(App)
 // app.component('MyComponent', MyComponent);
@@ -21,5 +23,8 @@ const app = createApp(App)
 // app.component('ListRendering', ListRendering)
 // app.component('EventHandling', EventHandling)
 // app.component('FormInputs', FormInputs)
-app.component('WatchComponent', WatchComponent)
+// app.component('WatchComponent', WatchComponent)
+// app.component('WatchEffect', WatchEffect)
+// app.component("LifeCycle", LifeCycle);
+
 app.mount('#app');

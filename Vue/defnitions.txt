@@ -557,11 +557,46 @@
 28. DEEP AND IMMEDIATE OPTIONS IN WATCHER
     - deep
         - If true, the watcher will also watch for changes in nested properties of the watched object.
-        - Example
-        const obj = reactive({ nested: { count: 0 } })
-        watch(() => obj.nested, (newNested, oldNested) => {
-            console.log(`Nested changed from ${JSON.stringify(oldNested)} to ${JSON.stringify(newNested)}`)
-        }, { deep: true })
+        
+            const nestObj = reactive({ count: { value: 10, name: 'test' }})
+
+            watch(nestObj, (newVal, oldVal) => {
+                console.log('watch(nestObj): fired', newVal.count.value, oldVal.count.value)
+            })
+
+            // Behavior:
+            //     ✅ Fires when you change nestObj.count.value
+            //     ✅ Fires when you change nestObj.count.name
+            //     ✅ Fires when you replace nestObj.count
+
+            // 👉 Why? Because passing a reactive object directly makes Vue treat it as a deep watch automatically.
+
+            watch(()=> nestObj, (newVal, oldVal) => {
+                console.log('watch(() => nestObj): fired', newVal.count.value, oldVal.count.value)
+            })
+
+            // Behavior:
+            //     ❌ Does not fire when you change nestObj.count.value
+            //     ❌ Does not fire when you change nestObj.count.name
+            //     ✅ Fires only if you replace the whole object:
+
+            // 👉 Why? Because here you’re watching the reference to nestObj. The reference doesn’t change when you mutate its properties.
+
+            watch(()=> nestObj, (newVal, oldVal) => {
+                console.log('watch(() => nestObj, deep: true): fired', newVal.count.value, oldVal.count.value)
+            }, { deep: true })
+
+            // Behavior:
+            //     ✅ Fires when you change nestObj.count.value
+            //     ✅ Fires when you change nestObj.count.name
+            //     ✅ Fires when you replace nestObj.count
+
+            // 👉 Same behavior as Case 1, but here you had to explicitly tell Vue to go deep.
+
+            // Watch a specific property - always be getter function
+            watch(() => nestObj.count.value, (newVal, oldVal) => {
+                console.log('watch(nestObj.count.value):', newVal, oldVal)
+            })
 
     - immediate
         - If true, the callback is called immediately with the current value of the watched property.
@@ -571,7 +606,234 @@
             console.log(`Count changed from ${oldValue} to ${newValue}`)
         }, { immediate: true })
 
+29. WATCHEFFECT && WATCHPOSTEFFECT
+    - watchEffect
+        - It runs the provided function immediately and tracks all reactive dependencies used inside the function.
+        - Whenever any of the tracked dependencies change, the function is re-executed.
+        - It does not provide access to previous values of the dependencies.
+        - Example
+        <script setup>
+            import { ref, watchEffect } from 'vue'
+            const count = ref(0)
+            watchEffect(() => {
+                console.log(`Count is: ${count.value}`)
+            })
+            function inc() { count.value++ }
+        </script>
+        <template>
+            <p>Count: {{ count }}</p>
+            <button @click="inc">+</button>
+        </template>
 
+    - watchPostEffect
+        - Similar to watchEffect, but the provided function is executed after the DOM has been updated.
+        - It is useful for performing side effects that depend on the updated DOM state.
+        - Example
+        <script setup>
+            import { ref, watchPostEffect } from 'vue'
+            const count = ref(0)
+            watchPostEffect(() => {
+                console.log(`Count is: ${count.value}`)
+                // Perform DOM-related side effects here
+            })
+            function inc() { count.value++ }
+        </script>
+        <template>
+            <p>Count: {{ count }}</p>
+            <button @click="inc">+</button>
+        </template>
 
+    - Key Differences
+        - Execution Timing: watchEffect runs immediately when defined and whenever its dependencies change, while watchPostEffect runs after the DOM has been updated.
+        - Use Cases: watchEffect is suitable for general reactive side effects, while watchPostEffect is ideal for side effects that depend on the updated DOM state.
+        - Dependency Tracking: Both functions automatically track reactive dependencies used within their provided functions.
 
+    - Choosing Between Them
+        - Use watchEffect when you need to react to changes in reactive data and perform side effects that do not depend on the DOM state.
+        - Use watchPostEffect when your side effects require access to the updated DOM, such as manipulating DOM elements or measuring their dimensions after a change.
 
+    - Summary
+        - Both watchEffect and watchPostEffect are powerful tools for managing side effects in Vue 3 applications. 
+        - The choice between them depends on whether your side effects need to interact with the DOM after it has been updated or can be executed immediately upon dependency changes.
+
+30. LIFECYCLE HOOKS
+    - Lifecyscle hooks allows us to run code at specific stages of a component's lifecycle.
+    - We can have multiple lifecycle hooks of the same type in a component.
+
+    1. onBeforeMount
+        - Runs before the component is mounted to the DOM.
+        - We can use this hook to perform any setup or initialization that needs to happen before the component is rendered.
+        - DOM is not yet available.
+
+    2. onMounted
+        - Runs after the component is mounted to the DOM.
+        - We can use this hook to perform any setup or initialization that needs to happen after the component is rendered.
+        - DOM is available.
+    
+    3. onBeforeUnmount
+        - Runs before the component is unmounted from the DOM.
+        - We can use this hook to perform any cleanup or teardown that needs to happen before the component is removed from the DOM.
+        - DOM is still available.
+
+    4. onUnmounted
+        - Runs after the component is unmounted from the DOM.
+        - We can use this hook to perform any cleanup or teardown that needs to happen after the component is removed from the DOM.
+        - DOM is not available.
+
+    5. onBeforeUpdate
+        - Runs before the component is updated.
+        - DOM is still available.   
+
+    6. onUpdated
+        - Runs after the component is updated.
+        - DOM is available.
+
+31. TEMPLATE REFS
+    - Template refs allows us to access DOM elements or component instances directly in the script.
+    - We can create a template ref by adding the `ref` attribute to an element or component in the template.
+    - We can access the ref in the script using the `ref` function from Vue.
+    - Example
+    <template>
+        <input ref="inputRef" type="text" />
+        <button @click="focusInput">Focus Input</button>
+    </template>
+    <script setup>
+        import { ref } from 'vue'
+        const inputRef = ref(null)
+        function focusInput() {
+            inputRef.value.focus()
+        }
+    </script>
+    
+    - Function Ref
+        - <div :ref="(el) => updateRef(el)"> Another Div</div>
+
+32. DEFINEEXPOSE
+    - By default, only the props and events of a child component are accessible to the parent component.
+    - If we want to expose additional properties or methods from the child component to the parent component, we can use `defineExpose`.
+    - We can define the properties or methods we want to expose in an object passed to `defineExpose`.
+    - Example
+    // ChildComponent.vue
+    <template>
+        <div>Child Component</div>
+    </template>
+    <script setup>
+        import { ref, defineExpose } from 'vue'
+        const count = ref(0)
+        function increment() {
+            count.value++
+        }
+        defineExpose({
+            count,
+            increment
+        })
+    </script>
+
+    // ParentComponent.vue
+    <template>
+        <ChildComponent ref="childRef" />
+        <p>Count from Child: {{ childRef.count }}</p>
+        <button @click="childRef.increment()">Increment Child Count</button>
+    </template>
+    <script setup>
+        import { ref } from 'vue'
+        import ChildComponent from './ChildComponent.vue'
+        const childRef = ref(null)
+    </script>
+
+    - In this example, the `ChildComponent` exposes its `count` property and `increment` method using `defineExpose`. 
+    - The `ParentComponent` can then access these exposed members through the `childRef` reference.
+
+33. COMPONENTS REGISTARTION AND ITS DRAWBACKS
+    - Local Registration
+        - We can register a component locally within another component using the `components` option.
+        - The registered component is only available within the parent component.
+        - Example
+        <script setup>
+            import ChildComponent from './ChildComponent.vue'
+        </script>
+        <template>
+            <ChildComponent />
+        </template>
+        - Drawbacks
+            - We need to import and register the component in every parent component where we want to use it.
+            - Can lead to repetitive code if the same component is used in multiple places.
+
+    - Global Registration
+        - We can register a component globally using the `app.component` method on the Vue application instance.
+        - The registered component is available throughout the entire application without needing to import or register it in each parent component.
+        - Example
+        import { createApp } from 'vue'
+        import App from './App.vue'
+        import GlobalComponent from './GlobalComponent.vue'
+
+        const app = createApp(App)
+        app.component('GlobalComponent', GlobalComponent)
+        app.mount('#app')
+        - Drawbacks
+            - Can lead to naming conflicts if multiple components have the same name.
+            - Makes it harder to track where a component is being used, as it can be used anywhere in the application.
+            - Tree-shaking may not work effectively, potentially increasing the bundle size if many global components are registered but not used.
+
+    - Best Practices
+        - Use local registration for components that are only used in a few places or are specific to a particular feature or module.
+        - Use global registration for components that are widely used across the application, such as UI components (buttons, modals, etc.) or layout components (headers, footers, etc.).
+        - Consider using a naming convention for globally registered components to avoid naming conflicts (e.g., prefixing with "App" or "Ui").
+
+34. TREE-SHAKING AND CODE SPLITTING
+    - Tree-shaking is a technique used to eliminate unused code from the final bundle, reducing its size and improving performance.
+    - Code splitting is a technique used to split the application into smaller chunks that can be loaded on demand, improving the initial load time of the application.
+    - Both techniques are important for optimizing the performance of Vue applications, especially as they grow in size and complexity.
+
+    LOCAL REGISTRATION
+        - Local registration can benefit from tree-shaking because only the components that are imported and used in a parent component are included in the final bundle.
+        - If a component is not imported or used, it will be eliminated from the bundle during the tree-shaking process.
+
+    GLOBAL REGISTRATION
+        - Global registration can hinder tree-shaking because all globally registered components are included in the final bundle, regardless of whether they are used or not.
+        - This can lead to larger bundle sizes and slower load times, especially if many global components are registered but not used.
+
+    CODE SPLITTING
+        - Code splitting can be achieved using dynamic imports with local registration.
+        - By using dynamic imports, we can load components only when they are needed, reducing the initial load time of the application.    
+
+35. PROPS
+    - Props are used to pass data from a parent component to a child component.
+    - We can define props in a child component using the `defineProps` function from Vue.
+    - We can specify the type, default value, validation, and whether the prop is required or not.
+    - props are reactive, meaning that if the parent component updates the prop value, the child component will automatically re-render with the new value.
+    - props values are immutable in the child component, meaning that we should not modify the prop value directly in the child component.
+    - If we trying to primitive value directly in the child component, it will show a warning in the console.
+    - If we want to modify the prop value in the child component, we should create a local copy of the prop value using `ref` or `reactive`.
+    - In case of arrays and objects, we can modify the internal properties of props , but it updates the parent component as well, which can lead to unexpected behavior.
+    - Example
+    const props = defineProps({
+        propDetails: Object,
+        changeTitle: { type: Function, default: () => {} },
+        pageTitle: { type: String, default: "Blogs" },
+        postId: { type: [String, Number], required: true },
+        postType: { type: String, validator : (value) => ['story', 'news'].includes(value)}
+    })
+
+36. EMITS
+    - Emits are used to send events from a child component to a parent component.
+    - We can define emits in a child component using the `defineEmits` function from Vue.
+    - We can specify the event names and their payload types.
+    - We can emit events using the `emit` function returned by `defineEmits`.
+    - Example
+    const emit = defineEmits(['update', 'delete'])
+
+    function updateItem(item) {
+        emit('update', item)
+    }
+
+    function deleteItem(itemId) {
+        emit('delete', itemId)
+    }
+
+    - We can also validate the payload of the emitted events by defining the event names and their payload types in an object.
+    - Example
+    const emit = defineEmits({
+        update: (item) => typeof item === 'object' && item !== null,
+        delete: (itemId) => typeof itemId === 'string' || typeof itemId === 'number'
+    })

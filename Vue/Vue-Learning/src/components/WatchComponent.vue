@@ -112,19 +112,59 @@
 
     // We can directly watch reactive object
     // issue with thsi is - we cant get old values as an obj pointed to a same memory
-    watch(obj, (newObj, oldObj) => {
-        console.log(`new obj ${newObj.count} old obj ${oldObj.count}`);
-    })
+    // watch(obj, (newObj, oldObj) => {
+    //     console.log(`new obj ${newObj.count} old obj ${oldObj.count}`);
+    // })
 
-    const nestObj = reactive({ count: { value : 10, name: 'test' }});
+    // const nestObj = reactive({ count: { value : 10, name: 'test' }});
     
     // Nested Obj
-    // watch(nestObj, (newNest, oldNest) => {
-    //     console.log(`new nest obj ${newNest.count.value} old nest obj ${oldNest.count.value}`);
+    // watch(nestObj.count, (newNest, oldNest) => {
+    //     console.log(`new nest obj ${newNest.value} old nest obj ${oldNest.value}`);
     // })
 
     // Nested Obj properties
-    watch(nestObj.count, (newNest, oldNest) => {
-        console.log(`new nest count ${newNest.value} old nest obj ${oldNest.value}`);
+    // watch(nestObj.count, (newNest, oldNest) => {
+    //     console.log(`new nest count ${newNest.value} old nest obj ${oldNest.value}`);
+    // })
+
+    const nestObj = reactive({ count: { value: 10, name: 'test' }})
+
+    watch(nestObj, (newVal, oldVal) => {
+        console.log('watch(nestObj): fired', newVal.count.value, oldVal.count.value)
+    })
+
+    // Behavior:
+    //     ✅ Fires when you change nestObj.count.value
+    //     ✅ Fires when you change nestObj.count.name
+    //     ✅ Fires when you replace nestObj.count
+
+    // 👉 Why? Because passing a reactive object directly makes Vue treat it as a deep watch automatically.
+
+    watch(()=> nestObj, (newVal, oldVal) => {
+        console.log('watch(() => nestObj): fired', newVal.count.value, oldVal.count.value)
+    })
+
+    // Behavior:
+    //     ❌ Does not fire when you change nestObj.count.value
+    //     ❌ Does not fire when you change nestObj.count.name
+    //     ✅ Fires only if you replace the whole object:
+
+    // 👉 Why? Because here you’re watching the reference to nestObj. The reference doesn’t change when you mutate its properties.
+
+    watch(()=> nestObj, (newVal, oldVal) => {
+        console.log('watch(() => nestObj, deep: true): fired', newVal.count.value, oldVal.count.value)
+    }, { deep: true })
+
+    // Behavior:
+    //     ✅ Fires when you change nestObj.count.value
+    //     ✅ Fires when you change nestObj.count.name
+    //     ✅ Fires when you replace nestObj.count
+
+    // 👉 Same behavior as Case 1, but here you had to explicitly tell Vue to go deep.
+
+    // Watch a specific property - always be getter function
+    watch(() => nestObj.count.value, (newVal, oldVal) => {
+        console.log('watch(nestObj.count.value):', newVal, oldVal)
     })
 </script>
