@@ -1298,3 +1298,26 @@ ILLEGAL SHADOWING
             return func(...fixedArgs, ...remainingArgs);
         }
     }
+
+68. STOPPROPOGATION VS STOPIMMEDIATEPROPOGATION
+
+    - stopPropagation
+        - Stops the event from bubbling up or capturing down the DOM tree.
+        - Other event listeners on the same element will still execute.
+
+    - stopImmediatePropagation
+        - Stops the event from bubbling up or capturing down the DOM tree.
+        - Prevents any other event listeners on the same element from executing.
+
+        element.addEventListener('click', function(e) {
+            e.stopPropagation();
+            // e.stopImmediatePropagation();
+            console.log('First listener');
+        });
+
+        element.addEventListener('click', function() {
+            console.log('Second listener');
+        });
+
+        - With stopPropagation: "First listener" then "Second listener"
+        - With stopImmediatePropagation: Only "First listener"

@@ -327,3 +327,251 @@
     </template>
     <script setup>
     </script>
+
+19. CONDITIONAL RENDERING
+    - We can conditionaly render elements by using `v-if`, `v-else-if`, `v-else` and `v-show` directives.
+    - v-if
+        - Renders the element only if the condition is true.
+        - The element and its children and event listeners are destroyed and re-created when the condition changes.
+        - We can use this in <template> or <component> tags.
+        - Will not render the element if the condition is false.
+    - v-else-if
+        - Renders the element if the previous v-if or v-else-if condition is false and the current condition is true.
+    - v-else
+        - Renders the element if all previous v-if and v-else-if conditions are false.
+    - v-show
+        - Toggles the visibility of the element by changing its CSS `display` property.
+        - The element and its children and event listeners are always present in the DOM, but hidden when the condition is false.
+        - We can use this only in normal HTML tags. In <template> or <component> tags it will show a warning in the console.
+        - Always renders the element, even if the condition is false.
+
+20. LIST RENDERING
+    - We can render a list of items using `v-for` directive.
+    - v-for
+        - Syntax: v-for="(item, index) in items" or v-for="item in items"
+        - item: The current item in the iteration.
+        - index: The index of the current item in the iteration (optional).
+        - items: The array or object to iterate over.
+        - We should provide a unique `key` attribute for each item to help Vue track changes and optimize rendering.
+        - Example
+        <script setup>
+            import { ref } from 'vue'
+            const items = ref(['Item 1', 'Item 2', 'Item 3'])
+        </script>
+        <template>
+            <ul>
+                <li v-for="(item, index) in items" :key="index">{{ item }}</li>
+            </ul>
+        </template>
+
+21. IN-PLACE PATCH STRATEGY
+    - If we are rendering a list without key attribute, Vue uses in-place patch strategy.
+    - In-place patch strategy means Vue will try to reuse the existing DOM elements and update their content.
+    - let say if we are rendering a list with li elements without key attribute - when we are updating a list it will not create new li elements, it will reuse the existing li element and just update the value inside it.
+    - This can lead to unexpected behavior when the list is modified (e.g., items are added, removed, or reordered).
+
+    ✅ Rule of Thumb for real apps:
+    Always use a unique ID key (from DB, UUID, timestamp, etc.), never the array index, unless the list is 100% static.
+
+22. EVENT HANDLING
+    - We can listen to events using `v-on` directive or `@` shorthand.
+    - v-on:click="handleClick" or @click="handleClick"
+    - We can pass arguments to the event handler using inline statements.
+        - @click="handleClick(arg1, arg2)"
+    - We can use `$event` to access the native event object.
+        - @click="handleClick($event)"
+    - We can use event modifiers to modify the behavior of the event listener.
+        - .stop - Stops the event from propagating (bubbling) up the DOM tree.
+            - @click.stop="handleClick"
+        - .prevent - Prevents the default action of the event.
+            - @submit.prevent="handleSubmit"
+        - .capture - Adds the event listener in capture mode.
+            - @click.capture="handleClick"
+        - .once - The event will be triggered at most once.
+            - @click.once="handleClick"
+
+23. .SELF MODIFIER
+    - The .self modifier allows the event to be triggered only when the event target is the element itself, not its children.
+    - Example
+    <template>
+        <div @click.self="handleClick" style="padding: 20px; border: 1px solid black;">
+            Click me (only if you click on the box, not on the text)
+            <p>Some text inside the box</p>
+        </div>
+    </template>
+    <script setup>
+        function handleClick() {
+            alert('Box clicked!')
+        }
+    </script>
+    - In this example, clicking on the div will trigger the handleClick method, but clicking on the p element inside the div will not trigger it.
+
+24. FORM INPUT BINDING
+    - We can bind form inputs using `v-model` directive.
+    - v-model creates a two-way binding between the form input and the data property.
+    - input (text, password, email, etc.)
+        - for input fields v-model is the combination of :value and @input
+            - <input v-model="text" />
+            - is equivalent to
+            - <input :value="text" @input="text = $event.target.value" />
+    - textarea
+        - for textarea v-model is the combination of :value and @input
+            - <textarea v-model="message"></textarea>
+    - checkbox
+        - for checkbox v-model is the combination of :checked and @change
+        - <input type="checkbox" v-model="isChecked" />
+            - is equivalent to
+            - <input type="checkbox" :checked="isChecked" @change="isChecked = $event.target.checked" />
+        - We can set values for checkbox using `true-value` and `false-value` attributes.
+            - <input type="checkbox" v-model="isChecked" true-value="yes" false-value="no" />
+            - is equivalent to
+            - <input type="checkbox" :checked="isChecked === 'yes'" @change="isChecked = $event.target.checked ? 'yes' : 'no'" />
+        - for multiple checkboxes bound to an array
+            - <input type="checkbox" v-model="selectedOptions" value="Option 1" />
+            - <input type="checkbox" v-model="selectedOptions" value="Option 2" />
+            - is equivalent to
+            - <input type="checkbox" :checked="selectedOptions.includes('Option 1')" @change="updateSelectedOptions('Option 1', $event.target.checked)" />
+            - <input type="checkbox" :checked="selectedOptions.includes('Option 2')" @change="updateSelectedOptions('Option 2', $event.target.checked)" />
+            - function updateSelectedOptions(option, isChecked) {
+                if (isChecked) {
+                    selectedOptions.push(option)
+                } else {
+                    const index = selectedOptions.indexOf(option)
+                    if (index > -1) {
+                        selectedOptions.splice(index, 1)
+                    }
+                }
+            }
+    - radio
+        - for radio buttons v-model is the combination of :checked and @change
+            - <input type="radio" v-model="picked" value="Option 1" />
+            - <input type="radio" v-model="picked" value="Option 2" />
+            - is equivalent to
+            - <input type="radio" :checked="picked === 'Option 1'" @change="picked = 'Option 1'" />
+            - <input type="radio" :checked="picked === 'Option 2'" @change="picked = 'Option 2'" />
+    - select
+        - for select dropdown v-model is the combination of :value and @change
+            - <select v-model="selected">
+                <option value="Option 1">Option 1</option>
+                <option value="Option 2">Option 2</option>
+            </select>
+            - is equivalent to
+            - <select :value="selected" @change="selected = $event.target.value">
+                <option value="Option 1">Option 1</option>
+                <option value="Option 2">Option 2</option>
+            </select>
+
+25. MODIFIERS IN V-MODEL
+    - We can use modifiers with v-model to modify its behavior.
+    - .lazy
+        - Updates the data property only when the input loses focus (on blur event).
+        - <input v-model.lazy="text" />
+    - .number
+        - Converts the input value to a number before updating the data property.
+        - <input v-model.number="age" />
+    - .trim
+        - Trims whitespace from the input value before updating the data property.
+        - <input v-model.trim="name" />
+    - Example
+    <script setup>
+        import { ref } from 'vue'
+        const text = ref('')
+        const age = ref(0)
+        const name = ref('')
+    </script>
+    <template>
+        <input v-model.lazy="text" placeholder="Lazy Input" />
+        <input v-model.number="age" placeholder="Number Input" />
+        <input v-model.trim="name" placeholder="Trim Input" />
+        <p>Text: {{ text }}</p>
+        <p>Age: {{ age }}</p>
+        <p>Name: {{ name }}</p>
+    </template>
+
+26. WATCHER
+    - We can watch the changes in the data properties using `watch` function from Vue.
+    - It allows us to perform side effects when the watched property changes.
+    - Example
+    <script setup>
+        import { ref, watch } from 'vue'
+        const count = ref(0)
+        watch(count, (newValue, oldValue) => {
+            console.log(`Count changed from ${oldValue} to ${newValue}`)
+        })
+        function inc() { count.value++ }
+    </script>
+    <template>
+        <p>Count: {{ count }}</p>
+        <button @click="inc">+</button>
+    </template>
+
+    - It takes three arguments: source to watch, callback function and options (optional).
+        - source: The data property or a function that returns the data property to watch.
+        - callback: A function that is called when the watched property changes. It receives the new value and the old value as arguments.
+        - options: An optional object that can contain the following properties:
+            - immediate: If true, the callback is called immediately with the current value of the watched property.
+            - deep: If true, the watcher will also watch for changes in nested properties of the watched object.
+
+27. SOURCE TYPES IN WATCHER
+    - We can watch different types of sources using the `watch` function.
+    - Ref
+        - We can watch a ref property directly.
+        - Example
+        const count = ref(0)
+        watch(count, (newValue, oldValue) => {
+            console.log(`Count changed from ${oldValue} to ${newValue}`)
+        })
+    - Getter Function
+        - We can watch a getter function that returns a value derived from one or more reactive properties.
+        - Example
+        const count = ref(0)
+        const doubleCount = computed(() => count.value * 2)
+        watch(doubleCount, (newValue, oldValue) => {
+            console.log(`Double Count changed from ${oldValue} to ${newValue}`)
+        })
+    - Multiple Sources
+        - We can watch multiple sources by passing an array of refs or getter functions.
+        - Example
+        const x = ref(0)
+        const y = ref(0)
+        watch([x, y], ([newX, newY], [oldX, oldY]) => {
+            console.log(`x changed from ${oldX} to ${newX}, y changed from ${oldY} to ${newY}`)
+        })
+    - Reactive Object
+        - We can watch a reactive object to track changes in its properties.
+        - Issue with this is we cant get previous value of the object.
+        - Both newObj and oldObj will point to the same object in memory.
+        - Example
+        const obj = reactive({ count: 0 })
+        watch(obj, (newObj, oldObj) => {
+            console.log(`Obj changed from ${JSON.stringify(oldObj)} to ${JSON.stringify(newObj)}`)
+        });
+
+        - We cant directly watch object properties. We need to use getter function.
+        - Example
+        const obj = reactive({ count: 0 })
+        watch(() => obj.count, (newCount, oldCount) => {
+            console.log(`Count changed from ${oldCount} to ${newCount}`)
+        })
+
+28. DEEP AND IMMEDIATE OPTIONS IN WATCHER
+    - deep
+        - If true, the watcher will also watch for changes in nested properties of the watched object.
+        - Example
+        const obj = reactive({ nested: { count: 0 } })
+        watch(() => obj.nested, (newNested, oldNested) => {
+            console.log(`Nested changed from ${JSON.stringify(oldNested)} to ${JSON.stringify(newNested)}`)
+        }, { deep: true })
+
+    - immediate
+        - If true, the callback is called immediately with the current value of the watched property.
+        - Example
+        const count = ref(0)
+        watch(count, (newValue, oldValue) => {
+            console.log(`Count changed from ${oldValue} to ${newValue}`)
+        }, { immediate: true })
+
+
+
+
+
