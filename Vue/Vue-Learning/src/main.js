@@ -27,4 +27,5 @@ const app = createApp(App)
 // app.component('WatchEffect', WatchEffect)
 // app.component("LifeCycle", LifeCycle);
 
+app.provide('mainMessage', "Message From Main Script")
 app.mount('#app');

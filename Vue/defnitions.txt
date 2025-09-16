@@ -837,3 +837,555 @@
         update: (item) => typeof item === 'object' && item !== null,
         delete: (itemId) => typeof itemId === 'string' || typeof itemId === 'number'
     })
+
+37. V-MODEL ON COMPONENTS
+    - We can use `v-model` directive on custom components to create a two-way binding between a parent component and a child component.
+    - By default, `v-model` uses the `modelValue` prop and the `update:modelValue` event for binding.
+    - In the child component, we need to define the `modelValue` prop using `defineProps` and emit the `update:modelValue` event using `defineEmits`.
+    - Example
+    // ChildComponent.vue
+        <template>
+            <input :value="modelValue" @input="updateValue($event.target.value)" />
+        </template>
+        <script setup>
+            const props = defineProps({
+                modelValue: String
+            })
+            const emit = defineEmits(['update:modelValue'])
+            function updateValue(value) {
+                emit('update:modelValue', value)
+            }
+        </script>
+
+        // ParentComponent.vue
+        <template>
+            <ChildComponent v-model="text" />
+            <p>Text: {{ text }}</p>
+        </template>
+
+    - We can bind multiple `v-model` directives to a single component by using different prop and event names.
+    - We can customize the prop and event names used by `v-model` by using the `model` option in the child component.
+    - Example
+    // ChildComponent.vue
+        <template>  
+            <input :value="title" @input="updateTitle($event.target.value)" />
+            <textarea :value="content" @input="updateContent($event.target.value)"></textarea>
+        </template>
+        <script setup>
+            const props = defineProps({
+                title: String,
+                content: String
+            })
+            const emit = defineEmits(['update:title', 'update:content'])
+            function updateTitle(value) {
+                emit('update:title', value)
+            }
+            function updateContent(value) {
+                emit('update:content', value)
+            }
+        </script>
+        // ParentComponent.vue
+        <template>
+            <ChildComponent v-model:title="postTitle" v-model:content="postContent" />
+            <p>Title: {{ postTitle }}</p>
+            <p>Content: {{ postContent }}</p>
+        </template>
+        <script setup>
+            import { ref } from 'vue'
+            const postTitle = ref('')
+            const postContent = ref('')
+        </script>
+
+38. CUSTOM MODIFIERS IN V-MODEL
+    - We can create custom modifiers for `v-model` by defining a custom prop and event names in the child component.
+    - We can then use these custom prop and event names in the parent component with `v-model`.
+    - Vue’s v-model modifiers (.capitalize, .debounce, etc.) only work when a component is being used by a parent.
+    - Inside the same component, Vue doesn’t inject modelModifiers automatically (because there’s no parent binding).
+    - Example
+    // ChildComponent.vue
+        <script setup>
+            const props = defineProps({
+                title: { type: String, default: '' },
+                titleModifiers: { type: Object, default: () => {}}
+            })
+            const emit = defineEmits(['update:title']);
+            const update = (e) => {
+                let value = e.target.value;
+                if(props.titleModifiers['no-hyphens']) {
+                    value = value.split("-").join("");
+                }
+                emit('update:title', value)
+            }
+        </script>
+        <template>
+            <h1>Custom Input</h1>
+            <div>
+                <input type="text" name="title" id="title" :value="title" @input="update">
+            </div>
+        </template>
+    // ParentComponent.vue
+        <script setup>
+            import { ref } from 'vue'
+            import ChildComponent from './ChildComponent.vue'
+            const title = ref('');
+        </script>
+        <template>
+            <ChildComponent v-model:title.no-hyphens="title"/>
+            {{ title }}
+        </template>
+
+39. FALLTHROUGH ATTRIBUTES - ATTRIBUTES INHERITANCE
+    - If we are passing any attributes (class, id, style, events) to child component, if those are not defined as props or emits in the child component, 
+        those attributes will be added to the root element of the child component.
+    - This is known as "fallthrough attributes" or "attributes inheritance".
+    - It will merge the attributes with the root element of the child component. if same attribute is defined in both parent and child component, the value from the parent component will take precedence.
+    - click events will also be merged, both parent and child click events will be triggered.
+    - For nested components, the fallthrough attributes will be added to the root element of the outermost child component.
+    - Example
+    // ChildComponent.vue
+        <template>
+            <div>Child Component</div>
+        </template>
+        <script setup>
+        </script>
+    // ParentComponent.vue
+        <template>
+            <ChildComponent class="my-class" id="my-id" data-info="some-data" />
+        </template>
+        <script setup>
+            import ChildComponent from './ChildComponent.vue'
+        </script>
+    - In this example, the `class`, `id`, and `data-info` attributes will be added to the root `<div>` element of the `ChildComponent`.
+
+    - If the child component has multiple root elements, fallthrough attributes will not be added to any elements, and a warning will be shown in the console.
+    - If we want to add the attributes to a specific element in the child component, we can use `v-bind="$attrs"` on that element.
+    - Example
+    // ChildComponent.vue
+        <template>
+            <div v-bind="$attrs">Child Component</div>
+            <p>Another Element</p>
+        </template>
+        <script setup>
+        </script>
+    - In this example, the fallthrough attributes will be added to the `<div>` element, but not to the `<p>` element.
+
+40. DISABLE ATTRIBUTES INHERITANCE
+    - In vue 3 we can disable fallthrough attributes by setting `inheritAttrs` to false in the child component.
+    - Example
+    // ChildComponent.vue
+        <template>
+            <div>Child Component</div>
+        </template>
+        <script setup>
+            defineOptions({ inheritAttrs: false })
+        </script>
+    - In this example, the fallthrough attributes will not be added to any elements in the `ChildComponent`.
+
+41. USEATTRS
+    - We can access the fallthrough attributes in the child component using the `useAttrs` function from Vue.
+    - `useAttrs` returns a reactive object containing all the fallthrough attributes passed to the component.
+    - Example
+        <script setup>
+            import { useAttrs } from 'vue'
+            const attrs = useAttrs()
+        </script>
+
+42. SLOTS | NAMED SLOTS | SCOPED SLOTS
+    - Slots are used to pass content from a parent component to a child component.
+    - We can define slots in a child component using the `<slot>` element in the template.
+    - We can pass content to the slots in the parent component by placing the content between the opening and closing tags of the child component.
+    - Default Slot
+        - If we define a slot without a name, it is considered as the default slot.
+        - Example
+        // ChildComponent.vue
+            <template>
+                <div>
+                    <h2>Child Component</h2>
+                    <slot></slot>
+                </div>
+            </template>
+            <script setup>
+            </script>
+        // ParentComponent.vue
+            <template>
+                <ChildComponent>
+                    <p>This is some content for the default slot.</p>
+                </ChildComponent>
+            </template>
+            <script setup>
+                import ChildComponent from './ChildComponent.vue'
+            </script>
+
+    - Named Slots
+        - We can define multiple named slots in a child component by adding the `name` attribute to the `<slot>` element.
+        - We can pass content to named slots in the parent component by using the `v-slot` directive or the shorthand `#` syntax.
+        - Example
+        // ChildComponent.vue
+            <template>
+                <div>
+                    <h2>Child Component</h2>
+                    <slot name="header"></slot>
+                    <slot></slot> <!-- Default Slot -->
+                    <slot name="footer"></slot>
+                </div>
+            </template>
+            <script setup>
+            </script>
+        // ParentComponent.vue
+            <template>
+                <ChildComponent>
+                    <template #header>
+                        <h3>This is the header slot content.</h3>
+                    </template>
+
+                    <p>This is some content for the default slot.</p>
+
+                    <template v-slot:footer>
+                        <p>This is the footer slot content.</p>
+                    </template>
+                </ChildComponent>
+            </template>
+            <script setup>
+                import ChildComponent from './ChildComponent.vue'
+            </script>
+
+    - Scoped Slots
+        - Scoped slots allow us to pass data from a child component to a parent component through slots.
+        - We can define scoped slots in a child component by adding a `v-slot` directive with a scope variable to the `<slot>` element.
+        - We can access the scoped data in the parent component by using the scope variable in the `v-slot` directive or the shorthand `#` syntax.
+        - Example
+        // ChildComponent.vue
+            <template>
+                <div>
+                    <h2>Child Component</h2>
+                    <slot :message="message"></slot>
+                </div>
+            </template>
+            <script setup>
+                import { ref } from 'vue'
+                const message = ref('Hello from Child Component!')
+            </script>
+        // ParentComponent.vue
+            <template>
+                <ChildComponent>
+                    <template #default="{ message }">
+                        <p>{{ message }}</p>
+                    </template>
+                </ChildComponent>
+            </template>
+            <script setup>
+                import ChildComponent from './ChildComponent.vue'
+            </script>
+    - In this example, the `ChildComponent` defines a scoped slot that passes a `message` variable to the parent component. 
+
+43. PROP DRILLING
+    - Prop drilling is the process of passing data from a parent component to a child component through multiple levels of nested components.
+    - It can lead to code that is hard to maintain and understand, especially when the data needs to be passed through many levels of components.
+    - To avoid prop drilling, we can use state management libraries like Vuex or Pinia, or we can use the provide/inject API in Vue.
+    - Example of prop drilling
+    // GrandParentComponent.vue
+        <template>
+            <ParentComponent :data="data" />
+        </template>
+        <script setup>
+            import { ref } from 'vue'
+            import ParentComponent from './ParentComponent.vue'
+            const data = ref('Some data')
+        </script>
+    // ParentComponent.vue
+        <template>
+            <ChildComponent :data="data" />
+        </template>
+        <script setup>
+            import ChildComponent from './ChildComponent.vue'
+            const props = defineProps({
+                data: String
+            })
+        </script>
+    // ChildComponent.vue
+        <template>
+            <p>{{ data }}</p>
+        </template>
+        <script setup>
+            const props = defineProps({
+                data: String
+            })
+        </script>
+
+44. PROVIDE / INJECT
+    - The provide/inject API allows us to share data between a parent component and its descendants without having to pass the data through multiple levels of components.
+    - We can use the `provide` function in the parent component to provide data to its descendants.
+    - We can use the `inject` function in the descendant components to access the provided data.
+    - We can provide any type of data, including primitive values, objects, and functions.
+    - The provided data is reactive, meaning that if the parent component updates the provided data, the descendant components will automatically re-render with the new value.
+    - The provided data is not limited to direct children; it can be accessed by any descendant component in the component tree.
+    - We can provide data from app level using `app.provide` method, and we can inject that data in any component in the application.
+    - Example
+    // ParentComponent.vue
+        <template>
+            <ChildComponent />
+        </template>
+        <script setup>
+            import { provide } from 'vue'
+            import ChildComponent from './ChildComponent.vue'
+            const data = 'Some data'
+            provide('data', data)
+        </script>
+    // ChildComponent.vue
+        <template>
+            <GrandChildComponent />
+        </template>
+        <script setup>
+            import GrandChildComponent from './GrandChildComponent.vue'
+        </script>
+    // GrandChildComponent.vue
+        <template>
+            <p>{{ data }}</p>
+        </template>
+        <script setup>
+            import { inject } from 'vue'
+            const data = inject('data')
+        </script>
+
+45. DEFINEASYNCCOMPONENT
+    - We can define async components using the `defineAsyncComponent` function from Vue.
+    - It allows us to load components lazily, which can improve the initial load time of the application.
+    - We can provide a factory function that returns a promise that resolves to the component definition.
+    - We can also provide options for loading and error states, as well as a timeout for loading the component.
+    - Example
+    <script setup>
+        import { defineAsyncComponent } from 'vue'
+        const AsyncComponent = defineAsyncComponent(() => import('./AsyncComponent.vue'))
+        const AsyncTodoComponent = defineAsyncComponent({
+            loader: () => {
+                return new Promise(function (resolve, reject) {
+                    setTimeout(() => {
+                        resolve(import ('./TodoList.vue'))
+                    }, 3000);
+                })
+            },
+            loadingComponent: Loader,
+            errorComponent: Error
+        })
+    </script>
+    <template>
+        <AsyncComponent />
+        <AsyncTodoComponent />
+    </template>
+
+46. COMPOSABLES
+    - Composables are reusable functions that encapsulate logic and state, allowing us to share functionality across multiple components.
+    - We can create composables by defining a function that uses Vue's reactivity system (e.g., `ref`, `reactive`, `computed`, `watch`, etc.) and returns the reactive state and methods.
+    - We can then import and use the composable function in any component where we need the shared functionality.
+    - Composables help to keep our components clean and focused on their specific responsibilities, while also promoting code reuse and maintainability.
+    - Example
+    // useCounter.js
+        import { ref } from 'vue'
+        export function useCounter() {
+            const count = ref(0)
+            function increment() {
+                count.value++
+            }
+            function decrement() {
+                count.value--
+            }
+            return {
+                count,
+                increment,
+                decrement
+            }
+        }
+    // CounterComponent.vue
+        <template>
+            <p>Count: {{ count }}</p>
+            <button @click="decrement">-</button>
+            <button @click="increment">+</button>
+        </template>
+        <script setup>
+            import { useCounter } from './useCounter.js'
+            const { count, increment, decrement } = useCounter()
+        </script>
+    
+    - We can also create composables that accept parameters to customize their behavior.
+    - Example
+    // useFetch.js
+        import { ref } from 'vue'
+        export function useFetch(url) {
+            const data = ref(null)
+            const error = ref(null)
+            const loading = ref(false)
+            async function fetchData() {
+                loading.value = true
+                try {
+                    const response = await fetch(url)
+                    data.value = await response.json()
+                } catch (err) {
+                    error.value = err
+                } finally {
+                    loading.value = false
+                }
+            }
+            return {
+                data,
+                error,
+                loading,
+                fetchData
+            }
+        }
+    // FetchComponent.vue
+        <template>
+            <div v-if="loading">Loading...</div>
+            <div v-else-if="error">Error: {{ error.message }}</div>
+            <div v-else-if="data">{{ data }}</div>
+            <button @click="fetchData">Fetch Data</button>
+        </template>
+        <script setup>
+            import { useFetch } from './useFetch.js'
+            const { data, error, loading, fetchData } = useFetch('https://api.example.com/data')
+        </script>   
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+// SUSPENSE
+
+//////// COMMON ISSUES AND BEST PRACTICES
+    - MUTATING PROPS
+        - Props are meant to be immutable in the child component. 
+        - If we need to modify a prop value, we should create a local copy using `ref` or `reactive`.
+        - Example
+        const props = defineProps({
+            initialCount: { type: Number, required: true }
+        })
+        const count = ref(props.initialCount) // Create a local copy
+        function increment() {
+            count.value++
+        }
+    - KEY ATTRIBUTE IN LIST RENDERING
+        - When rendering lists using `v-for`, we should always provide a unique `key` attribute to each item.
+        - This helps Vue to efficiently update the DOM when the list changes.
+        - Example
+        <div v-for="item in items" :key="item.id">
+            {{ item.name }}
+        </div>
+    - AVOIDING SIDE EFFECTS IN COMPUTED PROPERTIES
+        - Computed properties should be pure functions that only depend on reactive data.
+        - We should avoid performing side effects (like API calls or DOM manipulations) inside computed properties.
+        - If we need to perform side effects, we should use watchers or lifecycle hooks instead.
+    - USING WATCHERS JUDICIOUSLY
+        - While watchers are powerful, we should use them judiciously.
+        - Overusing watchers can lead to complex and hard-to-maintain code.
+        - We should prefer computed properties for deriving values from reactive data whenever possible.
+    - CLEANING UP SIDE EFFECTS
+        - When using watchers or lifecycle hooks to perform side effects, we should ensure that we clean up any resources (like event listeners or timers) when the component is unmounted.
+        - We can do this in the `onBeforeUnmount` or `onUnmounted` lifecycle hooks.
+    - PERFORMANCE OPTIMIZATIONS
+        - We should be mindful of performance when working with large datasets or complex components.
+        - Techniques like lazy loading, code splitting, and optimizing reactivity can help improve performance.
+    - DEBUGGING TOOLS
+        - We can use Vue Devtools to inspect the component hierarchy, state, and events in our Vue applications.
+        - This can help us identify and fix issues more easily.
+    - COMMON PITFALLS
+        - Be aware of common pitfalls like infinite loops in watchers, incorrect usage of `this` in composition API, and misunderstanding of reactivity principles.
+        - Always refer to the official Vue documentation for best practices and guidelines.
+
+/////// ACCESSABILITY
+    - ACCESSABILITY is important for making our applications usable by people with disabilities.
+    - We should follow best practices for accessibility, such as using semantic HTML, providing alternative text for images, and ensuring that our applications are navigable using a keyboard.
+    - We can use tools like axe or Lighthouse to audit the accessibility of our applications and identify areas for improvement.
+    - We should also consider accessibility when designing our components and user interfaces.
+    - Vue provides some built-in directives and components to help with accessibility, such as `v-focus` and `aria-*` attributes.
+    - We should also be mindful of color contrast and font sizes to ensure that our applications are readable by all users.
+    - Testing with screen readers and other assistive technologies can help us identify accessibility issues and improve the user experience for all users.
+
+/////// COMMON WARNINGS AND ERRORS
+    - REACTIVE WARNINGS
+        - Avoid mutating props directly in child components. Create local copies instead.
+        - Ensure that reactive data is properly initialized to avoid undefined or null values.
+        - Use unique keys in `v-for` loops to help Vue track elements efficiently.
+    - PERFORMANCE WARNINGS
+        - Be cautious with deep watchers as they can lead to performance issues. Use them only when necessary.
+        - Avoid unnecessary re-renders by using computed properties instead of methods in templates.
+        - Limit the number of reactive dependencies in computed properties to improve performance.
+    - DEPLOYMENT WARNINGS
+        - Ensure that the production build is optimized by using tools like Webpack or Vite.
+        - Check for unused dependencies and remove them to reduce bundle size.
+        - Verify that environment variables are correctly set for different deployment environments.
+    - COMMON ERRORS
+        - Ensure that all required props are passed to child components to avoid runtime errors.
+        - Handle asynchronous operations properly to avoid unhandled promise rejections.
+        - Use try-catch blocks around code that may throw errors, especially in lifecycle hooks and watchers.
+        - Validate data types of props and emitted events to prevent type-related errors.
+    - DEBUGGING TIPS
+        - Use Vue Devtools to inspect component state, props, and events.
+        - Check the console for warnings and errors during development.
+        - Write unit tests for components to catch issues early in the development process.
+    - COMMON WARNINGS
+        - MUTATING A PROP DIRECTLY
+        - NON-UNIQUE KEYS IN V-FOR
+        - MISSING KEY ATTRIBUTE
+        - UNHANDLED PROMISE REJECTION
+        - DEPENDENCY CYCLE DETECTED
+        - INVALID EVENT HANDLER
+        - AVOID USING V-IF WITH V-FOR ON THE SAME ELEMENT
+        - USING V-HTML CAN LEAD TO XSS VULNERABILITIES
+        - WATCHER CALLBACKS SHOULD NOT MODIFY THE WATCHED SOURCE
+        - COMPUTED PROPERTIES SHOULD NOT HAVE SIDE EFFECTS
+        - AVOID USING INDEX AS KEY IN V-FOR
+        - ENSURE ALL REQUIRED PROPS ARE PROVIDED
+        - AVOID DEEP WATCHERS UNLESS NECESSARY
+        - AVOID COMPLEX EXPRESSIONS IN TEMPLATES
+        - USE VUE DEVTOOLS FOR DEBUGGING
+        - CHECK FOR UNUSED VARIABLES OR IMPORTS
+        - ENSURE PROPER CLEANUP IN LIFECYCLE HOOKS
+        - AVOID MUTATING REACTIVE DATA OUTSIDE OF REACTIVE CONTEXTS
+        - USE TRY-CATCH FOR ASYNC OPERATIONS
+        - VALIDATE PROP TYPES AND EVENT PAYLOADS
+        - OPTIMIZE PERFORMANCE WITH COMPUTED PROPERTIES
+        - ENSURE PRODUCTION BUILD IS OPTIMIZED
+        - CHECK FOR ACCESSIBILITY ISSUES
+        - TEST WITH SCREEN READERS AND ASSISTIVE TECHNOLOGIES
+        - FOLLOW BEST PRACTICES FOR ACCESSIBILITY
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // HYDRATION WARNINGS
+
+    // SSR
+
+    // WEB ACCESSABILITY
