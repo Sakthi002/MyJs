@@ -1,12 +1,12 @@
-import { ref } from "vue";
+import { ref, unref, watch } from "vue";
 
 export function useFetch(url, options = {}, autoFetch = true, delay = 0) {
-
+    
     const loading = ref(false);
     const error = ref(null);
     const data = ref(null);
 
-    const fetchData = async () => {
+    const fetchData = async (urlValue) => {
 
         loading.value = true;
         error.value = null;
@@ -16,7 +16,7 @@ export function useFetch(url, options = {}, autoFetch = true, delay = 0) {
 
             if(delay > 0) await new Promise((resolve) => setTimeout(resolve, delay));
 
-            const response = await fetch(url);
+            const response = await fetch(urlValue);
 
             data.value = await response.json();
 
@@ -30,7 +30,13 @@ export function useFetch(url, options = {}, autoFetch = true, delay = 0) {
         }
     }
 
-    if(autoFetch) fetchData();
+    console.log(unref(url));
+    
+     watch(() => unref(url), (newVal, oldVal) => {
+
+        fetchData(newVal)
+        
+    }, { immediate: true })
 
     return { data, loading, error, fetchData }
 }

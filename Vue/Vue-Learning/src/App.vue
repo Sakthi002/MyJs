@@ -12,6 +12,7 @@
   import { ref } from 'vue';
 import TodoList from './components/Composables/TodoList.vue';
 import AsyncTodo from './components/Composables/AsyncTodo.vue';
+import Posts1 from './components/Composables/Posts1.vue';
   
   // import Posts from './components/ProvideInject/Posts.vue';
 
@@ -62,7 +63,9 @@ import AsyncTodo from './components/Composables/AsyncTodo.vue';
 
   <TodoList></TodoList> -->
 
-  <AsyncTodo></AsyncTodo>
+  <!-- <AsyncTodo></AsyncTodo> -->
+
+  <Posts1></Posts1>
 </template>
 
 <style scoped></style>

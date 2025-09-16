@@ -1244,7 +1244,14 @@
             const { data, error, loading, fetchData } = useFetch('https://api.example.com/data')
         </script>   
     
-
+47. UNREF
+    - The `unref` function is used to get the raw value from a ref or return the value itself if it's not a ref.
+    - It is useful when we want to work with the actual value of a ref without having to access the `.value` property.
+    - Example
+    import { ref, unref } from 'vue'
+    const count = ref(0)
+    console.log(unref(count)) // 0
+    console.log(unref(5)) // 5
 
 
 
