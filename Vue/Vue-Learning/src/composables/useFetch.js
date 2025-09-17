@@ -1,4 +1,4 @@
-import { ref, unref, watch } from "vue";
+import { ref, unref, watch, watchEffect } from "vue";
 
 export function useFetch(url, options = {}, autoFetch = true, delay = 0) {
     
@@ -6,8 +6,10 @@ export function useFetch(url, options = {}, autoFetch = true, delay = 0) {
     const error = ref(null);
     const data = ref(null);
 
-    const fetchData = async (urlValue) => {
+    const fetchData = async () => {
 
+        let urlValue = unref(url);
+        
         loading.value = true;
         error.value = null;
         data.value = null;
@@ -29,14 +31,14 @@ export function useFetch(url, options = {}, autoFetch = true, delay = 0) {
             loading.value = false
         }
     }
-
-    console.log(unref(url));
     
-     watch(() => unref(url), (newVal, oldVal) => {
+    //  watch(() => unref(url), (newVal, oldVal) => {
 
-        fetchData(newVal)
+    //     fetchData(newVal)
         
-    }, { immediate: true })
+    // }, { immediate: true })
+
+    watchEffect(fetchData)
 
     return { data, loading, error, fetchData }
 }

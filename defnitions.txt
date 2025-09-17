@@ -504,7 +504,7 @@ ILLEGAL SHADOWING
 
 35. EVENT LOOP
 
-    - Event Loop is a supervisor who moves taks from queue to callstack when callstack ios empty
+    - Event Loop is a supervisor who moves taks from queue to callstack when callstack is empty
     - It constantly checks:
         “Is the Call Stack empty?”
         If yes → Move the first task from the Callback Queue to the Call Stack.

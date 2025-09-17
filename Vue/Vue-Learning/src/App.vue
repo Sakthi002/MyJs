@@ -13,6 +13,7 @@
 import TodoList from './components/Composables/TodoList.vue';
 import AsyncTodo from './components/Composables/AsyncTodo.vue';
 import Posts1 from './components/Composables/Posts1.vue';
+import Index from './components/Directives/Index.vue';
   
   // import Posts from './components/ProvideInject/Posts.vue';
 
@@ -65,7 +66,9 @@ import Posts1 from './components/Composables/Posts1.vue';
 
   <!-- <AsyncTodo></AsyncTodo> -->
 
-  <Posts1></Posts1>
+  <!-- <Posts1></Posts1> -->
+
+  <Index></Index>
 </template>
 
 <style scoped></style>

@@ -28,4 +28,13 @@ const app = createApp(App)
 // app.component("LifeCycle", LifeCycle);
 
 app.provide('mainMessage', "Message From Main Script")
+
+app.directive('focus', {
+    mounted(el, binding) {
+        el.focus();
+
+        console.log(binding, 'kj');
+        
+    }
+})
 app.mount('#app');

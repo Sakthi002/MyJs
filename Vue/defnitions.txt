@@ -1253,12 +1253,106 @@
     console.log(unref(count)) // 0
     console.log(unref(5)) // 5
 
+48. STATEFUL VS STATELESS
+    - Stateful Logic
+        - Stateful logic in composables refers to the use of reactive state (e.g., `ref`, `reactive`) within the composable function.
+        - This allows the composable to maintain its own internal state that can be shared across multiple components.
+        - counters, fetching API data (useFetch), managing UI state (modals, toggles), stores (Pinia/Vuex).
+        - Example
+        // useCounter.js
+            import { ref } from 'vue'
+            export function useCounter() {
+                const count = ref(0)
+                function increment() {
+                    count.value++
+                }
+                function decrement() {
+                    count.value--
+                }
+                return {
+                    count,
+                    increment,
+                    decrement
+                }
+            }
+    - Stateless Logic
+        - Stateless logic in composables refers to functions that do not maintain any internal state and simply perform operations based on the input parameters.
+        - These composables are typically pure functions that return a result without any side effects.
+        - formatting, validation, pure calculations, string/date utilities.
+        - Example
+        // useMath.js
+            export function add(a, b) {
+                return a + b
+            }
+            export function subtract(a, b) {
+                return a - b
+            }
+            export function multiply(a, b) {
+                return a * b
+            }
 
+49. DIRECTIVES
+    - Directives are special attributes in Vue that provide additional functionality to HTML elements.
+    - We can create custom directives using the `directive` function from Vue.
+    - A directive is an object with lifecycle hooks that allow us to manipulate the DOM element when the directive is bound, updated, or unbound.
+    - It has 4 arguments
+        - el: The element the directive is bound to.
+        - binding: An object containing the value, oldValue, arg, modifiers, and instance of the directive.
+        - vnode: The virtual node produced by Vue's compiler.
+        - prevVnode: The previous virtual node, only available in the `updated` and `beforeUnmount` hooks.
+    - Example
+        app.directive('focus', {
+            mounted(el) {
+                el.focus()
+            }
+        })
+    - We can use the custom directive in the template by adding the `v-` prefix to the directive name.
+    - Example
+        <template>
+            <input v-focus />
+        </template>
+        <script setup>
+        </script>
 
+50. IMPORTANT DIRECTIVES
+    - v-pre
+        - Skips compilation for this element and all its children.
+        - Useful for displaying raw mustache tags or when we want to skip compilation for performance reasons.
+        - Example
+        <div v-pre>{{ rawMustache }}</div> - {{ rawMustache }} - displayed as is.
+    -v-once
+        - The element and its children will only be rendered once.
+        - Subsequent updates to the data will not affect the element.
+        - Example
+        <button v-once>{{ count }}</button> - count will not update on re-renders.
+    - v-cloak
+        - Stays on the element until the Vue instance is fully compiled.
+        - Got removed automatically once Vue is ready.
+        - Useful to prevent the flash of uncompiled mustache tags before Vue takes over.
+        - Example
+        <div v-cloak>{{ message }}</div> - message will not be visible until Vue is ready.
 
-
-
-
+        <style>
+            [v-cloak] {
+                display: none;
+            }
+        </style>
+    - v-memo
+        - Memoize the element and its children based on the provided dependencies.
+        - If the dependencies do not change, Vue will skip re-rendering the element and its children.
+        - Useful for optimizing performance by avoiding unnecessary re-renders.
+        - Example
+        <div v-memo="[dependency1, dependency2]">
+            <!-- This element will only re-render if dependency1 or dependency2 change -->
+            {{ computedValue }}
+        </div>
+    - v-is
+        - Dynamically bind a component or element to be rendered.
+        - The value can be a string (for HTML elements) or a component object.
+        - Useful for rendering different components or elements based on dynamic conditions.
+        - Example
+        <component v-is="currentComponent" />
+        <div v-is="dynamicElement"></div> <!-- dynamicElement can be 'div', 'span', etc. -->
 
 
 

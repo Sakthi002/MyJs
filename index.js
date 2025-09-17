@@ -1,41 +1,69 @@
-// BUBBLING
-document.getElementById("gparent").addEventListener("click", function () {
-    console.log("Grandparent Clicked")
+document.getElementById('search').addEventListener('input', function(e) {
+    debouncedApi(e.target.value, 'ss');
 })
 
-document.getElementById("parent").addEventListener("click", function (e) {
-    console.log("Parent Clicked");
-})
+function makeApi(value) {
+    console.log('Api Called', value);
+}
 
-document.getElementById("child").addEventListener("click", function () {
-    console.log("Child Clicked")
-})
+const debouncedApi = debounce(makeApi, 600);
 
-// When i clcik on child element - event propogates lithe below
-    // Child Clicked
-    // Parent Clicked
-    // Grandparent Clicked
+function debounce(fn, delay) {
 
-// CAPTURING
+    let timer;
 
-document.getElementById("gparent").addEventListener("click", function () {
-    console.log("Grandparent Clicked")
-})
+    return function(...args) {
 
-document.getElementById("parent").addEventListener("click", function (e) {
-    console.log("Parent Clicked");
-}, { capture: true })
+        console.log(args, 'rfg');
+        
+        let context = this;
 
-document.getElementById("child").addEventListener("click", function () {
-    console.log("Child Clicked")
-})
+        clearTimeout(timer);
 
-// When i clcik on child element - event propogates lithe below
-    // Parent Clicked
-    // Child Clicked
-    // Grandparent Clicked
+        timer = setTimeout(() => {
 
-// DELEGATION
-document.getElementById("list").addEventListener("click", function (e) {
-    console.log(e.target.id, "Item Clicked")
-})
+            fn.apply(context, args)
+        }, delay)
+    }
+}
+
+function recursiveCurry(a) {
+
+    return function (b) {
+
+        if(b === undefined) return a;
+
+        return recursiveCurry(a + b);
+    }
+}
+
+let res = recursiveCurry(1)(2)(10)();
+console.log(res);
+
+let arr = [1,2,3,4,5,6,4,4];
+
+console.log(arr.filter((num, index, self) => self.indexOf(num) === index));
+
+let arr1 = [1,2,5,4,3];
+
+// arr1.sort((a,b) => b - a);
+
+// console.log(arr1);
+
+for(let i = 0; i < arr1.length;i++) {
+
+    for(let j = i + 1; j < arr1.length; j++) {
+
+        if(arr1[i] < arr1[j]) {
+            let temp = arr1[i];
+            arr1[i] = arr1[j]
+            arr1[j] = temp
+        }
+    }
+}
+
+console.log(arr1, 'k');
+
+
+
+
