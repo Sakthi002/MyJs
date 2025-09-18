@@ -20,6 +20,9 @@ setTimeout(() => {
 let page2 = ref("Page 3")
 
 let counter = ref(1)
+
+let message = ref("message");
+let show = ref(true)
 </script>
 
 <template>
@@ -48,4 +51,10 @@ let counter = ref(1)
     </div>
 
      <button @click="counter++">Increment</button>
+
+
+     <p v-if="show" v-once>{{ message }}</p>
+
+     <p><button @click="show = !show">Toggle</button></p>
+     <p><button @click="message = 'updated message'">Update</button></p>
 </template>

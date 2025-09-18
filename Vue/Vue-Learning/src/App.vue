@@ -7,13 +7,18 @@
   // import FallThroughParent from './components/FallThroughAttributes/Parent.vue';
   // import SlotComponent from './components/Slots/SlotComponent.vue';
   // import AsyncComponent from './components/AsyncComponent/AsyncComponent.vue';
-  import MouseTracker from './components/Composables/MouseTracker.vue';
+  // import MouseTracker from './components/Composables/MouseTracker.vue';
   
   import { ref } from 'vue';
-import TodoList from './components/Composables/TodoList.vue';
-import AsyncTodo from './components/Composables/AsyncTodo.vue';
-import Posts1 from './components/Composables/Posts1.vue';
-import Index from './components/Directives/Index.vue';
+// import TransitionComponent from './components/Transition/TransitionComponent.vue';
+// import TransitionList from './components/Transition/TransitionList.vue';
+// import ShallowRef from './components/ShallowRef.vue';
+// import Index from './components/KeepAlive/Index.vue';
+// import TodoList from './components/Composables/TodoList.vue';
+// import AsyncTodo from './components/Composables/AsyncTodo.vue';
+// import Posts1 from './components/Composables/Posts1.vue';
+// import Index from './components/Directives/Index.vue';
+import Index from './components/Teleport/Index.vue';
   
   // import Posts from './components/ProvideInject/Posts.vue';
 
@@ -68,7 +73,17 @@ import Index from './components/Directives/Index.vue';
 
   <!-- <Posts1></Posts1> -->
 
-  <Index></Index>
+  <!-- <Index></Index> -->
+
+  <!-- <TransitionComponent></TransitionComponent> -->
+
+  <!-- <TransitionList></TransitionList> -->
+
+  <!-- <ShallowRef></ShallowRef> -->
+
+  <!-- <Index></Index> -->
+
+   <Index></Index>
 </template>
 
 <style scoped></style>

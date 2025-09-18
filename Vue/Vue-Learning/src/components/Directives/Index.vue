@@ -1,5 +1,8 @@
 <script setup>
-import Demo from './Demo.vue';
+// import Demo from './Demo.vue';
+// import VOnce from './VOnce.vue';
+// import VMemo from './VMemo.vue';
+import VIs from './VIs.vue';
 
 
 </script>
@@ -8,5 +11,8 @@ import Demo from './Demo.vue';
 
     <h1>Directives Index</h1>
 
-    <Demo></Demo>
+    <!-- <Demo></Demo> -->
+    <!-- <VOnce></VOnce> -->
+    <!-- <VMemo></VMemo> -->
+    <VIs></VIs>
 </template>

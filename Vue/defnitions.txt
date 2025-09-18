@@ -370,6 +370,17 @@
     - let say if we are rendering a list with li elements without key attribute - when we are updating a list it will not create new li elements, it will reuse the existing li element and just update the value inside it.
     - This can lead to unexpected behavior when the list is modified (e.g., items are added, removed, or reordered).
 
+    - 1. If :key is NOT present
+        - Vue reuses DOM nodes based on their position (index) in the array, not the identity of the data.
+        - Inserting or removing items in the middle can cause wrong DOM reuse, breaking component state.
+        - Appending at the end is safe, but inserting at the start or middle can overwrite existing DOM nodes incorrectly.
+
+    2. If :key IS present
+        - Vue reuses DOM nodes based on the key value, matching each item’s identity.
+        - New keys → new DOM nodes are created.
+        - Removed keys → DOM nodes are removed.
+        - Existing keys → DOM nodes are reused safely, preserving component state and enabling optimizations like v-memo.        
+    
     ✅ Rule of Thumb for real apps:
     Always use a unique ID key (from DB, UUID, timestamp, etc.), never the array index, unless the list is 100% static.
 
@@ -1328,6 +1339,7 @@
     - v-cloak
         - Stays on the element until the Vue instance is fully compiled.
         - Got removed automatically once Vue is ready.
+        - Used to hide uncompiled template content until Vue has fully mounted the component and compiled the template
         - Useful to prevent the flash of uncompiled mustache tags before Vue takes over.
         - Example
         <div v-cloak>{{ message }}</div> - message will not be visible until Vue is ready.
@@ -1338,9 +1350,12 @@
             }
         </style>
     - v-memo
-        - Memoize the element and its children based on the provided dependencies.
+        - Memoize the element and its children.
+        - It stores the previous render output and only re-renders if the dependencies change.
         - If the dependencies do not change, Vue will skip re-rendering the element and its children.
         - Useful for optimizing performance by avoiding unnecessary re-renders.
+        - If we are not passing any dependencies, it will behave like `v-once`.
+        - v-memo will not work inside `v-for` loops. If we add `v-memo` inside a `v-for`, it will be ignored.
         - Example
         <div v-memo="[dependency1, dependency2]">
             <!-- This element will only re-render if dependency1 or dependency2 change -->
@@ -1353,12 +1368,236 @@
         - Example
         <component v-is="currentComponent" />
         <div v-is="dynamicElement"></div> <!-- dynamicElement can be 'div', 'span', etc. -->
+            <script setup>
+                import MyRow from './MyRow.vue'
+            </script>
+            <template>
+                <table border="1">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Fruit</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-is="MyRow" :data="{ id: 1, name: 'Apple' }" />
+                    <tr v-is="MyRow" :data="{ id: 2, name: 'Orange' }" />
+                    <tr v-is="MyRow" :data="{ id: 3, name: 'Banana' }" />
+                    </tbody>
+                </table>
+            </template>
+
+            <script setup>
+            import { defineProps } from 'vue'
+            // Receive props passed from parent <tr v-is="MyRow" :data="..." />
+            const props = defineProps({
+            data: {
+                type: Object,
+                required: true,
+            },
+            })
+            </script>
+
+            <template>
+            <!-- ⚠️ Root element here MUST be <tr> for table semantics -->
+            <tr>
+                <td>{{ props.data.id }}</td>
+                <td>{{ props.data.name }}</td>
+            </tr>
+            </template>
+
+51. TRANSITION
+    - Vue provides a built-in `<transition>` component that allows us to apply transition effects to elements or components when they are inserted, updated, or removed from the DOM.
+    - We can wrap the element or component we want to apply the transition to with the `<transition>` component.
+    - We can specify the transition name using the `name` attribute on the `<transition>` component.
+    - We can define CSS classes for the different stages of the transition using the transition name as a prefix.
+    - <transition> will only work on a single element or component. If we want to apply the transition to multiple elements, we can use the `<transition-group>` component.
+    - We can also use JavaScript hooks to define custom transition behavior using the `v-on` directive on the `<transition>` component.
+    - The available hooks are `before-enter`, `enter`, `after-enter`, `before-leave`, `leave`, `after-leave`.
+    - If you want to see the transition on page load, you can use `appear` attribute on the `<transition>` component.
+    - Mode attribute
+        - The `mode` attribute on the `<transition>` component allows us to control the timing of entering and leaving transitions when both are happening simultaneously.
+        - It can take three values: `in-out`, `out-in`, and `default`.
+        - `in-out`: The new element will enter first, and once the enter transition is complete, the old element will leave.
+        - `out-in`: The old element will leave first, and once the leave transition is complete, the new element will enter.
+        - `default`: Both enter and leave transitions will happen simultaneously.
+    - Example with all features
+    <template>
+        <button @click="show = !show">Toggle</button>
+        <transition name="fade" mode="out-in" appear
+            @before-enter="beforeEnter"
+            @enter="enter"
+            @after-enter="afterEnter"
+            @before-leave="beforeLeave"
+            @leave="leave"
+            @after-leave="afterLeave"
+        >
+            <p v-if="show">Hello, Vue 3 Transitions!</p>
+        </transition>
+    </template>
+    <script setup>
+        import { ref } from 'vue'
+        const show = ref(false)
+        function beforeEnter(el) {
+            console.log('Before Enter', el)
+        }
+        function enter(el, done) {
+            console.log('Enter', el)
+            done()
+        }
+        function afterEnter(el) {
+            console.log('After Enter', el)
+        }
+        function beforeLeave(el) {
+            console.log('Before Leave', el)
+        }
+        function leave(el, done) {
+            console.log('Leave', el)
+            done()
+        }
+        function afterLeave(el) {
+            console.log('After Leave', el)
+        }
+    </script>
+    <style>
+        .fade-enter-active, .fade-leave-active {
+            transition: opacity 0.5s;
+        }
+        .fade-enter-from, .fade-leave-to {
+            opacity: 0;
+        }
+        .fade-enter-to, .fade-leave-from {
+            opacity: 1;
+        }
+    </style>
+
+52. TRANSITIONGROUP
+    - The `<transition-group>` component is used to apply transition effects to a list of elements or components that are rendered using `v-for`.
+    - It works similarly to the `<transition>` component, but it is specifically designed for lists.
+    - Elements should have a unique `key` attribute when using `<transition-group>`, which helps Vue to track the elements and apply the transitions correctly.
+    - Example
+    <template>
+        <div><button @click.prevent="addItem">Add</button></div>
+        <ul>
+            <TransitionGroup name="list" appear>
+                <li v-for="(item,index) in list" style="padding: 4px;" :key="item">
+                    {{ item }} - <button @click.prevent="removeItem(index)">&#x2715;</button>
+                </li>
+            </TransitionGroup>
+        </ul>
+    </template>
+    <script setup>
+        import { ref, TransitionGroup } from 'vue';
+        const list = ref([1,2,3,4,5]);
+        const addItem = () => {
+            let value = Math.floor(Math.random() * 100);
+            let index = Math.floor(Math.random() * list.value.length);
+            list.value.splice(index, 0, value);
+        }
+        const removeItem = (index) => {
+            list.value.splice(index, 1)
+        }
+    </script>
+    <style scoped>
+        .list-enter-from, .list-leave-to {
+            opacity: 0;
+        }
+        .list-enter-active, .list-leave-active {
+            transition: all 1s;
+        }
+        .list-leave-active {
+            position: absolute;
+        }
+        .list-move {
+            transition: all 1s;
+        }
+    </style>
+
+53. SHALLOWREF
+    - shallowRef is like ref, but it only tracks the reactivity at the .value level. Nested properties inside it is not reactive.
+    - It is useful when you dont want deep reactivity
+    - use this when the whole object changed
+    - Example
+    import { shallowRef } from 'vue'
+    const state = shallowRef({ count: 0 })
+    state.value.count++ // This will NOT trigger reactivity
+    state.value = { count: 1 } // This will trigger reactivity  
+
+54. TRIGGERREF
+    - triggerRef is used to manually trigger reactivity for a ref or shallowRef.
+    - You muted a value of a shallowRef, but since the nested properties are not reactive, the change will not be detected by Vue.
+    - In such cases, we can use triggerRef to manually notify Vue that the value has changed and it should re-render any components that depend on that ref.
+    - Example
+    import { shallowRef, triggerRef } from 'vue'
+    const state = shallowRef({ count: 0 })
+    state.value.count++ // This will NOT trigger reactivity
+    triggerRef(state) // Manually trigger reactivity
+
+55. SHALLOWREACTIVE
+    - Only top level properties are made reactive. Nested objects are not reactive.
+    - It is useful when you want to avoid deep reactivity for performance reasons.
+    - Example
+    import { shallowReactive } from 'vue'
+    const state = shallowReactive({ user: { name: 'John', age: 30 } })
+    state.user.name = 'Jane' // This will NOT trigger reactivity
+    state.user = { name: 'Jane', age: 30 } // This will trigger reactivity
+
+56. KEEP ALIVE
+    - It is used to cache the component instance when switching between components.
+    - It is useful when we want to preserve the state of a component when it is not being displayed.
+    - We can wrap the component we want to cache with the `<keep-alive>` component.
+    - Normally when components are rendered onMounted will called and when we switch to another component, the previous component will be unmounted and its state will be lost.
+    - When we use `<keep-alive>`, the component will be cached and its state will be preserved when we switch to another component.
+    - The cached component will not be destroyed, it will be kept in memory and when we switch back to the component, it will be re-rendered with its previous state.
+    - We can use the `activated` and `deactivated` lifecycle hooks to perform actions when the component is activated or deactivated.
+    - We can use the `include` and `exclude` props to specify which components should be cached or not.
+    - We can also use the `max` prop to limit the number of cached components.
+        - include: A comma-separated string or a RegExp pattern to specify which components should be cached.
+        - exclude: A comma-separated string or a RegExp pattern to specify which components should not be cached.
+        - max: A number to limit the maximum number of cached components. When the limit is reached, the least recently used component will be removed from the cache.
+    - Example
+    <template>
+        <button @click="currentComponent = 'ComponentA'">Show Component A</button>
+        <button @click="currentComponent = 'ComponentB'">Show Component B</button>
+        <keep-alive include="ComponentA">
+            <component :is="currentComponent" />
+        </keep-alive>
+    </template>
+    <script setup>
+        import { ref } from 'vue'
+        import ComponentA from './ComponentA.vue'
+        import ComponentB from './ComponentB.vue'
+        const currentComponent = ref('ComponentA')
+    </script>
+
+57. TELEPORT
+    - Used to render a component or element somewhere else in the DOM outside of the current component hierarchy.
+    - Useful for modals, tooltips, dropdowns, or any UI element that needs to be rendered outside of its parent component.
+
+58. FRAGMENTS
+    - Vue 3 supports fragments, which allows components to have multiple root elements.
+    - This means we can return multiple elements from a component without having to wrap them in a single parent element.
+    - Example
+    <template>
+        <h1>Title</h1>
+        <p>This is a paragraph.</p>
+    </template>
+    <script setup>
+    </script>
 
 
 
 
+
+// HYDRATION WARNINGS
+
+// SSR
+
+// WEB ACCESSABILITY
 
 // SUSPENSE
+
+// HOW TO DEBUG UNNECESSARY RE-RENDER
 
 //////// COMMON ISSUES AND BEST PRACTICES
     - MUTATING PROPS
@@ -1484,9 +1723,3 @@
 
 
 
-
-    // HYDRATION WARNINGS
-
-    // SSR
-
-    // WEB ACCESSABILITY
