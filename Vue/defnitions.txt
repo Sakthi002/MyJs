@@ -1585,6 +1585,271 @@
     <script setup>
     </script>
 
+59. VUE-ROUTER 
+    - Vue Router is the official router for Vue.js, it allows us to create single-page applications with multiple views and navigation.
+    - We can define routes in a separate file and import them into our main application file.
+    - We can use the `<router-view>` component to render the matched component for the current route.
+    - We can use the `<router-link>` component to create links to different routes.
+
+60. USEROUTE | USEROUTER
+    - useRoute is a composition API function that allows us to access the current route object in a component.
+    - It returns a reactive object that contains information about the current route, such as the path, params, query, and meta.
+    - We can use this information to conditionally render content or perform actions based on the current route.
+    - Example
+    <template>
+        <div>
+            <h1>Current Route: {{ route.path }}</h1>
+            <p v-if="route.params.id">Route Param ID: {{ route.params.id }}</p>
+            <p v-if="route.query.name">Query Name: {{ route.query.name }}</p>
+        </div>
+    </template>
+    <script setup>
+        import { useRoute } from 'vue-router'
+        const route = useRoute()
+    </script>
+
+    - useRouter is a composition API function that allows us to access the router instance in a component.
+    - It returns the router instance, which we can use to programmatically navigate to different routes or access router methods and properties.
+    - Example
+    <template>
+        <div>
+            <button @click="goHome">Go to Home</button>
+            <button @click="goToUser(1)">Go to User 1</button>
+        </div>
+    </template>
+    <script setup>
+        import { useRouter } from 'vue-router'
+        const router = useRouter()
+        function goHome() {
+            router.push({ name: 'Home' })
+        }
+        function goToUser(id) {
+            router.push({ name: 'User', params: { id } })
+        }
+    </script>
+
+61. DYNAMIC ROUTE MATCHING 
+    - We can define dynamic routes in Vue Router by using a colon `:` followed by a parameter name in the route path.
+    - This allows us to create routes that can match different values for the same path.
+    - We can access the dynamic parameters in the component using the `useRoute` function or the `$route` object.
+    - Example
+    // router/index.js
+        import User from '../views/User.vue'
+        const routes = [
+            {
+                path: '/users/:id',
+                name: 'User',
+                component: () => import('../views/User.vue')
+            }
+        ]
+
+62. ROUTE MATCHING
+    - Vue Router uses a priority-based matching system to determine which route to render for a given URL.
+    - Static routes (without dynamic segments) have the highest priority, followed by dynamic routes (with parameters), and finally wildcard routes (catch-all).
+    - When multiple routes match a URL, the route with the highest priority will be selected.
+    - /:id (dynamic) has higher priority than /* (wildcard)
+    - /:name+ (dynamic with one or more segments) has higher priority than /:name* (dynamic with zero or more segments)
+
+63. NESTED ROUTES
+    - We can define nested routes in Vue Router by using the `children` property in the route configuration.
+    - This allows us to create a parent-child relationship between routes, where the child routes are rendered inside the parent route's component.
+    - We can use the `<router-view>` component inside the parent component to render the matched child route.
+    - Example
+    // router/index.js
+        const routes = [
+            {
+                path: 'users',
+                name: 'Users',
+                component: () => import('../views/Users.vue'),
+                children: [
+                    {
+                        path: ':id',
+                        name: 'User',
+                        component: User,
+                    }
+                ]
+            }
+        ]
+
+64. NAMED ROUTES
+    - We can assign a name to a route using the `name` property in the route configuration.
+    - This allows us to reference the route by its name instead of its path when navigating or creating links.
+    - Using named routes can make our code more readable and maintainable, especially when dealing with dynamic routes or complex route structures.
+    - params|query can be passed when using named routes. with path we can only pass query.
+    - By using Named Routes 
+        - we can avoid hardcoding paths in our code, 
+        - making it easier to update routes in the future without having to change multiple references throughout the application.
+
+65. PROGRAMMATIC NAVIGATION 
+    - We can programmatically navigate to different routes using the `router.push` or `router.replace` methods from the router instance.
+    - We can access the router instance using the `useRouter` function in a component.
+    - The `router.push` method adds a new entry to the browser's history stack, while the `router.replace` method replaces the current entry.
+    - We can pass an object with the route name, params, and query to these methods for navigation.
+    - Example
+    <template>
+        <div>
+            <button @click="goHome">Go to Home</button>
+            <button @click="goToUser(1)">Go to User 1</button>
+        </div>
+    </template>
+    <script setup>
+        import { useRouter } from 'vue-router'
+        const router = useRouter()
+        function goHome() {
+            router.push({ name: 'Home' })
+        }
+        function goToUser(id) {
+            router.push({ name: 'User', params: { id } })
+        }
+    </script>
+
+66. ROUTER.PUSH VS ROUTER.REPLACE
+    - `router.push` 
+        - adds a new entry to the browser's history stack, allowing users to navigate back to the previous page using the browser's back button.
+    - `router.replace` 
+        - replaces the current entry in the browser's history stack, meaning that users cannot navigate back to the previous page using the back button.
+    - We should use `router.push` when we want to allow users to navigate back to the previous page, and use `router.replace` when we want to prevent users from going back to the previous page.
+
+67. ROUTER.GO
+    - The `router.go` method allows us to navigate through the browser's history stack by a specified number of steps.
+    - We can pass a positive or negative integer to the `router.go` method to move forward or backward in the history stack.
+    - A value of `1` will move forward one step, while a value of `-1` will move back one step.
+    - Example
+    <template>
+        <div>
+            <button @click="goBack">Go Back</button>
+            <button @click="goForward">Go Forward</button>
+        </div>
+    </template>
+    <script setup>
+        import { useRouter } from 'vue-router'
+        const router = useRouter()
+        function goBack() {
+            router.go(-1) // Go back one step in history
+        }
+        function goForward() {
+            router.go(1) // Go forward one step in history
+        }
+    </script>
+
+68. NAMED VIEWS 
+    - Named views allow us to render multiple components in different `<router-view>` outlets within the same route.
+    - We can define named views in the route configuration using the `components` property, where each key represents a named view and its value is the corresponding component.
+    - In the template, we can use multiple `<router-view>` components with the `name` attribute to specify which named view to render.
+    - Example
+    // router/index.js
+        const routes = [
+            {
+                 path: '/', 
+                components: {
+                    default: Home,
+                    left: LeftSidebar,
+                    right: RightSidebar
+                } 
+            }
+        ]
+    // App.vue
+        <template>
+            <router-view name="left" /> <!-- Left sidebar view -->
+            <router-view /> <!-- Default view -->
+            <router-view name="right" /> <!-- Right sidebar view -->
+        </template>
+
+69. PASSING PROPS TO ROUTE COMPONENTS
+    - We can pass props to route components using the `props` option in the route configuration.
+    - The `props` option can be set to `true`, an object, or a function.
+    - When set to `true`, the route params will be passed as props to the component.
+    - When set to an object, the object properties will be passed as props to the component.
+    - When set to a function, the function will receive the route object as an argument and should return an object containing the props to be passed to the component.
+    - Example
+    // router/index.js
+        const routes = [
+            {
+                path: '/user/:id',
+                name: 'User',
+                component: User,
+                props: true // Route params will be passed as props
+            },
+            {
+                path: '/settings',
+                name: 'Settings',
+                component: Settings,
+                props: { theme: 'dark' } // Static props
+            },
+            {
+                path: '/search',
+                name: 'Search',
+                component: Search,
+                props: (route) => ({ query: route.query.q }) // Dynamic props from query
+            }
+        ]
+
+70. NAVIGATION GUARDS
+    - Navigation guards provided by vue-router , are primarily used to guard navigation either by redirecting or canceling.
+    - We can use navigation guards to perform actions before or after a route is entered or left.
+    - There are three types of navigation guards: global guards, per-route guards, and in-component guards.
+
+71. GLOBAL GUARDS
+    - are defined on the router instance and apply to all routes.
+        - beforeEach 
+            - called before every navigation
+            - we can perform actions like authentication checks, logging, or data fetching before allowing the navigation to proceed.
+            - we can stop the navigation by not calling `next()`, redirect to a different route by calling `next({ name: 'RouteName' })`, or allow the navigation to proceed by calling `next()`.
+        - afterEach 
+            - called after every navigation
+            - we can perform actions like logging or analytics after the navigation has completed.
+            - it does not have a `next` function, as the navigation is already confirmed.
+        
+        router.beforeEach((to, from, next) => {
+            // Perform some action before navigation
+            if (to.meta.requiresAuth && !isAuthenticated()) {
+                next({ name: 'Login' }) // Redirect to login if not authenticated
+            } else {
+                next() // Allow navigation
+            }
+        })
+        router.afterEach((to, from) => {
+            // Perform some action after navigation
+            console.log(`Navigated to ${to.fullPath} from ${from.fullPath}`)
+        })
+
+72. PER-ROUTE GUARDS 
+        - are defined in the route configuration and apply only to that specific route.
+        - We can use `beforeEnter` to define per-route guards.  
+        - we can perform actions like authentication checks, logging, or data fetching before allowing the navigation to proceed.
+        - we can stop the navigation by not calling `next()`, redirect to a different route by calling `next({ name: 'RouteName' })`, or allow the navigation to proceed by
+        - We can write multiple per-route guards for a single route by providing an array of functions to the `beforeEnter` property.
+        - beforeEnter: [auth1, auth2]
+
+        const routes = [
+            {
+                path: '/admin',
+                name: 'Admin',
+                component: Admin,
+                beforeEnter: (to, from, next) => {
+                    // Perform some action before entering the admin route
+                    if (isAdmin()) {
+                        next() // Allow navigation
+                    } else {
+                        next({ name: 'Home' }) // Redirect to home if not an admin
+                    }
+                }
+            }
+        ]
+    
+73. IN-COMPONENT GUARDS
+    - are defined in the component itself and apply only when that component is active.
+    - We have two in-component guards: `onBeforeRouteLeave` and `onBeforeRouteUpdate`.
+    - `onBeforeRouteLeave` is called when the user is navigating away from the current component.
+    - `onBeforeRouteUpdate` is called when the user is navigating to the same component but with different route parameters.
+
+74. ONBEFOREROUTEUPDTAE
+    - Example - In dynamic routes - only params change - to react to that params change - we can use onBeforeRouteUpdate
+
+71. BEFORERESOLVE GUARD
+    - The `beforeResolve` guard is a global navigation guard in Vue Router that is called right before the navigation is confirmed, 
+        after all in-component guards and async route components are resolved.
+    - It is useful for performing actions that need to happen after all other guards have been executed, such as fetching data or updating the page title.
 
 
 
