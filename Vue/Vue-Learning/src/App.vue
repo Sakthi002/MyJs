@@ -18,7 +18,8 @@
 // import AsyncTodo from './components/Composables/AsyncTodo.vue';
 // import Posts1 from './components/Composables/Posts1.vue';
 // import Index from './components/Directives/Index.vue';
-import Index from './components/Teleport/Index.vue';
+// import Index from './components/Teleport/Index.vue';
+import Index from './components/Suspense/Index.vue';
   
   // import Posts from './components/ProvideInject/Posts.vue';
 
@@ -83,7 +84,9 @@ import Index from './components/Teleport/Index.vue';
 
   <!-- <Index></Index> -->
 
-   <Index></Index>
+  <!-- <Index></Index> -->
+
+  <Index></Index>
 </template>
 
 <style scoped></style>

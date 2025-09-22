@@ -1851,116 +1851,310 @@
         after all in-component guards and async route components are resolved.
     - It is useful for performing actions that need to happen after all other guards have been executed, such as fetching data or updating the page title.
 
+72. PINIA
+    - Centralized State Management: 
+        - Pinia provides a centralized store for managing application state, 
+            making it easier to share data between components and maintain a consistent state across the application.
+    - Reactive State: 
+        - Pinia uses Vue's reactivity system, allowing us to create reactive state that automatically updates the UI when the state changes.
+    - Modular Architecture: 
+        - Pinia allows us to create multiple stores, each responsible for a specific part of the application state. 
+        - This modular approach makes it easier to organize and maintain the codebase.
+    - We can create stores using the `defineStore` function from Pinia.
+    - We can access the store in our components using the `useStore` function.
+    - Pinia supports both options API and composition API, allowing us to choose the approach that best fits our needs.
 
-
-
-// HYDRATION WARNINGS
-
-// SSR
-
-// WEB ACCESSABILITY
-
-// SUSPENSE
-
-// HOW TO DEBUG UNNECESSARY RE-RENDER
-
-//////// COMMON ISSUES AND BEST PRACTICES
-    - MUTATING PROPS
-        - Props are meant to be immutable in the child component. 
-        - If we need to modify a prop value, we should create a local copy using `ref` or `reactive`.
-        - Example
-        const props = defineProps({
-            initialCount: { type: Number, required: true }
-        })
-        const count = ref(props.initialCount) // Create a local copy
-        function increment() {
-            count.value++
-        }
-    - KEY ATTRIBUTE IN LIST RENDERING
-        - When rendering lists using `v-for`, we should always provide a unique `key` attribute to each item.
-        - This helps Vue to efficiently update the DOM when the list changes.
-        - Example
-        <div v-for="item in items" :key="item.id">
-            {{ item.name }}
+73. ACCESSING/STORING PINIA STATE/GETTERS/ACTIONS IN COMPONENTS
+    - We can access the Pinia store in our components using the `useStore` function.
+    - We can directly access in templates using `store.property` or `store.method()`
+    - Example
+    <template>
+        <div>
+            <p>Count: {{ counter.count }}</p>
+            <p>Double Count: {{ counter.doubleCount }}</p>
+            <button @click="counter.increment()">Increment</button>
         </div>
-    - AVOIDING SIDE EFFECTS IN COMPUTED PROPERTIES
-        - Computed properties should be pure functions that only depend on reactive data.
-        - We should avoid performing side effects (like API calls or DOM manipulations) inside computed properties.
-        - If we need to perform side effects, we should use watchers or lifecycle hooks instead.
-    - USING WATCHERS JUDICIOUSLY
-        - While watchers are powerful, we should use them judiciously.
-        - Overusing watchers can lead to complex and hard-to-maintain code.
-        - We should prefer computed properties for deriving values from reactive data whenever possible.
-    - CLEANING UP SIDE EFFECTS
-        - When using watchers or lifecycle hooks to perform side effects, we should ensure that we clean up any resources (like event listeners or timers) when the component is unmounted.
-        - We can do this in the `onBeforeUnmount` or `onUnmounted` lifecycle hooks.
-    - PERFORMANCE OPTIMIZATIONS
-        - We should be mindful of performance when working with large datasets or complex components.
-        - Techniques like lazy loading, code splitting, and optimizing reactivity can help improve performance.
-    - DEBUGGING TOOLS
-        - We can use Vue Devtools to inspect the component hierarchy, state, and events in our Vue applications.
-        - This can help us identify and fix issues more easily.
-    - COMMON PITFALLS
-        - Be aware of common pitfalls like infinite loops in watchers, incorrect usage of `this` in composition API, and misunderstanding of reactivity principles.
-        - Always refer to the official Vue documentation for best practices and guidelines.
+    </template>
+    <script setup>
+        import { useCounterStore } from './stores/counter'
+        const counter = useCounterStore()
+    </script>
 
-/////// ACCESSABILITY
-    - ACCESSABILITY is important for making our applications usable by people with disabilities.
-    - We should follow best practices for accessibility, such as using semantic HTML, providing alternative text for images, and ensuring that our applications are navigable using a keyboard.
-    - We can use tools like axe or Lighthouse to audit the accessibility of our applications and identify areas for improvement.
-    - We should also consider accessibility when designing our components and user interfaces.
-    - Vue provides some built-in directives and components to help with accessibility, such as `v-focus` and `aria-*` attributes.
-    - We should also be mindful of color contrast and font sizes to ensure that our applications are readable by all users.
-    - Testing with screen readers and other assistive technologies can help us identify accessibility issues and improve the user experience for all users.
+    - In <script setup>
+        - It loses reactivity if we destructure or accessing with . 
+        <template>
+            <div>
+                <p>Count: {{ count }}</p>
+                <p>Double Count: {{ doubleCount }}</p>
+                <button @click="increment()">Increment</button>
+            </div>
+        </template>
+        <script setup>
+            import { useCounterStore } from './stores/counter'
+            const { count, doubleCount, increment } = useCounterStore()
+            OR
+            const counterStore = useCounterStore();
+            const count = counterStore.count;
+            const doubleCount = counterStore.doubleCount;
+            const increment = counterStore.increment;
+        </script> 
 
-/////// COMMON WARNINGS AND ERRORS
-    - REACTIVE WARNINGS
-        - Avoid mutating props directly in child components. Create local copies instead.
-        - Ensure that reactive data is properly initialized to avoid undefined or null values.
-        - Use unique keys in `v-for` loops to help Vue track elements efficiently.
-    - PERFORMANCE WARNINGS
-        - Be cautious with deep watchers as they can lead to performance issues. Use them only when necessary.
-        - Avoid unnecessary re-renders by using computed properties instead of methods in templates.
-        - Limit the number of reactive dependencies in computed properties to improve performance.
-    - DEPLOYMENT WARNINGS
-        - Ensure that the production build is optimized by using tools like Webpack or Vite.
-        - Check for unused dependencies and remove them to reduce bundle size.
-        - Verify that environment variables are correctly set for different deployment environments.
-    - COMMON ERRORS
-        - Ensure that all required props are passed to child components to avoid runtime errors.
-        - Handle asynchronous operations properly to avoid unhandled promise rejections.
-        - Use try-catch blocks around code that may throw errors, especially in lifecycle hooks and watchers.
-        - Validate data types of props and emitted events to prevent type-related errors.
-    - DEBUGGING TIPS
-        - Use Vue Devtools to inspect component state, props, and events.
-        - Check the console for warnings and errors during development.
-        - Write unit tests for components to catch issues early in the development process.
-    - COMMON WARNINGS
-        - MUTATING A PROP DIRECTLY
-        - NON-UNIQUE KEYS IN V-FOR
-        - MISSING KEY ATTRIBUTE
-        - UNHANDLED PROMISE REJECTION
-        - DEPENDENCY CYCLE DETECTED
-        - INVALID EVENT HANDLER
-        - AVOID USING V-IF WITH V-FOR ON THE SAME ELEMENT
-        - USING V-HTML CAN LEAD TO XSS VULNERABILITIES
-        - WATCHER CALLBACKS SHOULD NOT MODIFY THE WATCHED SOURCE
-        - COMPUTED PROPERTIES SHOULD NOT HAVE SIDE EFFECTS
-        - AVOID USING INDEX AS KEY IN V-FOR
-        - ENSURE ALL REQUIRED PROPS ARE PROVIDED
-        - AVOID DEEP WATCHERS UNLESS NECESSARY
-        - AVOID COMPLEX EXPRESSIONS IN TEMPLATES
-        - USE VUE DEVTOOLS FOR DEBUGGING
-        - CHECK FOR UNUSED VARIABLES OR IMPORTS
-        - ENSURE PROPER CLEANUP IN LIFECYCLE HOOKS
-        - AVOID MUTATING REACTIVE DATA OUTSIDE OF REACTIVE CONTEXTS
-        - USE TRY-CATCH FOR ASYNC OPERATIONS
-        - VALIDATE PROP TYPES AND EVENT PAYLOADS
-        - OPTIMIZE PERFORMANCE WITH COMPUTED PROPERTIES
-        - ENSURE PRODUCTION BUILD IS OPTIMIZED
-        - CHECK FOR ACCESSIBILITY ISSUES
-        - TEST WITH SCREEN READERS AND ASSISTIVE TECHNOLOGIES
-        - FOLLOW BEST PRACTICES FOR ACCESSIBILITY
+        - We have to use COMPUTED or STORETOREFS to maintain reactivity
+        <script setup>
+            import { useCounterStore } from './stores/counter'
+            import { storeToRefs } from 'pinia'
+            const counterStore = useCounterStore();
+            const { count, doubleCount } = storeToRefs(counterStore);
+            const { increment } = counterStore;
+        </script> 
+        OR
+        <script setup>
+            import { useCounterStore } from './stores/counter'
+            import { computed } from 'vue'
+            const counterStore = useCounterStore();
+            const count = computed(() => counterStore.count);
+            const doubleCount = computed(() => counterStore.doubleCount);
+            const increment = counterStore.increment;
+        </script>   
+
+74. STORETOREFS
+    - The `storeToRefs` function from Pinia is used to convert the properties of a Pinia store into reactive references.
+    - This is particularly useful when we want to destructure the store properties while maintaining their reactivity.
+    - Example
+    <template>
+        <div>
+            <p>Count: {{ count }}</p>
+            <p>Double Count: {{ doubleCount }}</p>
+            <button @click="increment()">Increment</button>
+        </div>
+    </template>
+    <script setup>
+        import { useCounterStore } from './stores/counter'
+        import { storeToRefs } from 'pinia'
+        const counterStore = useCounterStore();
+        const { count, doubleCount } = storeToRefs(counterStore);
+        const { increment } = counterStore;
+    </script>
+
+75. $PATCH
+    - The `$patch` method in Pinia is used to update the state of a store in a more efficient way.
+    - It allows us to update multiple properties of the state at once, without having to trigger multiple re-renders.
+    - We can pass an object with the properties we want to update, or a function that receives the current state and returns the updated state.
+    - Example
+    // Using an object
+    counterStore.$patch({
+        count: store.count + 1,
+        name: 'New Name'
+    })
+    // Using a function
+    counterStore.$patch(state => {
+        state.count += 1;
+        state.name = 'New Name';
+    })
+
+76. $RESET 
+    - The `$reset` method in Pinia is used to reset the state of a store to its initial state.
+    - This can be useful when we want to clear the state of a store, for example, when logging out a user or resetting a form.
+    - Example
+    counterStore.$reset() // Resets the store state to its initial state
+    - Note : $reset only available in Options API stores, not in setup stores. For setup stores we can create our own reset action.
+
+77. $SUBSCRIBE
+    - The `$subscribe` method in Pinia is used to listen for changes in the store's state.
+    - It allows us to execute a callback function whenever the state of the store changes.
+    - We can use this to perform side effects or trigger actions based on state changes.
+    - Example
+    const unsubscribe = counterStore.$subscribe((mutation, state) => {
+        console.log('Mutation:', mutation)
+        console.log('New State:', state)
+    })
+    // To stop listening for changes, we can call the unsubscribe function
+    unsubscribe()
+
+78. GETTERS IN PINIA COMPOSITION API STORE
+    - Getters in Pinia are similar to computed properties in Vue.
+    - They allow us to define derived state based on the store's state.
+
+79. CSR - CLIENT SIDE RENDERING - VUE 3
+    - The entire application is rendered on the client(browser) using JavaScript.
+    - When user requests a page, the server sends a minimal HTML file with a script tag that loads the Vue application.
+    - Then browser downloads the Javascript files, execute them and builds the UI.
+    - Pros
+        - Faster server response time since server only sends minimal HTML.
+        - Cheaper server load as server does not have to render the entire page.
+        - Better interactivity as the entire application is loaded on the client.
+    - Cons
+        - Slower initial load time as browser has to download and execute JavaScript files before rendering the UI.
+        - Poor SEO as search engines may have difficulty indexing JavaScript-rendered content.
+        - Not suitable for users with slow internet connections or older devices.
+
+80. SSR - SERVER SIDE RENDERING - VUE 3
+    - The application is rendered on the server and the fully rendered HTML is sent to the client.
+    - When user requests a page, the server renders the Vue application and sends the fully rendered HTML to the browser.
+    - Then browser downloads the Javascript files and hydrates the application, making it interactive.
+    - Pros
+        - Faster initial load time as the fully rendered HTML is sent to the browser.
+        - Better SEO as search engines can easily index the fully rendered HTML content.
+        - Suitable for users with slow internet connections or older devices.
+    - Cons
+        - Slower server response time as server has to render the entire page.
+        - More expensive server load as server has to render the entire page for each request.
+        - Less interactivity as the initial HTML is static and requires hydration to become interactive.
+
+81. HYDRATION
+    - Hydration is the process of attaching event listeners and making the server-rendered HTML interactive
+    - When the server sends the fully rendered HTML to the browser, it is static and does not have any event listeners attached to it.
+    - The browser downloads the JavaScript files and executes them, which attaches the event listeners to the existing HTML and makes it interactive.
+    - Hydration is an important step in SSR as it allows the application to become fully functional on the client side.
+
+82. HYDRATION WARNINGS 
+    - In CSR also we can get hydration warnings due to below reasons
+        - Invalid HTML structure - because browser auto corrects the invalid HTML in virtual DOM then compared with actual DOM it gives warning.
+        - Vue’s virtual DOM and actual DOM differ for any reason.
+
+83. FCP && LCP && CLS 
+    - FCP - First Contentful Paint 
+        - Time taken to render the first piece of content (text, image, SVG, etc.) on the screen.
+        - Gives the user immediate feedback that something is happening.
+        - How to improve:
+            - Optimize server response time (faster backend or SSR).
+            - Reduce render-blocking CSS and JavaScript
+            - Inline critical CSS
+            - Preload important fonts.
+    
+    - LCP - Largest Contentful Paint 
+        - Time taken to render the largest visible content element
+       - How to improve:
+            - Optimize images (resize, compress, WebP).
+            - Use a CDN for faster asset delivery.
+            - Minimize main-thread work (heavy JS computations).
+            - Consider SSR or pre-rendering for critical content.
+    
+    - CLS - Cumulative Layout Shift 
+        - Measures visual stability — how much the layout shifts unexpectedly during page load. 
+        - Layout shifts frustrate users and can lead to accidental clicks.
+        - How to improve:
+            - Always include size attributes on images and videos.
+            - Avoid inserting content above existing content (e.g., ads, banners).
+            - Use CSS transform animations instead of properties that trigger layout changes.
+            - Reserve space for dynamic content (e.g., ads, embeds).
+
+    - We can use tools like Lighthouse or PageSpeed Insights to measure these metrics and identify areas for improvement.
+
+84. PWA - PROGRESSIVE WEB APPS
+    - Progressive Web Apps (PWAs) are web applications that use modern web capabilities to deliver an app-like experience to users.
+    - PWAs can be installed on the user's device, work offline, and provide a fast and reliable experience.
+    - We can use the Vue CLI PWA plugin to easily add PWA features to our Vue applications.
+    - The plugin generates a service worker, manifest file, and other necessary files for a PWA.
+    - We can customize the PWA settings in the `vue.config.js` file.
+
+85. SEMANTIC HTML && ARIA ATTRIBUTES
+    - HTML elements that have the meaning about their role in the web page.
+    - Using semantic HTML improves accessibility, SEO, and maintainability of the code.
+    - Examples of semantic HTML elements:
+        - `<header>`: Represents the header of a section or page.
+        - `<nav>`: Represents a section of navigation links.
+        - `<main>`: Represents the main content of a document.
+        - `<article>`: Represents a self-contained piece of content.
+        - `<section>`: Represents a thematic grouping of content.
+        - `<aside>`: Represents content that is tangentially related to the main content.
+        - `<footer>`: Represents the footer of a section or page.
+        - `<button>`: Represents a clickable button.
+        - `<form>`: Represents a form for user input.
+        - `<label>`: Represents a label for an input element.
+        - `<input>`: Represents an input field.
+    
+    - ARIA (Accessible Rich Internet Applications) attributes are used to enhance the accessibility of web applications.
+        - They provide additional information about the roles, states, and properties of elements.
+        - Examples of ARIA attributes:
+            - `role`: Defines the role of an element (e.g., `button`, `navigation`, `main`).
+            - `aria-label`: Provides an accessible label for an element.
+            - `aria-labelledby`: References another element that provides the label for the current element.
+            - `aria-hidden`: Indicates whether an element is visible or hidden to assistive technologies.
+            - `aria-expanded`: Indicates whether a collapsible element is expanded or collapsed.
+            - `aria-controls`: Identifies the element that is controlled by the current element (e.g., a button that toggles a menu).
+86. TABINDEX
+    - in HTML some elements are focusable by default like links, buttons, form elements.
+    - But some elements are not focusable by default like div, span, p etc.
+    - We can make any element focusable by adding the `tabindex` attribute to it.
+    - tabindex="0" makes the element focusable and includes it in the natural tab order
+    - tabindex="-1" makes the element focusable but excludes it from the natural tab order
+    - tabindex="positive number" makes the element focusable and includes it in the tab order before elements with tabindex="0"
+    - We should use tabindex sparingly and only when necessary, as it can affect the natural tab order and accessibility of the page.
+    - Example
+    <div tabindex="0">Focusable Div</div>
+    <div tabindex="-1">Focusable Div but not in tab order</div>
+    <div tabindex="1">Focusable Div with higher priority in tab order</div>
+
+87. ACCESSABILITY
+    - Making resources and services usable by everyone regardless of their disabilities.
+    - Important for inclusivity, legal compliance, and better user experience.
+    - Best practices:
+        - Use semantic HTML elements (e.g., `<button>`, `<nav>`, `<header>`, `<main>`, `<footer>`).
+        - Provide alternative text for images using the `alt` attribute.
+        - Ensure all interactive elements are focusable and operable via keyboard.
+        - Use meaningful link text that describes the destination or action.
+        - Implement skip links to allow users to bypass repetitive content.
+        - Dont do outline none and use for id to labels
+        - Ensure sufficient color contrast between text and background.
+        - Make interactive elements (buttons, links) keyboard accessible.
+        - Use ARIA (Accessible Rich Internet Applications) attributes to enhance accessibility.
+        - Test with screen readers and other assistive technologies.
+    - Tools:
+        - axe
+        - Lighthouse
+
+88. SUSPENSE
+    - Used to handle async components and provide a fallback UI while waiting for the async component to load.
+    - We can wrap the async component with the `<Suspense>` component and provide a fallback slot.
+    - Example
+    <template>
+        <Suspense>
+            <template #default>
+                <AsyncComponent />
+            </template>
+            <template #fallback>
+                <div>Loading...</div>
+            </template>
+        </Suspense>
+    </template>
+    <script setup>
+        import { defineAsyncComponent } from 'vue'
+        const AsyncComponent = defineAsyncComponent(() => import('./AsyncComponent.vue'))
+    </script>
+
+89. HOW TO REDUCE BUNDLE SIZE IN VUE 3
+    - Use Vue CLI or Vite for project setup, as they come with built-in optimizations.
+    - Use dynamic imports and code splitting to load only the necessary code for each route or component.
+    - Remove unused dependencies and libraries from the project.
+    - Use tree-shaking to eliminate unused code from the final bundle.
+    - Minify and compress the JavaScript and CSS files using tools like Terser and CSSNano.
+    - Optimize images by compressing them and using modern formats like WebP.
+    - Use a CDN to serve static assets, which can reduce the load on the server and improve performance.
+    - Analyze the bundle size using tools like Webpack Bundle Analyzer or Rollup Plugin Visualizer to identify large dependencies and optimize them.
+
+90. HOW TO DEBUG UNNECESSARY RE-RENDER IN VUE 3
+    - Why re-render happens
+        - Reactive data changes
+        - Props changes
+        - Parent component re-renders
+        - Key attribute changes in v-for
+        - Reactive object used inline
+    - How to debug
+        - Use Vue Devtools to inspect the component tree and see which components are re-rendering.
+        - Check the reactive data and props used in the component to see if they are changing unnecessarily.
+        - Use the `console.log` statement in the `setup` function or lifecycle hooks to track when the component is re-rendering.
+        - Use the `watch` function to monitor specific reactive data or props and see if they are changing unexpectedly.
+        - Check for any parent components that may be re-rendering and causing the child component to re-render as well.
+        - Ensure that the `key` attribute in `v-for` loops is unique and stable to prevent unnecessary re-renders.
+        - Avoid using reactive objects or arrays inline in the template, as this can cause unnecessary re-renders.
+    - How to solve
+        - Avoid creating new objects or arrays inline in the template.
+        - Use `computed` properties to derive values from reactive data instead of using methods in the template.
+        - Use v-memo to memoize the component and prevent unnecessary re-renders.
+        - Split components into smaller, more focused components to reduce the scope of re-renders.
+        - Avoid inline functions in the template, as they create new function instances on each render.
+
 
 
 
