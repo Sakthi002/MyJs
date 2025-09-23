@@ -1,0 +1,14 @@
+1. We can bind state values to style attributes in <style> tag using v-bind directive.
+   - v-bind(color);
+   <template>
+        <p>Text with dynamic color</p>
+    </template>
+    <script setup>
+        import { ref } from 'vue';
+        const color = ref('blue');
+    </script>
+    <style scoped>
+        p {
+            color: v-bind(color);
+        }
+    </style>

@@ -1321,3 +1321,34 @@ ILLEGAL SHADOWING
 
         - With stopPropagation: "First listener" then "Second listener"
         - With stopImmediatePropagation: Only "First listener"
+
+69. COMPOSE && PIPE 
+
+    - Function Composition is a technique of combining multiple functions to create a new function
+    - The result of one function is passed as input to the next function
+    
+    - COMPOSE - Right to Left
+        - function compose(...fns) {
+            return function (initialValue) {
+                return fns.reduceRight((acc, fn) => fn(acc), initialValue);
+            }
+        }
+
+        const add2 = x => x + 2;
+        const multiply3 = x => x * 3;
+        const subtract1 = x => x - 1;
+
+        const composedFunction = compose(subtract1, multiply3, add2);
+        console.log(composedFunction(5)); // ((5 + 2) * 3) - 1 = 20
+
+    - PIPE - Left to Right
+        - function pipe(...fns) {
+            return function (initialValue) {
+                return fns.reduce((acc, fn) => fn(acc), initialValue);
+            }
+        }
+        const add2 = x => x + 2;
+        const multiply3 = x => x * 3;
+        const subtract1 = x => x - 1;
+        const pipedFunction = pipe(add2, multiply3, subtract1);
+        console.log(pipedFunction(5)); // ((5 + 2) * 3) - 1 = 20
