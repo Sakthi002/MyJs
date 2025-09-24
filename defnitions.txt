@@ -1352,3 +1352,24 @@ ILLEGAL SHADOWING
         const subtract1 = x => x - 1;
         const pipedFunction = pipe(add2, multiply3, subtract1);
         console.log(pipedFunction(5)); // ((5 + 2) * 3) - 1 = 20
+
+70. FLAT && FLATMAP
+
+    - FLAT
+        - The flat() method creates a new array with all sub-array elements concatenated into it recursively up to the specified depth.
+        - Default depth is 1
+        - For deep flattening - we can use `Infinity` as depth
+
+        let arr = [1, 2, [3, 4, [5, 6]]];
+        console.log(arr.flat()); // [1, 2, 3, 4, [5, 6]]
+        console.log(arr.flat(2)); // [1, 2, 3, 4, 5, 6]
+        let arrr = [1,2,3,[4,5,[8,[9,10],11]]]
+        console.log(arrr.flat(Infinity));
+
+    - FLATMAP
+        - The flatMap() method first maps each element using a mapping function, then flattens the result into a new array.
+        - It is identical to a map followed by a flat of depth 1.
+
+        let arr = [1, 2, 3];
+        let result = arr.flatMap(x => [x, x * 2]);
+        console.log(result); // [1, 2, 2, 4, 3, 6]
