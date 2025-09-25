@@ -1881,7 +1881,7 @@
     </script>
 
     - In <script setup>
-        - It loses reactivity if we destructure or accessing with . 
+        - Primitive refs loses reactivity if we destructure or accessing with . 
         <template>
             <div>
                 <p>Count: {{ count }}</p>
@@ -1935,6 +1935,18 @@
         const { count, doubleCount } = storeToRefs(counterStore);
         const { increment } = counterStore;
     </script>
+
+    - When to use storeToRefs
+
+        - You want to destructure state that’s a primitive ref (e.g. count = ref(1)) without losing reactivity.
+        - You want to destructure getters (which are computed properties) without losing reactivity.
+
+    Because in <script setup>, destructuring primitive refs or getters directly causes Vue’s auto-unwrapping to break reactivity.
+
+    - When not necessary
+
+        - For complex refs (arrays or objects like your notes), destructuring usually keeps reactivity without storeToRefs.
+        - For actions (functions), destructuring is safe — they don’t lose reactivity.
 
 75. $PATCH
     - The `$patch` method in Pinia is used to update the state of a store in a more efficient way.
@@ -2155,8 +2167,13 @@
         - Split components into smaller, more focused components to reduce the scope of re-renders.
         - Avoid inline functions in the template, as they create new function instances on each render.
 
-
-
+91. ATTACKS 
+    - XSS (Cross-Site Scripting)
+        - An attacker injects malicious scripts into a trusted website, which are then executed in the context of the user's browser.
+        - Prevention:
+            - Always sanitize and validate user input.
+            - Use Vue's built-in escaping mechanisms (e.g., `{{ }}`) to prevent injection attacks.
+            - Avoid using `v-html` unless absolutely necessary, and sanitize any HTML content before rendering it.
 
 
 

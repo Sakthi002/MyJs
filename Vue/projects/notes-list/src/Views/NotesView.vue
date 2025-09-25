@@ -1,64 +1,46 @@
 <script setup>
 import SingleNote from '@/components/Notes/SingleNote.vue';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
+import { useCharacterLength } from '@/composables/useCharacterLength';
 
-const notes = ref([
-    { id: 'id1', content: 'First note' },
-    { id: 'id2', content: 'Second note' }
-]);
+import { useNoteStore } from '@/stores/NoteStore';
+import { storeToRefs } from 'pinia';
+import AddEditNote from '@/components/Notes/AddEditNote.vue';
+const noteStore = useNoteStore();
+
+const { notes } = storeToRefs(noteStore);
 
 const newNote = ref("");
 
-const noteRef = ref(null);
+const addEditNote = ref(null);
 
 const addNew = () => {
 
-    let uniqueId = new Date().getTime();
-
-    const note = {
-        id : uniqueId.toString(),
-        content: newNote.value
-    }
-
-    notes.value.unshift(note);
+    noteStore.addNote(newNote.value)
 
     newNote.value = "";
 
-    noteRef.value.focus();
+    addEditNote.value.focusTextArea();
 }
 
-const doDelete = (id) => {
-    
-    let idx = notes.value.findIndex(obj => obj.id === id);
-    
-    notes.value.splice(idx,1);
-    
-}
+
+useCharacterLength(newNote);
+
 </script>
 
 <template>
 
-    <div class="has-background-danger my-4 p-4 rounded">
+    <AddEditNote v-model:note="newNote" ref="addEditNote" class="has-background-danger">
 
-        <div class="field">
-        
-            <label class="label">note</label>
-            
+        <template #control>
+
             <div class="control">
 
-                <textarea class="textarea" placeholder="Add new note.." v-model="newNote" ref="noteRef"></textarea>
+                <button class="button" @click.prevent="addNew" :disabled="!newNote">Add New</button>
             </div>
-        </div>
-
-        <div class="field is-grouped is-grouped-right">
-            
-            <div class="control">
-
-                <button class="button is-link" @click.prevent="addNew" :disabled="!newNote">Add New</button>
-            </div>
-        </div>
-    </div>
+        </template>
+    </AddEditNote>
   
-    <SingleNote v-for="note in notes" :key="note.id" :note="note" @onDelete="doDelete"></SingleNote>
+    <SingleNote v-for="note in notes" :key="note.id" :note="note"></SingleNote>
 </template>

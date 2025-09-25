@@ -1,6 +1,10 @@
 <script setup>
-import { computed } from 'vue';
+    
+    import { useNoteStore } from '@/stores/NoteStore';
+    import { computed, reactive } from 'vue';
+import DeleteNoteModal from './DeleteNoteModal.vue';
 
+    const noteStore = useNoteStore();
 
     const props = defineProps({
 
@@ -16,11 +20,13 @@ import { computed } from 'vue';
         return `${len} ${desc}` 
     })
 
-    const emit = defineEmits(['onDelete']);
+    const modals = reactive({
+        deleteModal: false
+    })
 
-    const deleteNote = (id) => {
+    const handleDelete = () => {
 
-        emit('onDelete', id);
+        modals.deleteModal = true;
     }
 </script>
 
@@ -43,9 +49,11 @@ import { computed } from 'vue';
         
         <footer class="card-footer">
         
-            <a href="#" class="card-footer-item">Edit</a>
+            <RouterLink :to="{ name: 'edit-note', params: { id : note.id }}" class="card-footer-item">Edit</RouterLink>
         
-            <a href="javascript:;" class="card-footer-item" @click.prevent="deleteNote(note.id)">Delete</a>
+            <a href="javascript:;" class="card-footer-item" @click.prevent="handleDelete">Delete</a>
         </footer>
+
+        <DeleteNoteModal v-if="modals.deleteModal" v-model="modals.deleteModal" :noteId="note.id"></DeleteNoteModal>
     </div>
 </template>
