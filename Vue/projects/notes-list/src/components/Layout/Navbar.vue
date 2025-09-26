@@ -27,6 +27,11 @@ const showNavbarOnMobile = ref(false);
 
             <div id="navbarBasicExample" class="navbar-menu" :class="{'is-active' : showNavbarOnMobile}">
 
+                <div class="navbar-start">
+
+                    <button class="button is-info is-small mt-3 ml-3" style="height: 30px;">Logout</button>
+                </div>
+
                 <div class="navbar-end">
                 
                     <RouterLink class="navbar-item" :to="{ name: 'notes' }" :active-class="'is-active'">Notes</RouterLink>

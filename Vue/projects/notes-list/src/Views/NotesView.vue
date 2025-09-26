@@ -41,6 +41,18 @@ useCharacterLength(newNote);
             </div>
         </template>
     </AddEditNote>
+
+    <template v-if="!noteStore.notesLoded">
+
+        <progress class="progress is-large is-info" max="100"></progress>
+    </template>
   
-    <SingleNote v-for="note in notes" :key="note.id" :note="note"></SingleNote>
+    <template v-else>
+
+        <SingleNote v-for="note in notes" :key="note.id" :note="note"></SingleNote>
+    </template>
+
+    <div v-if="noteStore.notesLoded && !notes.length" class="has-text-centered is-size-4 py-6 has-text-grey-light is-family-monospace">
+        No results found!!!
+        </div>
 </template>
