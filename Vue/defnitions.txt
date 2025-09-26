@@ -2175,16 +2175,38 @@
             - Use Vue's built-in escaping mechanisms (e.g., `{{ }}`) to prevent injection attacks.
             - Avoid using `v-html` unless absolutely necessary, and sanitize any HTML content before rendering it.
 
+92. NEXTTICK
 
+    What it is:
+        - nextTick tells Vue: “Wait until the page (DOM) is updated, then run my code.”
+        - runs the code after the DOM has been updated.
 
+    Why we use it:
+        When you change a reactive value, Vue doesn’t update the page right away. It waits and updates everything together (for speed).
+        If you need the new DOM (for example: measure size, scroll, or focus), you must wait until Vue is done. nextTick lets you do that.
 
+        <template>
+            <div>
+                <p ref="messageRef">{{ message }}</p>
+                <button @click="updateMessage">Update Message</button>
+            </div>
+        </template>
 
+        <script setup>
+            import { ref, nextTick } from 'vue'
 
+            const message = ref('Hello, World!')
+            const messageRef = ref(null)
 
+            function updateMessage() {
+                message.value = 'Hello, Vue 3!'
 
-
-
-
+                // Wait for Vue to update the DOM
+                nextTick(() => {
+                    console.log('Message width:', messageRef.value.offsetWidth)
+                })
+            }
+        </script>
 
 
 

@@ -2,13 +2,13 @@
 
 import { onMounted } from 'vue';
 import Navbar from './components/Layout/Navbar.vue';
-import { useNoteStore } from './stores/NoteStore';
+import { useAuthStore } from './stores/AuthStore';
 
-const noteStore = useNoteStore();
+const authStore = useAuthStore();
 
 onMounted(() => {
 
-	noteStore.getNotes();
+	authStore.init();
 })
 
 </script>

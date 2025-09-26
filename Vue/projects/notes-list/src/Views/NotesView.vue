@@ -1,13 +1,15 @@
 <script setup>
 import SingleNote from '@/components/Notes/SingleNote.vue';
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 
 import { useCharacterLength } from '@/composables/useCharacterLength';
 
 import { useNoteStore } from '@/stores/NoteStore';
 import { storeToRefs } from 'pinia';
 import AddEditNote from '@/components/Notes/AddEditNote.vue';
+import { useAuthStore } from '@/stores/AuthStore';
 const noteStore = useNoteStore();
+const authStore = useNoteStore();
 
 const { notes } = storeToRefs(noteStore);
 
@@ -23,7 +25,6 @@ const addNew = () => {
 
     addEditNote.value.focusTextArea();
 }
-
 
 useCharacterLength(newNote);
 
@@ -52,7 +53,7 @@ useCharacterLength(newNote);
         <SingleNote v-for="note in notes" :key="note.id" :note="note"></SingleNote>
     </template>
 
-    <div v-if="noteStore.notesLoded && !notes.length" class="has-text-centered is-size-4 py-6 has-text-grey-light is-family-monospace">
+    <div v-if="(noteStore.notesLoded && !notes.length)" class="has-text-centered is-size-4 py-6 has-text-grey-light is-family-monospace">
         No results found!!!
         </div>
 </template>

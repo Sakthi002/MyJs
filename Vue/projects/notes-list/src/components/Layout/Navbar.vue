@@ -1,8 +1,13 @@
 <script setup>
 import { ref } from 'vue';
-
+import { useAuthStore } from '@/stores/AuthStore';
+const authStore = useAuthStore();
 
 const showNavbarOnMobile = ref(false);
+
+const logOut = () => {
+    authStore.logOut();
+}
 
 </script>
 
@@ -27,9 +32,9 @@ const showNavbarOnMobile = ref(false);
 
             <div id="navbarBasicExample" class="navbar-menu" :class="{'is-active' : showNavbarOnMobile}">
 
-                <div class="navbar-start">
+                <div class="navbar-start" v-if="authStore.user.uid">
 
-                    <button class="button is-info is-small mt-3 ml-3" style="height: 30px;">Logout</button>
+                    <button class="button is-info is-small mt-3 ml-3" style="height: 30px;" @click="logOut">Logout {{ authStore.user.email }}</button>
                 </div>
 
                 <div class="navbar-end">

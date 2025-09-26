@@ -3,12 +3,17 @@ import { computed, ref } from "vue";
 
 import { collection, getDocs, onSnapshot, doc, setDoc, updateDoc, deleteDoc, addDoc, query, orderBy } from "firebase/firestore";
 import { db } from "@/js/firebase";
+import { useAuthStore } from "./AuthStore";
 
 export const useNoteStore = defineStore('noteStore', () => {
 
-    const noteCollectionRef = collection(db, "notes");
-    const notesListQuery = query(noteCollectionRef, orderBy("date", "desc"));
+    const authStore = useAuthStore();
+
+    let noteCollectionRef;
+    let notesListQuery;
+
     const notesLoded = ref(false);
+    let notesSnapshot = null;
 
     const notes = ref([]);
 
@@ -19,6 +24,10 @@ export const useNoteStore = defineStore('noteStore', () => {
     })
 
     const getNotes = async () => {
+
+        noteCollectionRef = collection(db, "users", authStore.user.uid, 'notes');
+        
+        notesListQuery = query(noteCollectionRef, orderBy("date", "desc"));
         
         // const querySnapshot = await getDocs(collection(db, "notes"));
         
@@ -30,7 +39,7 @@ export const useNoteStore = defineStore('noteStore', () => {
         //     notes.value.push(note);
         // });
 
-        onSnapshot(notesListQuery, (querySnapshot) => {
+        notesSnapshot = onSnapshot(notesListQuery, (querySnapshot) => {
             let rNotes = [];
             notesLoded.value = false;
             querySnapshot.forEach((doc) => {
@@ -97,6 +106,11 @@ export const useNoteStore = defineStore('noteStore', () => {
         return count;
     })
 
+    const clearNotes = () => {
+        notes.value = [];
+        if(notesSnapshot) notesSnapshot()
+    }
+
     return {
         notes,
         getNoteContentById,
@@ -106,6 +120,7 @@ export const useNoteStore = defineStore('noteStore', () => {
         totalNotesCount,
         totalCharactersCount,
         getNotes,
-        notesLoded
+        notesLoded,
+        clearNotes
     }
 })

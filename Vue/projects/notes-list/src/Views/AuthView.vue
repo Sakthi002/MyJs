@@ -111,7 +111,7 @@
         
         } else {
 
-            console.log('do login', creds);
+            authStore.signInUser(creds);
         }
     }
 

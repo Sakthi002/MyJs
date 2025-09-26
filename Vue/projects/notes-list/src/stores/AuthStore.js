@@ -1,13 +1,39 @@
 import { defineStore } from "pinia";
 
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword , signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
 
 import { auth } from "@/js/firebase";
+
 import { computed, ref } from "vue";
+import { useRouter } from "vue-router";
+import { useNoteStore } from "./NoteStore";
 
 export const useAuthStore = defineStore('auth', () => {
 
+    const noteStore = useNoteStore();
+
+    const user = ref({});
+
     const errorMessage = ref('')
+
+    const router = useRouter();
+
+    const init = () => {
+
+        onAuthStateChanged(auth, (data) => {
+
+            if (data) {
+        
+                user.value = { uid: data.uid, email: data.email }
+
+                noteStore.getNotes();
+
+            } else {
+                
+                user.value = {};
+            }
+        });
+    }
 
     const registerUser = (creds) => {
 
@@ -15,10 +41,38 @@ export const useAuthStore = defineStore('auth', () => {
 
         createUserWithEmailAndPassword(auth, creds.email, creds.password).then((response) => {
         
-            console.log(response,'response');
+            router.push({ name: 'notes' });
             
         }).catch((error) => {
 
+            errorMessage.value = error.message;
+        });
+    }
+
+    const signInUser = (creds) => {
+
+        errorMessage.value = "";
+
+        signInWithEmailAndPassword(auth, creds.email, creds.password).then((userCredential) => {
+           
+            router.push({ name: 'notes' });
+            
+        }).catch((error) => {
+            
+            errorMessage.value = error.message;
+        });
+    }
+
+    const logOut = () => {
+
+        signOut(auth).then(() => {
+
+            router.replace({ name: 'auth' });
+
+            noteStore.clearNotes()
+        
+        }).catch((error) => {
+        
             errorMessage.value = error.message;
         });
     }
@@ -33,8 +87,12 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     return {
+        user,
+        init,
         registerUser,
         errMessage,
-        clearError
+        clearError,
+        signInUser,
+        logOut
     }
 })
