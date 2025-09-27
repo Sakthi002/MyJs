@@ -8,3 +8,28 @@
 8️⃣ How do you handle CORS issues in a frontend app?
 9️⃣ What’s the difference between localStorage, sessionStorage, and cookies?
 🔟 How do you ensure your app is accessible (WCAG/ARIA)?
+
+Here are 25 questions that consistently challenge even experienced devs 👇
+
+1️⃣ Build a chainable calculator.
+2️⃣ Explain prototype vs prototype inheritance.
+3️⃣ Polyfill call, apply, bind.
+4️⃣ Custom polyfills for map, filter, reduce.
+5️⃣ Flatten a nested array (recursion).
+6️⃣ Flatten a complex object.
+7️⃣ Deep clone an object (no JSON hack).
+8️⃣ Debounce & throttle (and React hooks version).
+9️⃣ Merge two sorted arrays.
+🔟 Promise sequencing & retries.
+1️⃣1️⃣ Cancelable promises.
+1️⃣2️⃣ Polyfill: Promise.all / race / allSettled.
+1️⃣3️⃣ MapLimit.
+1️⃣4️⃣ Convert camelCase ⇄ snake_case.
+1️⃣5️⃣ Diff two documents (structured output).
+1️⃣6️⃣ Custom events on array push.
+1️⃣7️⃣ Serialize/deserialize JSON with circular refs.
+1️⃣8️⃣ Typeahead search + LRU cache.
+1️⃣9️⃣ Event emitter (on, off, emit).
+2️⃣0️⃣ Currying (any args).
+2️⃣1️⃣ Pipe & compose functions.
+2️⃣2️⃣ Deep comparison between objects.
