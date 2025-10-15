@@ -2852,4 +2852,27 @@
                 let flatMappedArr = arr.flatMap((item) => [item, item * 2]);
                 console.log(flatMappedArr); // Output: [1, 2, 2, 4, 3, 6]
                 console.log(arr); // Output: [1, 2, 3] (original array remains unchanged)
+===============================================================================================================================
+17. JAVASCRIPT DEBUGGING USING DEVTOOLS
+===============================================================================================================================
+    - Debugging is the process of finding and fixing errors in our code.
+    - JavaScript debugging can be done using browser developer tools.
+    - Most modern browsers have built-in developer tools that can be accessed by pressing F12 or right-clicking on the page and selecting "Inspect" or "Inspect Element".
+    - The developer tools usually have a "Console" tab where we can see error messages and log messages from our code.
+    - We can also use the "Sources" tab to set breakpoints and step through our code line by line to find errors.
+    - Other useful features of developer tools include:
+        1. Network tab: to monitor network requests and responses.
+        2. Elements tab: to inspect and modify HTML and CSS.
+        3. Performance tab: to analyze the performance of our code.
+        4. Memory tab: to analyze memory usage and find memory leaks.
+    - Example:
+        - Open the developer tools in your browser.
+        - Go to the "Console" tab and type some JavaScript code to see the output.
+        - Go to the "Sources" tab and set a breakpoint in your code to step through it line by line.
+    - Breakpoints:
+        - A breakpoint is a marker that we can set in our code to pause the execution of the code at a specific line.
+        - We can set breakpoints in the "Sources" tab of the developer tools by clicking on the line number where we want to set the breakpoint.
+        - When the code execution reaches the breakpoint, it will pause and we can inspect the variables and step through the code line by line.
+        - We can also use conditional breakpoints to pause the execution only when a specific condition is met.
+================================================================================================================================
 
