@@ -2875,4 +2875,75 @@
         - When the code execution reaches the breakpoint, it will pause and we can inspect the variables and step through the code line by line.
         - We can also use conditional breakpoints to pause the execution only when a specific condition is met.
 ================================================================================================================================
+18. DOM
+================================================================================================================================
+    - DOM stands for Document Object Model.
+    - It is a programming interface for web documents.
+    - It represents the page so that programs can change the document structure, style and content.
+    - When we load html page in browser - browser dont see it as a raw text, it creates a tree structure called DOM tree.
+    - DOM tree is made up of nodes. Each node represents a part of the document.
+    - DOM is not part of JavaScript, it is a separate API that can be accessed using JavaScript.
+    - We can use JavaScript to manipulate the DOM tree and change the content and structure of the web page.
 
+    - DOM TYPES
+        1. Document - represents the entire HTML document. It is the root node of the DOM tree.
+        2. Node - Everything in the DOM is a node. Element Node, Text Node, Attribute Node etc.
+        3. Element - represents an HTML element. It is a type of node.
+        4. Attribute - represents an attribute of an HTML element. It is a type of node.
+        5. NodeList - represents a collection of nodes. It is not an array, but it is array-like.
+        6. NamedNodeMap - represents a collection of attributes. It is not an array, but it is array-like.
+
+    - ACCESSING DOM
+        - We can access the DOM using the global object called document.
+        - The document object has many properties and methods that we can use to access and manipulate the DOM.
+        - Some of the commonly used properties and methods are:
+            1. document.getElementById() - returns the element with the specified id.
+            2. document.getElementsByClassName() - returns a collection of elements with the specified class name.
+            3. document.getElementsByTagName() - returns a collection of elements with the specified tag name.
+            4. document.querySelector() - returns the first element that matches the specified CSS selector.
+            5. document.querySelectorAll() - returns a collection of elements that match the specified CSS selector.
+
+            - Note: getElementsByClassName and getElementsByTagName returns a live HTMLCollection. It means that if the DOM changes, the collection will be updated automatically.
+                    querySelectorAll returns a static NodeList. It means that if the DOM changes, the collection will not be updated automatically.
+
+                    - Example for above point:
+                        let divs = document.getElementsByTagName('div');
+                        console.log(divs.length); // Output: 2
+                        let newDiv = document.createElement('div');
+                        document.body.appendChild(newDiv);
+                        console.log(divs.length); // Output: 3 (HTMLCollection is live)
+
+                        let paragraphs = document.querySelectorAll('p');
+                        console.log(paragraphs.length); // Output: 2
+                        let newParagraph = document.createElement('p');
+                        document.body.appendChild(newParagraph);
+                        console.log(paragraphs.length); // Output: 2 (NodeList is static)
+        - Example:
+            // HTML
+            <div id="myDiv" class="myClass">Hello World</div>
+            <p class="myClass">This is a paragraph.</p>
+            <p>This is another paragraph.</p>
+            <script>
+                // JavaScript
+                let div = document.getElementById('myDiv');
+                console.log(div); // Output: <div id="myDiv" class="myClass">Hello World</div>
+
+                let classElements = document.getElementsByClassName('myClass');
+                console.log(classElements); // Output: HTMLCollection(2) [div#myDiv.myClass, p.myClass]
+
+                let tagElements = document.getElementsByTagName('p');
+                console.log(tagElements); // Output: HTMLCollection(2) [p.myClass, p]
+
+                let firstParagraph = document.querySelector('p');
+                console.log(firstParagraph); // Output: <p class="myClass">This is a paragraph.</p>
+
+                let allParagraphs = document.querySelectorAll('p');
+                console.log(allParagraphs); // Output: NodeList(2) [p.myClass, p]
+            </script>
+
+        ***** DIFFERENCE BETWEEN HTMLCOLLECTION AND NODELIST *****
+            1. HTMLCollection is a live collection, whereas NodeList can be live or static.
+            2. HTMLCollection only contains element nodes, whereas NodeList can contain any type of nodes (element, text, comment etc.).
+           *3. HTMLCollection does not have forEach method, whereas NodeList has forEach method.
+
+          

@@ -8,6 +8,57 @@
     <script src="tasks.js" defer></script>
 </head>
 <body>
-    <h1>DOM</h1>
+    <h1 id="heading">DOM</h1>
+    <p class="info">This is info paragraph one</p>
+    <p class="info">This is info paragraph two</p>
+    <p>Paragraph withour class</p>
+
+    <button type="button" onclick="highlightText()">Highlight</button>
+
+    <hr/>
+
+    <input type="text" id="searchInput" name="input" onkeyup="filterList()" placeholder="Search..."/>
+
+    <ul id="itemsList">
+        <li>Apple</li>
+        <li>Banana</li>
+        <li>Grapes</li>
+        <li>Cherry</li>
+        <li>Orange</li>
+    </ul>
+
+    <hr />
+
+    <h2>Tasks</h2>
+
+    <div id="text">This is a test. This test is only a test.</div>
+    <div id="result"></div>
+
+    <ul id="cars">
+        <li>BMW</li>
+        <li>Mahindra</li>
+        <li>Audi</li>
+        <li>Toyota</li>
+        <li>Honda</li>
+        <li>Hundai</li>
+        <li>Tata</li>
+        <li>Suzuki</li>
+    </ul>
+
+    <hr />
+
+    <p id="textPara">This is a test. This test is only a test.</p>
+    <input type="text" id="findWord" placeholder="Word to find">
+    <input type="text" id="replaceWord" placeholder="Word to replace with">
+    <button id="replaceBtn">Replace</button>
+
+    <hr />
+
+    <a href="https://example.com">Example</a>
+    <a href="https://google.com">Google</a>
+    <a href="https://example.com">Example</a>
+    <a href="https://openai.com">OpenAI</a>
+
+    <div id="linkCount"></div>
 </body>
 </html>
