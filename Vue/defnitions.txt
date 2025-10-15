@@ -104,7 +104,7 @@
         import Divider from './Divider.js'
     </script>
 
-10 WAYS OF WRITING COMPONENTS
+10. WAYS OF WRITING COMPONENTS
 
     - Option API
         - We define a component logic's using an object of options like data, methods, computed, watch, lifecycle hooks etc.
@@ -168,6 +168,19 @@
     - Event Handling
         - v-on:click="handleClick" or @click="handleClick" - Binds the `click` event to the `handleClick` method.
 
+***** REACTIVITY ******
+    - In Vue 3, reactivity is implemented using Proxies.
+    - When we define reactive state using ref() or reactive(), Vue wraps the state in a Proxy.
+    - The Proxy intercepts get and set operations on the state.
+    - Accessing a property triggers the get trap, allowing Vue to track dependencies.
+    - Modifying a property triggers the set trap, notifying Vue of a change.
+    - Vue keeps track of which components use which reactive properties so it can update only what’s necessary.
+    - On template render, Vue compiles the template into a render function that produces a Virtual DOM tree.
+    - When reactive data changes, Vue re-runs the render function to produce a new Virtual DOM.
+    - Vue compares the new Virtual DOM with the previous one using a diffing algorithm.
+    - Vue applies only the minimal set of changes to the real DOM to keep it in sync with the Virtual DOM.
+    - This process enables efficient DOM updates and high performance.
+
 14. REACTIVITY OF DATA 
 
     - In three ways we can bind data to the template.
@@ -225,6 +238,54 @@
                 <p>{{ state.count }}</p> <!-- ✅ updates -->
                 <button @click="inc">+</button>
             </template>
+
+***** HOW TO MANAGE A STATE IN VUE 3 *****
+    - In vue 3 state can be managed in several ways.
+    1. Local State
+        - State that is specific to a single component.
+        - Managed using ref or reactive inside the component.
+    2. Shared State
+        - State that is shared between multiple components
+        - Example: User authentication status, theme settings etc.
+        - Vuex/Pinia can be used for complex shared state management.
+    3. Parent-Child State Sharing
+        - We can also use provide/inject API for simple shared state management between parent and child components.
+    4. Simple State Sharing
+        - For very simple cases, we can use an event bus or a global event emitter to share state between components. 
+
+***** AUTH FLOW IN VUE 3 *****
+    - I will create a pinia store to manage the authentication state.
+    - The store will have state properties like isAuthenticated, user, token etc.
+    - The store will have actions like login, logout, register, initAuth etc.
+    - The store will have getters to access the state properties. like isAuthenticated, user etc.
+
+    - I will import authStore in main.js and call initAuth action to check if the user is already logged in. like
+        const authStore = useAuthStore()
+        authStore.initAuth()
+    - initAuth action will make an api call to check if the user is already logged in.
+    - If the user is logged in, it will set the isAuthenticated to true and set the user and token properties.
+    - If the user is not logged in, it will set the isAuthenticated to false and clear the user and token properties.
+    - I will create a router with protected routes that can only be accessed by authenticated users.
+    - I will use navigation guards to protect the routes.
+        router.beforeEach((to, from, next) => {
+            const authStore = useAuthStore()
+            if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+                next('/login')
+            } else {
+                next()
+            }
+        })
+
+***** IN VUE RE-RENDERING HAPPENS IN FOLLOW SCENARIOS *****
+    - When reactive state value changes
+    - Props passed from parent component changes
+    - Computed value changes
+    - Vuex/Pinia store state changes
+
+    - On re-render
+        - Render function runs again (template compiled result)
+        - Only beforeUpdate and onUpdated runs again - other life cycle hooks wont run
+        - Watch and Computed runs if dependencies changes
 
 15. COMPUTED PROPERTIES
     - Normally we can write simple expressions in the template.
@@ -564,6 +625,10 @@
         watch(() => obj.count, (newCount, oldCount) => {
             console.log(`Count changed from ${oldCount} to ${newCount}`)
         })
+
+    ****IMPORTANT****
+        - Source type of watch should be ref, reactive object or getter function.
+        - Example : If you are trying watch properties of a reactive object directly it will not work. because properties are not reactive individually.
 
 28. DEEP AND IMMEDIATE OPTIONS IN WATCHER
     - deep

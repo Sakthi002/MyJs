@@ -1,0 +1,159 @@
+1️⃣ Explain the difference between null, undefined, and NaN in JavaScript.
+2️⃣ How does event delegation work and why is it powerful?
+3️⃣ What’s the difference between == and ===? (Yes, they still ask this 🙃)
+4️⃣ How do you optimize a Vue app’s performance?
+5️⃣ What’s the difference between inline, inline-block, and block in CSS?
+6️⃣ Can you explain hoisting in JavaScript with examples?
+7️⃣ What is debouncing vs throttling, and when to use each?
+8️⃣ How do you handle CORS issues in a frontend app?
+9️⃣ What’s the difference between localStorage, sessionStorage, and cookies?
+🔟 How do you ensure your app is accessible (WCAG/ARIA)?
+
+Here are 25 questions that consistently challenge even experienced devs 👇
+
+1️⃣ Build a chainable calculator.
+2️⃣ Explain prototype vs prototype inheritance.
+3️⃣ Polyfill call, apply, bind.
+4️⃣ Custom polyfills for map, filter, reduce.
+5️⃣ Flatten a nested array (recursion).
+6️⃣ Flatten a complex object.
+7️⃣ Deep clone an object (no JSON hack).
+8️⃣ Debounce & throttle (and React hooks version).
+9️⃣ Merge two sorted arrays.
+🔟 Promise sequencing & retries.
+1️⃣1️⃣ Cancelable promises.
+1️⃣2️⃣ Polyfill: Promise.all / race / allSettled.
+1️⃣3️⃣ MapLimit.
+1️⃣4️⃣ Convert camelCase ⇄ snake_case.
+1️⃣5️⃣ Diff two documents (structured output).
+1️⃣6️⃣ Custom events on array push.
+1️⃣7️⃣ Serialize/deserialize JSON with circular refs.
+1️⃣8️⃣ Typeahead search + LRU cache.
+1️⃣9️⃣ Event emitter (on, off, emit).
+2️⃣0️⃣ Currying (any args).
+2️⃣1️⃣ Pipe & compose functions.
+2️⃣2️⃣ Deep comparison between objects.
+
+Event loop and call stack
+Microtasks vs macrotasks
+Closures and lexical scoping
+Hoisting and the temporal dead zone
+The this keyword and how it changes in arrow vs regular functions
+Object references vs primitive comparisons
+Prototypal inheritance in JavaScript
+Shallow vs deep copy
+Debounce vs throttle and where to use them
+Implicit vs explicit type coercion
+Truthy and falsy values (and equality quirks)
+Difference between == and ===
+call, apply, and bind
+Event delegation and bubbling
+typeof, instanceof, and type checking
+Spread vs rest operators
+map, filter, reduce — and when not to use them
+Currying and partial application
+async/await vs Promises vs callbacks
+Error handling in async JavaScript
+Critical rendering path and what blocks it
+Repaint vs reflow (and avoiding layout thrashing)
+DNS resolution, TCP handshake, TLS, request lifecycle
+How browsers render HTML, CSS, JS
+Preload, prefetch, and lazy loading
+Service workers and caching strategies
+CORS, preflight requests, and SameSite cookies
+Web storage APIs: localStorage, sessionStorage, cookies
+Accessibility best practices (ARIA, focus, semantic HTML)
+Responsive design principles (mobile-first, media queries, viewport units)
+
+
+1. Flatten a deeply nested object to dot paths and unflatten back
+2. Implement cancellable fetch with an AbortController wrapper
+3. Generate valid parentheses combinations for n pairs
+4. Implement once(fn) that runs a function only once
+5. Build a simple LRU cache
+6. Given a stream of integers, return median at each step (Hint: Two heaps)
+7. Convert snake_case → camelCase recursively (with arrays)
+8. Implement set(obj, path, value) to create nested paths
+9. Write a deep-equal function that tolerates order-insensitive arrays of primitives
+10. Implement infinite scroll fetching batches, handling race conditions.
+
+🚀 Most Asked JavaScript Interview Question
+❓ “How do you retry a failed API call in JavaScript?”
+👉 Interviewers love this because it tests your knowledge of Promises + recursion.
+🛑 The Problem
+APIs sometimes fail (due to network issues, server downtime, etc.).
+ Instead of giving up immediately, we should retry the request a few times before throwing an error.
+
+ I was once asked:
+ 👉 “How do you handle heavy computations without blocking the UI?”
+
+Most developers (myself included, back then) jump straight to Promises or async/await.
+But that doesn’t actually solve the problem.
+
+💡 The real answer: Web Workers.
+
+Here’s why:
+JavaScript runs on a single thread.
+A heavy loop (e.g., calculating primes up to 100M) will completely freeze the UI.
+Web Workers let you run those tasks in a background thread, keeping the main thread smooth.
+⚡ Key things to remember about Web Workers:
+❌ No direct access to the DOM.
+🔄 Communication happens via postMessage.
+✅ Ideal for CPU-heavy tasks like data crunching, image processing, or cryptography.
+
+This question looks simple but trips up many devs — it’s really about understanding JS concurrency limits and knowing practical solutions.
+
+Here are 15 uncommon but critical ones:
+1. Explain WeakMap vs Map and why WeakMap keys must be objects.
+2. What are Symbols and where would you actually use them?
+3. How does the new.target meta-property work?
+4. Explain Proxy and give a real-world use case.
+5. How does Reflect API differ from Object methods?
+6. What is BigInt and when should you use it?
+7. How does Intl API (for dates, numbers, currencies) work?
+8. What are Tagged Template Literals and their use cases?
+9. How does requestIdleCallback differ from requestAnimationFrame?
+10. Explain Atomics and SharedArrayBuffer at a high level.
+11. What’s the difference between structuredClone and JSON-based cloning?
+12. How does the event loop differ between browser and Node.js?
+13. What are Generator functions vs Async Generators?
+14. Explain import() dynamic imports and when to use them.
+15. What are Transferable Objects in postMessage (Web Workers)?
+
+🧑‍💻 Frequently Asked Interview Programs:
+1️⃣ Find the longest word in a sentence.
+2️⃣ Check if a string is palindrome.
+3️⃣ Remove duplicates from an array.
+4️⃣ Reverse a string without built-ins.
+5️⃣ Find max consecutive 1’s in an array.
+6️⃣ Factorial of a number.
+7️⃣ Merge & sort two sorted arrays.
+8️⃣ Check if array2 contains squares of array1 (with frequency).
+9️⃣ Check if two strings are anagrams.
+🔟 Get unique objects from array of objects.
+1️⃣1️⃣ Find max number in an array.
+1️⃣2️⃣ Return only even numbers from array.
+1️⃣3️⃣ Check if a number is prime.
+1️⃣4️⃣ Find largest element in a nested array.
+1️⃣5️⃣ Generate Fibonacci sequence.
+1️⃣6️⃣ Count character occurrences in a string.
+1️⃣7️⃣ Sort array ascending.
+1️⃣8️⃣ Sort array descending.
+1️⃣9️⃣ Reverse words in a sentence (no reverse()).
+2️⃣0️⃣ Flatten a nested array.
+2️⃣1️⃣ Convert "a.b.c", "val" → {a:{b:{c:"val"}}}
+
+1. 🔗 Prototypal Inheritance: Can you explain it and how it differs from classical inheritance? Also, demonstrate how to create an object that inherits from another.
+2. 🔄 The Event Loop: Describe its phases and explain how it handles asynchronous operations like setTimeout, promises, and user events.
+3.🔐 Closures: Explain what a closure is and provide a practical use case, like creating private variables or a memoization function.
+4.👉 The this Keyword: How does it work? Explain its value in different contexts: global, as a method, in a constructor, and within an arrow function.
+5.🚦 Debouncing vs. Throttling: What are the differences? Please provide a code implementation for both.
+6. 🐑 Deep Clone Function: Can you implement one for a complex object that includes nested objects, arrays, and functions?
+7. 🍛 Function Currying: Explain what it is and write a generic curry function that can transform f(a, b, c) into curry(f)(a)(b)(c).
+8. 🗑️ Garbage Collection: How does it work in JS? Describe a common cause of memory leaks and how you would debug it.
+9. 🤝 Promise Methods: What's the difference between Promise.all, Promise.race, Promise.allSettled, and Promise.any? Provide a scenario for each.
+10. 👨‍👩‍👧‍👦 Event Delegation: Explain the concept and why it's a useful performance optimization. Provide a code example.
+11. 📊 State Management: How would you design and implement a lightweight, observable state management pattern from scratch?
+12. 👷 Web Workers: What are they and when would they be useful? Explain the limitations of communicating with the main thread.
+
+// // need to learn - persist state when reloading without using global state
