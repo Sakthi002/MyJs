@@ -1,0 +1,2855 @@
+1. DIFFERENT WAYS OF LOADING <script> IN HTML
+=================================================================================================================================
+    
+    1. In <head> (without async/defer)
+        - Script is fetched and executed immediately before continuing HTML parsing.
+        - If the script manipulates DOM elements defined later, it can cause errors
+    
+        - Useful for:
+            - Polyfills (e.g., shims for ES features).
+            - Metadata/config scripts needed before rendering.
+
+        - Flow:
+            1. Parse HTML (stops at <script>)
+            2. Download script
+            3. Execute script
+            4. Resume parsing
+
+        - Downside: Blocks page rendering → slower perceived load.
+
+    
+    2. At the end of <body>
+        - HTML is fully parsed before script execution.
+        - Safe to manipulate DOM directly.
+
+        -Flow:
+            1. Parse entire HTML
+            2. Download script
+            3. Execute script
+
+        Downside: Script download starts only after HTML finishes, so longer load time.
+
+    3. With async Attribute
+        - Script downloads in parallel with HTML parsing.
+        - Executes immediately after download, possibly before HTML is finished.
+        - Not guaranteed to execute in order if multiple async scripts are used.
+
+        - Useful for:
+            - Independent scripts (e.g., analytics, ads).
+        
+        - Flow:
+            1. Parse HTML + download script in parallel
+            2. Execute script as soon as downloaded (may pause parsing)
+            3. Resume parsing
+
+    4. With defer Attribute
+        - Script downloads in parallel with HTML parsing.
+        - Executes only after HTML is fully parsed.
+        - Maintains execution order for multiple defer scripts.
+
+        - Useful for:
+            - Scripts that manipulate DOM but don't need to run immediately (e.g., main app logic).
+
+        - Flow:
+            1. Parse HTML + download script in parallel
+            2. Finish parsing HTML
+            3. Execute script(s) in order
+
+        - Best for performance and DOM manipulation.
+
+=================================================================================================================================
+2. VARIABLES
+=================================================================================================================================
+    - Variables are used to store data values.
+    - In JavaScript, you can declare variables using var, let, or const.
+    - Example:
+        let name = "Sakthi";
+            let - specifier
+            name - variable name
+            "Sakthi" - value
+    - Variable names should be descriptive and follow naming conventions (e.g., camelCase).
+    - Avoid using reserved keywords as variable names.
+    - Only $, _, and alphanumeric characters are allowed in variable names.
+    - Variable names cannot start with a number.
+
+    LET vs CONST vs VAR
+    -------------------------------------------------------------------------
+        1. var
+            - Function-scoped or globally-scoped.
+            - Can be redeclared and updated.
+            - Hoisted to the top of their scope and initialized with undefined.
+            - Example:
+                var x = 10;
+                var x = 20; // Redeclaration is allowed
+                x = 30; // Update is allowed    
+        2. let
+            - Block-scoped.
+            - Can be updated but not redeclared in the same scope.
+            - Hoisted to the top of their block but not initialized.
+            - Example:
+                let y = 10;
+                // let y = 20; // Redeclaration is not allowed
+                y = 30; // Update is allowed
+        3. const
+            - Block-scoped.
+            - Cannot be updated or redeclared.
+            - Must be initialized at the time of declaration.
+            - Hoisted to the top of their block but not initialized.
+            - Example:
+                const z = 10;
+                // const z = 20; // Redeclaration is not allowed
+                // z = 30; // Update is not allowed 
+    - Use const by default, let when you need to reassign, and avoid var for better scoping and maintainability.
+=================================================================================================================================
+3. DATA TYPES
+=================================================================================================================================
+    - Data types specify the type of data that can be stored and manipulated in a program.
+    - There are two main categories of data types in JavaScript: Primitive and Non-Primitive (Reference) data types.
+
+    - PRIMITIVE DATA TYPES
+    -------------------------------------------------------------------------
+        - Stores in the stack memory.
+        1. Number
+            - Represents both integer and floating-point numbers.
+            - Example: 42, 3.14, -7
+        2. String
+            - Represents a sequence of characters.
+            - Enclosed in single quotes (' '), double quotes (" "), or backticks (` `).
+            - Example: 'Hello', "World", `Template Literal`
+        3. Boolean
+            - Represents a logical entity and can have two values: true or false.
+            - Example: true, false
+        4. Undefined
+            - Represents a variable that has been declared but not assigned a value.
+            - Example: let x; // x is undefined
+        5. Null
+            - Varible is defined but has no value.
+            - Example: let y = null; // y is null
+        6. Symbol (ES6)
+            - Represents a unique identifier.
+            - Example: let sym = Symbol('description');
+        7. BigInt (ES11)
+            - Represents integers with arbitrary precision.
+            - Example: let bigIntNum = 1234567890123456789012345678901234567890n;
+    
+    - NON-PRIMITIVE (REFERENCE) DATA TYPES
+    -------------------------------------------------------------------------
+        - Stores in the heap memory.
+        1. Object
+            - Represents a collection of key-value pairs.
+            - Can store multiple values and complex data structures.
+            - Example:
+                let person = {
+                    name: 'Alice',
+                    age: 30,
+                    isEmployed: true
+                };
+        2. Array
+            - A special type of object used to store ordered collections of values.
+            - Example:
+                let numbers = [1, 2, 3, 4, 5];
+        3. Function
+            - A block of code designed to perform a particular task.
+            - Example:
+                function greet() {
+                    console.log('Hello, World!');
+                }
+    - JavaScript is dynamically typed, meaning variables can hold values of any data type and can change types at runtime.
+=================================================================================================================================
+4. OPERATORS
+=================================================================================================================================
+    - Operators are special symbols or keywords that perform operations on one or more operands (values or variables).
+    - let x = 10;
+      let y = 5;
+      let z = x + y; // Here, + is the operator, and x and y are operands.
+    
+    - Types of Operators:
+    -------------------------------------------------------------------------
+        - Arithmetic Operators
+        - Assignment Operators
+        - Comparison Operators
+        - Relational Operators
+        - Logical Operators
+        - Bitwise Operators
+        - Conditional Operators
+        - Grouping
+        - typeof & instanceof Operators
+    
+    1. Arithmetic Operators
+    -------------------------------------------------------------------------
+        - Used to perform mathematical operations.
+        - Examples:
+            let a = 10;
+            let b = 3;
+            let sum = a + b; // Addition (13)
+            let diff = a - b; // Subtraction (7)
+            let prod = a * b; // Multiplication (30)
+            let quot = a / b; // Division (3.333...)
+            let mod = a % b; // Modulus (1)
+            let exp = a ** b; // Exponentiation (1000)
+            a++; // Increment (11)
+            b--; // Decrement (2)
+    2. Assignment Operators
+    -------------------------------------------------------------------------
+        - Used to assign values to variables.
+        - Examples:
+            let x = 10; // Simple assignment
+            x += 5; // Addition assignment (x = x + 5) → 15
+            x -= 3; // Subtraction assignment (x = x - 3) → 12
+            x *= 2; // Multiplication assignment (x = x * 2) → 24
+            x /= 4; // Division assignment (x = x / 4) → 6
+            x %= 3; // Modulus assignment (x = x % 3) → 0
+            x **= 2; // Exponentiation assignment (x = x ** 2) → 0
+    3. Comparison Operators
+    -------------------------------------------------------------------------
+        - Used to compare two values and return a boolean result (true or false).
+        - Examples:
+            let a = 10;
+            let b = '10';
+            console.log(a == b); // Equal (true) - type coercion
+            console.log(a === b); // Strict Equal (false) - no type coercion
+            console.log(a != b); // Not Equal (false) - type coercion
+            console.log(a !== b); // Strict Not Equal (true) - no type coercion
+
+        - In Strict Equals
+            - returns false if the values are of different types.
+            - returns true if both operands are null
+            - returns true if both operands are undefined
+            - returns true if both operands are of the same type and have the same value.
+            - returns false either operand is NaN
+
+            - type of null is object
+            - type of undefined is undefined
+            - type of NaN is number
+            logic:
+                null === undefined // false
+                null == undefined // true
+                null === null // true
+                undefined === undefined // true
+                NaN === NaN // false
+                NaN == NaN // false
+                NaN !== NaN // true
+                NaN != NaN // true
+    4. Logical Operators
+    -------------------------------------------------------------------------
+        - Used to combine multiple boolean expressions and return a boolean result.
+        
+        - Logical AND (&&)
+            - Returns true if both operands are true.
+            - Example:
+                let a = true;
+                let b = false;
+                console.log(a && b); // false
+                console.log(a && true); // true
+                console.log(b && false); // false
+                console.log(true && true); // true
+                console.log(false && false); // false   
+
+                console.log(5 && 10); // 10 (both truthy, returns last)
+                console.log(0 && 10); // 0 (first falsy, returns first)
+                console.log(5 && 0); // 0 (second falsy, returns second)
+                console.log(null && 10); // null (first falsy, returns first)
+                console.log(5 && undefined); // undefined (second falsy, returns second)
+                console.log('Hello' && 'World'); // 'World' (both truthy, returns last)
+                console.log('' && 'World'); // '' (first falsy, returns first)
+                console.log('Hello' && ''); // '' (second falsy, returns second)
+                console.log(true && 'World'); // 'World' (both truthy, returns last)
+                console.log(false && 'World'); // false (first falsy, returns first)
+                console.log('Hello' && true); // true (both truthy, returns last)
+                console.log('Hello' && false); // false (second falsy, returns second)
+            - To keep in mind
+                - returns the last truthy operand if all are truthy.
+                - returns the first falsy operand if any are falsy.
+
+            - Short-circuit evaluation: If the first operand is falsy, the second operand is not evaluated.
+
+        - Logical OR (||)
+            - Returns true if at least one operand is true.
+            - Example:
+                let a = true;
+                let b = false;
+                console.log(a || b); // true
+                console.log(a || false); // true
+                console.log(b || true); // true
+                console.log(false || false); // false
+                console.log(true || true); // true
+
+                console.log(5 || 10); // 5 (first truthy, returns first)
+                console.log(0 || 10); // 10 (first falsy, returns second)
+                console.log(5 || 0); // 5 (first truthy, returns first)
+                console.log(null || 10); // 10 (first falsy, returns second)
+                console.log(5 || undefined); // 5 (first truthy, returns first)
+                console.log('Hello' || 'World'); // 'Hello' (first truthy, returns first)
+                console.log('' || 'World'); // 'World' (first falsy, returns second)
+                console.log('Hello' || ''); // 'Hello' (first truthy, returns first)
+                console.log(true || 'World'); // true (first truthy, returns first)
+                console.log(false || 'World'); // 'World' (first falsy, returns second)
+                console.log('Hello' || true); // 'Hello' (first truthy, returns first)
+                console.log('Hello' || false); // 'Hello' (first truthy, returns first)
+            - To keep in mind
+                - returns the first truthy operand if any are truthy.
+                - returns the last falsy operand if all are falsy.
+
+        - Logical NOT (!)
+            - Inverts the boolean value of the operand.
+            - Example:
+                let a = true;
+                let b = false;
+                console.log(!a); // false
+                console.log(!b); // true
+                console.log(!true); // false
+                console.log(!false); // true
+
+                console.log(!5); // false (5 is truthy)
+                console.log(!0); // true (0 is falsy)
+                console.log(!null); // true (null is falsy)
+                console.log(!undefined); // true (undefined is falsy)
+                console.log(!'Hello'); // false ('Hello' is truthy)
+                console.log(!''); // true ('' is falsy)
+            - To keep in mind
+                - Converts the operand to a boolean value and then inverts it.
+
+        - Nullish Coalescing Operator (??)
+            - Returns the right-hand operand when the left-hand operand is null or undefined, otherwise returns the left-hand operand.
+            - Example:
+                console.log(null ?? 'Default'); // 'Default'
+                console.log(undefined ?? 'Default'); // 'Default'
+                console.log('Hello' ?? 'Default'); // 'Hello'
+
+                console.log(0 ?? 10); // 0 (x is not null/undefined)
+                console.log('' ?? 'World'); // '' (y is not null/undefined)
+            - To keep in mind
+                - Only checks for null or undefined, not other falsy values like 0 or ''.
+
+    5. Conditional (Ternary) Operator
+    -------------------------------------------------------------------------
+        - A shorthand for an if-else statement.
+        - Syntax: condition ? expressionIfTrue : expressionIfFalse
+        - Example:
+            let age = 18;
+            let canVote = (age >= 18) ? 'Yes' : 'No';
+            console.log(canVote); // 'Yes'
+
+    6. Grouping
+    -------------------------------------------------------------------------
+        - Used to group expressions and control the order of evaluation.
+        - Example:
+            let result = (2 + 3) * 4; // 20
+            console.log(result); // 20
+        
+        - bodmas rule
+            - Parentheses
+            - Exponents
+            - Multiplication and Division (left to right)
+            - Addition and Subtraction (left to right)
+
+            let result = 2 / 3 * 4; 
+            console.log(result); // 2.6666666666666665
+            let result = 2 * 3 / 4; 
+            console.log(result); // 1.5
+
+    7. typeof & instanceof Operators
+    -------------------------------------------------------------------------
+        - typeof
+            - Returns a string indicating the type of the unevaluated operand.
+            - Example:
+                console.log(typeof 42); // 'number'
+                console.log(typeof 'Hello'); // 'string'
+                console.log(typeof true); // 'boolean'
+                console.log(typeof undefined); // 'undefined'
+                console.log(typeof null); // 'object' (this is a known quirk in JavaScript)
+                console.log(typeof {name: 'Alice'}); // 'object'
+                console.log(typeof [1, 2, 3]); // 'object' (arrays are a type of object)
+                console.log(typeof function() {}); // 'function'
+        - instanceof
+            - Tests whether the prototype property of a constructor appears anywhere in the prototype chain of an object.
+            - Example:
+                let arr = [1, 2, 3];
+                console.log(arr instanceof Array); // true
+                console.log(arr instanceof Object); // true
+                let date = new Date();
+                console.log(date instanceof Date); // true
+                console.log(date instanceof Object); // true
+=================================================================================================================================
+5. TYPE CONVERSION
+=================================================================================================================================
+    - Type conversion is the process of converting a value from one data type to another.
+    - There are two types of type conversion in JavaScript: Implicit and Explicit.
+    1. Implicit Type Conversion (Type Coercion)
+    -------------------------------------------------------------------------
+        - JavaScript automatically converts one data type to another when performing operations involving different types.
+        - Examples:
+            let result;
+            result = '5' + 10; // '510' (number 10 is coerced to string)
+            result = '5' - 2; // 3 (string '5' is coerced to number)
+            result = '5' * 2; // 10 (string '5' is coerced to number)
+            result = '5' / 2; // 2.5 (string '5' is coerced to number)
+            result = 5 + true; // 6 (true is coerced to 1)
+            result = 5 + false; // 5 (false is coerced to 0)
+            result = 5 + null; // 5 (null is coerced to 0)
+            result = 5 + undefined; // NaN (undefined is coerced to NaN)
+            result = '5' + null; // '5null' (null is coerced to 'null')
+            result = '5' + undefined; // '5undefined' (undefined is coerced to 'undefined')
+            result = '5' + true; // '5true' (true is coerced to 'true')
+            result = '5' + false; // '5false' (false is coerced to 'false')
+            result = '5' - null; // 5 (string '5' is coerced to number, null to 0)
+            result = '5' - undefined; // NaN (string '5' is coerced to number, undefined to NaN)
+            result = '5' - true; // 4 (string '5' is coerced to number, true to 1)
+            result = '5' - false; // 5 (string '5' is coerced to number, false to 0)
+            result = '5' * null; // 0 (string '5' is coerced to number, null to 0)
+            result = '5' * undefined; // NaN (string '5' is coerced to number, undefined to NaN)
+            result = '5' * true; // 5 (string '5' is coerced to number, true to 1)
+            result = '5' * false; // 0 (string '5' is coerced to number, false to 0)
+            result = '5' / null; // Infinity (string '5' is coerced to number, null to 0)
+            result = '5' / undefined; // NaN (string '5' is coerced to number, undefined to NaN)
+            result = '5' / true; // 5 (string '5' is coerced to number, true to 1)
+            result = '5' / false; // Infinity (string '5' is coerced to number, false to 0) 
+            console.log(result);
+    2. Explicit Type Conversion
+    ----------------------------------------------------------------
+         - Also known as type casting.
+         - The programmer manually converts a value from one type to another using built-in functions.
+         - Examples:
+            let str = '123';
+            let num = Number(str); // Converts string to number
+            console.log(num); // 123
+            console.log(typeof num); // 'number'
+            let bool = Boolean(num); // Converts number to boolean
+            console.log(bool); // true
+            console.log(typeof bool); // 'boolean'
+            let str2 = String(num); // Converts number to string
+            console.log(str2); // '123'
+            console.log(typeof str2); // 'string'
+            let arr = [1, 2, 3];
+            let str3 = String(arr); // Converts array to string
+            console.log(str3); // '1,2,3'
+            console.log(typeof str3); // 'string'
+            let num2 = Number('abc'); // Converts invalid string to number
+            console.log(num2); // NaN
+            console.log(typeof num2); // 'number'
+            let bool2 = Boolean(0); // Converts number 0 to boolean
+            console.log(bool2); // false
+            console.log(typeof bool2); // 'boolean'
+            let bool3 = Boolean(''); // Converts empty string to boolean
+            console.log(bool3); // false
+            console.log(typeof bool3); // 'boolean'
+            let bool4 = Boolean(null); // Converts null to boolean
+            console.log(bool4); // false
+            console.log(typeof bool4); // 'boolean'
+            let bool5 = Boolean(undefined); // Converts undefined to boolean
+            console.log(bool5); // false
+            console.log(typeof bool5); // 'boolean'
+            let bool6 = Boolean(NaN); // Converts NaN to boolean
+            console.log(bool6); // false
+            console.log(typeof bool6); // 'boolean'
+=================================================================================================================================
+6. CONTROL FLOW
+=================================================================================================================================
+    - Controlling the flow of execution in a program.
+    - It allows you to dictate how your program behaves based on certain conditions or inputs.
+    - Common control flow statements include:
+        1. Conditional Statements (if, else if, else, switch)
+        2. Loops (for, while, do...while)
+        3. Break and Continue
+        4. Exception Handling (try, catch, finally)
+    
+    1. Conditional Statements
+    -------------------------------------------------------------------------
+        - Used to execute different blocks of code based on certain conditions.
+        - Examples:
+            let age = 18;
+            if (age < 18) {
+                console.log('Minor');
+            } else if (age >= 18 && age < 65) {
+                console.log('Adult');
+            } else {
+                console.log('Senior');
+            }
+        
+            let day = 3;
+            switch (day) {
+                case 1:
+                    console.log('Monday');
+                    break;
+                case 2:
+                    console.log('Tuesday');
+                    break;
+                case 3:
+                    console.log('Wednesday');
+                    break;
+                case 4:
+                    console.log('Thursday');
+                    break;  
+                case 5:
+                    console.log('Friday');
+                    break;
+                case 6:
+                    console.log('Saturday');
+                    break;
+                case 7:
+                    console.log('Sunday');
+                    break;
+                default:
+                    console.log('Invalid day');
+            }
+
+        *****IMPORTANT*****
+            - Use switch when you are checking a single fixed variable against multiple values.
+            - Use if-else when you have complex conditions or ranges to evaluate.
+        
+        - Why switch is better than if-else in some cases?
+            1. Readability: Switch statements can be more readable when dealing with multiple discrete values of a single variable.
+            2. Performance: In some cases, switch statements can be more efficient than multiple if-else checks because they created as jump tables.
+=================================================================================================================================
+7. LOOPS AND ITERATION
+=================================================================================================================================
+    - Loops are used to do tasks repeatedly until a certain condition is met.
+    - Common types of loops in JavaScript include:
+        1. for Loop
+        2. while Loop
+        3. do...while Loop
+        4. for...in Loop
+        5. for...of Loop
+        6. forEach Loop (Array method)
+
+    1. for Loop
+    -------------------------------------------------------------------------
+        - We can use for loop when we know exactly how many times we want to iterate.
+        - Loops execute the block of code a specified number of times based on the given condition.
+
+        for(initilization; condition; increment/decrement) {
+            // code to be executed
+        }
+
+        Example:
+            for(let i = 1, let j = 10; i <= 10 && j >= 1; i++, j--) {
+                console.log(i,j);
+            }
+            // Output: 1, 10
+            //         2, 9
+            //         ..., ...
+            .....      10, 1
+
+        - Nested for loop
+            for(let i = 1; i <= 3; i++) {
+                for(let j = 1; j <= 3; j++) {
+                    console.log(i, j);
+                }
+            }
+            // Output: 1, 1
+            //         1, 2
+            //         1, 3
+            //         2, 1
+            //         2, 2
+            //         2, 3
+            //         3, 1
+            //         3, 2
+            //         3, 3
+
+        - Break and Continue in for loop
+
+            - Break
+                - Exits the loop entirely when a specified condition is met.
+
+            - Continue
+                - Skips the current iteration and moves to the next iteration when a specified condition is met
+
+            for(let i = 1; i <= 10; i++) {
+                if(i === 5) {
+                    break; // exits the loop when i is 5
+                }
+                console.log(i);
+            }
+            // Output: 1, 2, 3, 4
+
+            for(let i = 1; i <= 10; i++) {
+                if(i === 5) {
+                    continue; // skips the iteration when i is 5
+                }
+                console.log(i);
+            }
+            // Output: 1, 2, 3, 4, 6, 7, 8, 9, 10
+    
+    2. while Loop
+    -------------------------------------------------------------------------
+        - We can use while loop when we don't know how many times we want to iterate, but we have a condition to check.
+        - Loops execute the block of code as long as the specified condition is true.
+    
+    3. do...while Loop
+    -------------------------------------------------------------------------
+        - It will execute the block of code at least once, and then it will check the condition.
+            
+=================================================================================================================================
+8. FUNCTIONS
+=================================================================================================================================
+    - Functions are reusable blocks of code to perform a specific task.
+    - They help in organizing code, improving readability, and reducing redundancy.
+    - Functions can take inputs (parameters) and return outputs (return values).
+    - Types of Functions:
+        1. Function Declaration/Defnition
+        2. Function Expression
+        3. Arrow Function (ES6)
+        4. Anonymous Function
+        5. IIFE (Immediately Invoked Function Expression)
+        6. Recursive Function
+        7. Callback Function
+        8. Higher-Order Function
+        9. Pure Function
+
+    1. Function Declaration/Definition
+    -------------------------------------------------------------------------
+        - A named function that is defined using the function keyword.
+        - Can be called before its declaration due to hoisting.
+        - Syntax:
+            function functionName(parameters) {
+                // code to be executed
+            }
+        - Example:
+            function greet(name) {
+                return 'Hello, ' + name + '!';
+            }
+            console.log(greet('Sakthi')); // Output: Hello, Sakthi! 
+    2. Function Expression
+    -------------------------------------------------------------------------
+        - A function assigned to a variable.
+        - Not hoisted, so it cannot be called before its definition.
+        - Syntax:
+            const functionName = function(parameters) {
+                // code to be executed
+            };
+        - Example:
+            const add = function(a, b) {
+                return a + b;
+            };
+            console.log(add(5, 3)); // Output: 8
+
+    ****IMPORTANT****
+        - Difference between Function Declaration and Function Expression:
+            1. Hoisting: Function declarations are hoisted, while function expressions are not.
+            2. Naming: Function declarations must have a name, while function expressions can be anonymous.
+            3. Usage: Function declarations are typically used for defining functions that will be used throughout the code, 
+                while function expressions are often used for defining functions that are used as callbacks or passed as arguments to other functions.
+    
+    **** RETURN STATEMENT ****
+        - The return statement is used to specify the value that a function should return when it is called.
+        - When a return statement is executed, the function stops executing and returns the specified value to the caller.
+        - If no return statement is specified, the function will return undefined by default.
+        - Dont give enter after return keyword, it will return undefined - it should be in the same line.
+        - Example:
+            function multiply(a, b) {
+                return a * b; // returns the product of a and b
+            }
+            const result = multiply(5, 3);
+            console.log(result); // Output: 15
+
+            function noReturn() {
+                console.log('This function does not return anything');
+            }
+            const result2 = noReturn();
+            console.log(result2); // Output: undefined
+    
+    ***** PARAMETERS vs ARGUMENTS *****
+        - Parameters are the names listed in the function definition.
+        - Arguments are the real values passed to the function when it is called.
+        - Example:
+            function greet(name) { // name is a parameter
+                return 'Hello, ' + name + '!';
+            }
+            console.log(greet('Sakthi')); // 'Sakthi' is an argument
+
+    ***** DEFAULT PARAMETERS *****
+        - Default parameters allow you to initialize named parameters with default values if no value or undefined is passed.
+        - Example:
+            function greet(name = 'Guest') {
+                return 'Hello, ' + name + '!';
+            }
+            console.log(greet()); // Output: Hello, Guest!
+            console.log(greet('Sakthi')); // Output: Hello, Sakthi!
+
+    ***** REST PARAMETERS *****
+        - Basically functions can take any number of arguments, but sometimes we don't know how many arguments will be passed.
+        - Rest parameters allow us to represent an indefinite number of arguments as an array.
+        - Always Rest parameter should be the last parameter.
+        - Syntax: function functionName(...restParameter) {}
+        - Example:
+            function sum(...numbers) {
+                return numbers.reduce((total, num) => total + num, 0);
+            }
+            console.log(sum(1, 2, 3)); // Output: 6
+            console.log(sum(5, 10, 15, 20)); // Output: 50
+    
+    ***** NESTED FUNCTIONS *****
+        - A function inside another function is called nested function.
+        - We can call the inner function only inside the outer function. If we try to call the inner function outside the outer function, it will give an error.
+        - It forms a function scope.
+        - If we want to call the inner function outside the outer function, we can return the inner function from the outer function.
+        - Example:
+            function outerFunction() {
+                function innerFunction() {
+                    return 'Hello from inner function!';
+                }
+                return innerFunction(); // Calling inner function inside outer function
+            }
+            console.log(outerFunction()); // Output: Hello from inner function!
+            // console.log(innerFunction()); // Error: innerFunction is not defined
+            // To call innerFunction outside, we can do:
+            function outerFunction() {
+                function innerFunction() {
+                    return 'Hello from inner function!';
+                }
+                return innerFunction; // Returning the inner function itself
+            }
+            const innerFunc = outerFunction(); // Get the inner function
+            console.log(innerFunc()); // Output: Hello from inner function!
+
+    3. Callback Function
+    -------------------------------------------------------------------------
+        - A callback function is a function that is passed as an argument to another function and is executed after some operation has been completed.
+        - Callbacks are commonly used for asynchronous operations, such as handling events, making API calls, or reading files.
+        - Example:
+            function fetchData(callback) {
+                setTimeout(() => {
+                    const data = { name: 'Sakthi', age: 25 };
+                    callback(data); // Execute the callback function with the fetched data
+                }, 2000); // Simulating a 2-second delay
+            }
+            function displayData(data) {
+                console.log('Fetched Data:', data);
+            }
+            fetchData(displayData); // Passing displayData as a callback function
+    
+    4. Pure Function
+    -------------------------------------------------------------------------
+        - A pure function is a function that always produces the same output for the same input and does not have any side effects (i.e., it does not modify any external state or variables).
+        - Pure functions are predictable, easier to test, and can be optimized by the JavaScript engine.
+        - Example of a pure function:
+            function add(a, b) {
+                return a + b; // Always returns the same output for the same input
+            }
+            console.log(add(2, 3)); // Output: 5
+            console.log(add(2, 3)); // Output: 5
+        - Example of an impure function:
+            let greetMsg = "Hello ;
+            function greeting(name) {
+                
+                return greetMsg + name; // Depends on external variable greetMsg
+            }
+            console.log(greeting("Sakthi")); // Output: Hello Sakthi
+            greetMsg = "Hi ";
+            console.log(greeting("Sakthi")); // Output: Hi Sakthi (output changes based on external variable)
+
+    5. Higher-Order Function
+    -------------------------------------------------------------------------
+        - A HOF is a function that takes another function as an argument or returns a function as its result.
+        - HOFs are commonly used for functional programming techniques, such as map, filter, and reduce.
+        - Example of a HOF that takes a function as an argument:
+            function applyOperation(a, b, operation) {
+                return operation(a, b); // Call the passed function with a and b
+            }
+            function add(x, y) {
+                return x + y;
+            }
+            function multiply(x, y) {   
+                return x * y;
+            }
+            console.log(applyOperation(5, 3, add)); // Output: 8
+            console.log(applyOperation(5, 3, multiply)); // Output: 15
+        - Example of a HOF that returns a function:
+            function createMultiplier(factor) {
+                return function(x) {
+                    return x * factor; // Return a function that multiplies x by the factor
+                };
+            }
+            const double = createMultiplier(2); // Create a function that doubles the input
+            const triple = createMultiplier(3); // Create a function that triples the input
+            console.log(double(5)); // Output: 10
+            console.log(triple(5)); // Output: 15
+
+        - HOFs are powerful tools for creating reusable and composable functions, enabling more abstract and flexible code.
+
+    6. Arrow Function (ES6)
+    -------------------------------------------------------------------------
+        - A shorter syntax for writing functions using the arrow (=>) notation.
+        - Does not have its own 'this' context, it inherits 'this' from the surrounding scope.
+        - Cannot be used as constructors and do not have the 'arguments' object.
+        - Syntax:
+            const functionName = (parameters) => {
+                // code to be executed
+            };
+        - Example:
+            const greet = (name) => {
+                return 'Hello, ' + name + '!';
+            };
+            console.log(greet('Sakthi')); // Output: Hello, Sakthi!
+        - If the function has only one parameter, we can omit the parentheses.
+            const square = x => {
+                return x * x;
+            };
+            console.log(square(5)); // Output: 25
+        - If the function body has only one expression, we can omit the curly braces and the return keyword.
+            const add = (a, b) => a + b;
+            console.log(add(5, 3)); // Output: 8    
+        - If there are no parameters, we must use empty parentheses.
+            const greet = () => 'Hello, World!';
+            console.log(greet()); // Output: Hello, World!
+    7. Anonymous Function
+    -------------------------------------------------------------------------
+        - A function without a name.
+        - Often used as arguments to other functions or assigned to variables.
+        - Example:
+            const square = function(x) {
+                return x * x;   
+            };
+            console.log(square(5)); // Output: 25
+
+    8. IIFE (Immediately Invoked Function Expression)
+    -------------------------------------------------------------------------
+        - A function that is defined and immediately invoked (called) after its creation.
+        - Used to create a new scope and avoid polluting the global namespace.
+        - Syntax:
+            (function() {
+                // code to be executed
+            })();
+        - Example:
+            (function() {
+                const message = 'Hello, World!';
+                console.log(message); // Output: Hello, World!
+            })();
+            // console.log(message); // Error: message is not defined   
+        - We can also pass parameters to an IIFE.
+            (function(name) {
+                console.log('Hello, ' + name + '!'); // Output: Hello, Sakthi!
+            })('Sakthi');
+    
+    9. Recursive Function
+    -------------------------------------------------------------------------
+        - A function that calls itself in order to solve a problem.
+        - It has a cost to it, as each function call adds a new layer to the call stack.
+        - Must have exit criteria to prevent infinite recursion.
+        - Example: Calculating factorial of a number using recursion.
+            function factorial(n) {
+                if (n === 0) { // Base case
+                    return 1;
+                }
+                return n * factorial(n - 1); // Recursive case
+            }
+            console.log(factorial(5)); // Output: 120 (5 * 4 * 3 * 2 * 1)
+=================================================================================================================================
+9. EXECUTION CONTEXT 
+=================================================================================================================================
+    - Execution context is the environment in which Javascript code is executed.
+    - An execution context is a container that holds information about:
+        - What code is currently running
+        - Where the code is running from
+        - What variables and functions are accessible
+
+    *** LEXICAL ENVIRONMENT ***
+        - Lexical means "related to something"
+        - Lexical environment mean how and where the code is placed.
+
+    - Types of Execution Contexts:
+        1. Global Execution Context (GEC)
+        2. Function Execution Context (FEC)
+
+    1. Global Execution Context (GEC)
+    -------------------------------------------------------------------------
+        - The default or base execution context where the JavaScript code starts executing.
+        - It is created when the JavaScript file is loaded and remains active until the program ends.
+        - When JavaScript file is loaded, the JavaScript engine creates a global execution context.
+        - It has two phases:
+            1. Creation Phase
+            2. Execution Phase
+
+        1. Creation Phase
+        ------------------------------------------------------------------------- 
+            - Window object is created (in browsers)
+            - 'this' is set to the window object (in browsers)
+            - this === window // true (in browsers)
+            - Memory is allocated for variables and functions.
+            - Variables are initialized to undefined.
+            - Functions are stored in memory.
+
+        2. Execution Phase
+        -------------------------------------------------------------------------
+            - The code is executed line by line.
+            - Variables are assigned their actual values.
+            - Functions are executed when they are called.
+            - A new execution context is created for each function call.
+            - When a function is called, a new execution context is created and pushed onto the call stack.
+            - When the function finishes executing, its execution context is popped off the call stack and control is returned to the previous execution context.
+            - The global execution context remains at the bottom of the call stack until the program ends.
+    
+    2. Function Execution Context (FEC)
+    -------------------------------------------------------------------------
+        - Created whenever a function is invoked.
+        - Each function has its own execution context.
+        - It also has two phases: Creation Phase and Execution Phase.
+        - It has its own variable object, scope chain, and 'this' value.
+        - The variable object contains the function's parameters, local variables, and function declarations.
+        - The scope chain is used to resolve variable names and consists of the function's variable object and the variable objects of its parent execution contexts.
+        - The 'this' value is determined by how the function is called (e.g., as a method of an object, as a constructor, or as a regular function).
+        - When the function execution context is created, it goes through the same two phases as the global execution context: Creation Phase and Execution Phase.
+        - When the function finishes executing, its execution context is popped off the call stack and control is returned to the previous execution
+        context.
+
+    *** MEMORY ALLOCATION IN STACK AND HEAP ***
+        - Stack
+            - Stack is used for static memory allocation.
+            - It stores primitive data types (number, string, boolean, null, undefined, symbol).
+            - It follows LIFO (Last In First Out) principle.
+            - Memory allocation and deallocation is done automatically.
+            - Stack memory is faster than heap memory.
+        
+        - Heap
+            - Heap is used for dynamic memory allocation.
+            - It stores reference data types (objects, arrays, functions).
+            - Memory allocation and deallocation is done manually by the programmer.
+            - Heap memory is slower than stack memory.
+            - Objects and arrays are stored in heap memory, and a reference to the memory location is stored in stack memory.
+            - When an object or array is no longer needed, it can be garbage collected to free up memory.
+
+        - Flow
+            - In Global execution context, creation Phase
+                - Memory for primitive data types are allocated in stack.
+                - Memory for non-primitives (functions, objects, arrays) are allocated in heap, and the reference to that memory location is stored in stack.
+            - In Global execution context, Execution Phase
+                - Primitive data types are accessed directly from stack.
+                - Non-primitives are accessed using the reference stored in stack to get the actual value from heap.
+
+            - Once execution is completed the heap memory will be cleared by garbage collector.
+=================================================================================================================================
+10. HOISTING
+=================================================================================================================================
+    - Hoisting is the phase where the JS engine allocates memory for variables and functions before executing the code.
+    - In this phase, the JS engine scans the code for variable and function declarations and allocates memory for them.
+    - Variables are initialized to undefined, and functions are stored in memory.
+    - Hoisting allows functions to be called before they are defined in the code.
+    - Variables declared with var are hoisted and initialized to undefined.
+    - Variables declared with let and const are hoisted but not initialized, leading to a "temporal dead zone" until they are assigned a value.
+    - Function declarations are hoisted and can be called before they are defined.
+    - Function expressions (including arrow functions) are not hoisted in the same way; only the variable declaration is hoisted, not the assignment
+
+    TEMPORAL DEAD ZONE 
+        - an area where we cannot access the variable until it is initialized.
+        - Variables declared with let and const are in the temporal dead zone from the start of the block until the declaration is encountered.
+        - Accessing these variables before their declaration results in a ReferenceError.
+        - Example:
+            console.log(a); // Output: undefined (var is hoisted and initialized to undefined)
+            var a = 10;
+            console.log(b); // ReferenceError: Cannot access 'b' before initialization (let is hoisted but not initialized)
+            let b = 20;
+            console.log(c); // ReferenceError: Cannot access 'c' before initialization (const is hoisted but not initialized)
+            const c = 30;
+            console.log(greet('Sakthi')); // Output: Hello, Sakthi! (function declaration is hoisted)
+            function greet(name) {
+                return 'Hello, ' + name + '!';
+            }
+            console.log(add(5, 3)); // TypeError: add is not a function (function expression is not hoisted)
+            const add = function(a, b) {
+                return a + b;
+            };
+=================================================================================================================================
+11. SCOPE AND SCOPE CHAIN
+=================================================================================================================================
+    - Scope
+        - Where we can access a variables and functions.
+        - There are three types of scope in JavaScript:
+            1. Global Scope
+            2. Local/Function Scope
+            3. Block Scope
+
+    **** NOTE ****
+        - When we define a variable or function with var specifier in global scope, it becomes a property of the global object (window in browsers).
+        - When we define a variable or function with let or const specifier in global scope, it does not become a property of the global object.
+        
+    1. Global Scope
+    -------------------------------------------------------------------------
+        - Variables and functions declared outside of any function or block have global scope.
+        - They can be accessed from anywhere in the code.
+        - Example:
+            var globalVar = 'I am a global variable';
+            function showGlobalVar() {
+                console.log(globalVar); // Accessible here
+            }
+            showGlobalVar(); // Output: I am a global variable
+            console.log(globalVar); // Accessible here too
+    2. Local/Function Scope
+    -------------------------------------------------------------------------
+        - Variables and functions declared inside a function have local scope.
+        - They can only be accessed within that function.
+        - Example:
+            function myFunction() {
+                var localVar = 'I am a local variable';
+                console.log(localVar); // Accessible here
+            }
+            myFunction(); // Output: I am a local variable
+            // console.log(localVar); // Error: localVar is not defined (not accessible here)
+    3. Block Scope
+    -------------------------------------------------------------------------
+        - Variables declared with let and const inside a block (e.g., inside curly braces {}) have block scope.
+        - They can only be accessed within that block. But var does not have block scope. It will be accessible outside the block.
+        - Example:
+            {
+                let blockLet = 'I am a block-scoped variable';
+                const blockConst = 'I am a block-scoped constant';
+                var blockVar = 'I am a var variable';
+                console.log(blockVar); // Accessible here
+                console.log(blockLet); // Accessible here
+                console.log(blockConst); // Accessible here
+            }
+            console.log(blockVar); // Accessible here (var does not have block scope)
+            // console.log(blockLet); // Error: blockLet is not defined (not accessible here)
+            // console.log(blockConst); // Error: blockConst is not defined (not accessible here)
+
+    **** Based on where we defined a variable , scope is based on that ****
+
+    **** SCOPE CHAIN ****
+        - Scope chain is a mechanism that JavaScript uses to resolve variable names.
+        - When a variable is accessed, JavaScript first looks for it in the current scope.
+        - If it is not found, it looks in the outer scope, and so on, until it reaches the global scope.
+        - If the variable is not found in any scope, a ReferenceError is thrown.
+        - Example:
+            var globalVar = 'I am a global variable';
+            function outerFunction() {
+                var outerVar = 'I am an outer variable';
+                function innerFunction() {
+                    var innerVar = 'I am an inner variable';
+                    console.log(innerVar); // Accessible here
+                    console.log(outerVar); // Accessible here (from outer function)
+                    console.log(globalVar); // Accessible here (from global scope)
+                }
+                innerFunction();
+                // console.log(innerVar); // Error: innerVar is not defined (not accessible here)
+                console.log(outerVar); // Accessible here
+                console.log(globalVar); // Accessible here (from global scope)
+            }
+            outerFunction();
+            console.log(globalVar); // Accessible here
+            // console.log(outerVar); // Error: outerVar is not defined (not accessible here)
+            // console.log(innerVar); // Error: innerVar is not defined (not accessible here)
+
+    **** VARIABLE SHADOWING ****
+        - varibles in the inner scope have the same name as the variables in the outer scope.
+        - In this case, the variable in the inner scope "shadows" the variable in the outer scope.
+        - Example:
+            let name = 'Global Name';
+            function showName() {
+                let name = 'Local Name'; // This variable shadows the global variable
+                console.log(name); // Output: Local Name (accesses the local variable)
+            }
+            showName();
+            console.log(name); // Output: Global Name (accesses the global variable)
+
+    **** LET/VAR in LOOPS ****
+        - When we use var in loops, the variable is function-scoped, so it is accessible outside the loop.
+        - So i can change the value of i outside the loop. 
+
+            for (var i = 0; i < 3; i++) {
+                console.log(i); // Output: 0, 1, 2
+            }
+            console.log(i); // Output: 3 (i is accessible here because var is function-scoped)
+
+        - When we use let in loops, the variable is block-scoped, so it is not accessible outside the loop.
+        - Example:
+            
+            for (let j = 0; j < 3; j++) {
+                console.log(j); // Output: 0, 1, 2
+            }
+            // console.log(j); // Error: j is not defined (j is not accessible here because let is block-scoped)
+=================================================================================================================================
+12. CLOSURES
+=================================================================================================================================
+    - Closure is a function that remembers the variables from the outer scope even after the outer function has finished executing.
+    - A closure is created when a function is defined inside another function and the inner function references variables from the outer function.
+    - Closures are useful for creating private variables and functions, as they allow us to encapsulate data and behavior within a function scope.
+    - Example
+        function counterOp() {
+
+            let count = 0;
+
+            return function () { // Closed with count = 0; value
+
+                count ++;
+
+                console.log(count);
+            }
+        }
+
+        let retVal = counterOp();
+        retVal(); // 1
+        retVal(); // 2 
+
+        - When counterOp is called, it returns the inner function, which is assigned to retVal.
+        - The inner function has access to the count variable from the outer function's scope, even after counterOp has finished executing.
+        - Inner function closed over the count variable, creating a closure.
+        - Each time retVal is called, it increments and logs the count variable, demonstrating that the inner function "remembers" the value of count from its closure
+
+        **** REAL WORLD EXAMPLES ****
+        1. Data Encapsulation
+            - Data encapsulation in simple words : Hiding the data from outside world. If modification is needed, we can provide methods to do that.
+            - So the data is private and cannot be accessed directly from outside the function.
+
+        **** MEMORY LEAKS ****
+            - A memory leak occurs when a program consumes memory but fails to release it back to the system when it is no longer needed.
+            - In JavaScript, memory leaks can happen due to closures if they unintentionally retain references to variables or objects that are no longer needed.
+            - This can prevent the garbage collector from reclaiming that memory, leading to increased memory usage over time.
+            - Example of a memory leak due to closure:
+                function createLeak() {
+                    let largeArray = new Array(1000000).fill('leak'); // Large array
+                    return function() {
+                        console.log(largeArray.length); // Inner function retains reference to largeArray
+                    };
+                }
+                const leakFunction = createLeak();
+                leakFunction(); // Output: 1000000
+                // Even after createLeak has finished executing, largeArray is still in memory because leakFunction retains a reference to it.
+
+            - To avoid memory leaks with closures:
+                1. Be mindful of what variables and objects are being referenced in closures.
+                2. Avoid creating unnecessary closures that retain references to large objects or data structures.
+                3. If a closure is no longer needed, ensure that there are no remaining references to it so that it can be garbage collected.
+        
+        ******* ADVANTAGES OF CLOSURE ***********
+            - 1. We can keep variables private without exposing them to the global scope.
+            - 2. We can create factory functions that generate functions with specific behaviors.
+            - 3. We can stop variable polluting.
+            - 4. We can keep a variable alive even after the outer function has finished executing.
+=================================================================================================================================
+13. OBJECTS
+=================================================================================================================================
+    - Objects are collections of key-value pairs, where keys are strings (or symbols) and values can be of any data type, including other objects and functions.
+    - Objects are used to represent real-world entities and their properties and behaviors.
+    - We can create objects using object literals, constructor functions, or the Object.create() method.
+    - We can access and modify object properties using dot notation or bracket notation.
+    - We can add, update, or delete properties and methods of an object.
+
+    - USING OBJECT LITERAL
+        - The most common way to create an object is using object literal syntax.
+        - Syntax:
+            const objectName = {
+                key1: value1,
+                key2: value2,
+                // ...
+            };
+        - Example:
+            const person = {
+                name: 'Sakthi',
+                age: 25,
+                greet: function() {
+                    console.log('Hello, ' + this.name + '!');
+                }
+            };
+            console.log(person.name); // Output: Sakthi
+            person.greet(); // Output: Hello, Sakthi!
+            person.age = 26; // Update age
+            console.log(person.age); // Output: 26
+            person.city = 'Chennai'; // Add new property
+            console.log(person.city); // Output: Chennai
+            delete person.city; // Delete property
+            console.log(person.city); // Output: undefined
+
+    - USING CONSTRUCTOR FUNCTION
+        - We can create objects using constructor function, which are special functions used to create and initialize objects.
+        - We have to use new keyword to create an object using constructor function.
+        - Syntax:
+            function ConstructorName(parameters) {
+                this.key1 = value1;
+                this.key2 = value2;
+                // ...
+            }
+            const objectName = new ConstructorName(arguments);
+        - Example:
+            function Person(name, age) {
+                this.name = name;
+                this.age = age;
+                this.greet = function() {
+                    console.log('Hello, ' + this.name + '!');
+                };
+            }
+            const person1 = new Person('Sakthi', 25);
+            const person2 = new Person('Arun', 30);
+            console.log(person1.name); // Output: Sakthi
+            person1.greet(); // Output: Hello, Sakthi!
+            console.log(person2.age); // Output: 30
+            person2.greet(); // Output: Hello, Arun!
+    
+    - USING FACTORY FUNCTION
+        - A factory function is a function that returns a new object.
+        - It is similar to constructor function, but we don't need to use new keyword to create an object.
+        - Syntax:
+            function factoryFunction(parameters) {
+                return {
+                    key1: value1,
+                    key2: value2,
+                    // ...
+                };
+            }
+            const objectName = factoryFunction(arguments);
+        - Example:
+            function createPerson(name, age) {
+                return {
+                    name: name,
+                    age: age,
+                    greet: function() {
+                        console.log('Hello, ' + this.name + '!');
+                    }
+                };
+            }
+            const person1 = createPerson('Sakthi', 25);
+            const person2 = createPerson('Arun', 30);
+            console.log(person1.name); // Output: Sakthi
+            person1.greet(); // Output: Hello, Sakthi!
+            console.log(person2.age); // Output: 30
+            person2.greet(); // Output: Hello, Arun!   
+
+    - NESTED OBJECTS
+        - Objects can have other objects as properties.
+        - We can access the nested object properties using dot notation or bracket notation.
+        - Example:
+            const person = {
+                name: 'Sakthi',
+                age: 25,
+                address: {
+                    street: '123 Main St',
+                    city: 'Chennai',
+                    country: 'India'
+                }
+            };
+            console.log(person.address.city); // Output: Chennai
+            console.log(person['address']['country']); // Output: India  
+
+    **** NOTE ****
+        - To access arguments in object method, we have to use 'this' keyword.
+        - 'this' keyword refers to the object that is calling the method.
+        - If we use arrow function as a method, 'this' will refer to the global object (window in browsers) and not the object itself.
+        - So we should avoid using arrow functions as methods in objects.
+
+    **** IN OPERATOR ****
+        - In operator is used to check if a property exists in a object.
+        - Syntax: propertyName in objectName
+        - Example:
+            const person = {
+                name: 'Sakthi',
+                age: 25
+            };
+            console.log('name' in person); // Output: true
+            console.log('city' in person); // Output: false 
+            console.log('toString' in person); // Output: true (inherited from Object prototype)
+
+    **** FOR...IN LOOP ****
+        - for...in loop is used to iterate over the properties of an object.
+        - Syntax:
+            for (let key in objectName) {
+                // code to be executed
+            }
+        - Example:
+            const person = {
+                name: 'Sakthi',
+                age: 25,
+                city: 'Chennai'
+            };
+            for (let key in person) {
+                console.log(key + ': ' + person[key]);
+            }
+            // Output:
+            // name: Sakthi
+            // age: 25
+            // city: Chennai    
+
+        - why let before key?
+            - If we don't use let, key will be a global variable and it can be accessed outside the loop.
+            - So it is a good practice to use let before key to make it a block-scoped variable.
+    
+    **** OBJECT.KEYS ****
+        - Object.keys() gives an array of keys of the object.
+        - Syntax: Object.keys(objectName)
+        - Example:
+            const person = {
+                name: 'Sakthi',
+                age: 25,
+                city: 'Chennai'
+            };
+            const keys = Object.keys(person);
+            console.log(keys); // Output: ['name', 'age', 'city']  
+
+    **** OBJECT REFERENCE ****
+        - Objects are reference data types
+        - Reference data types are stored in heap memory and the reference to that memory location is stored in stack memory.
+        - So when we are assigning an object to a variable, we are assigning the reference to that object and not the actual object.
+        - If we are creating another object with same properties and values, it will be stored in a different memory location.
+        - Value is same but reference is different.
+        - When we are comparing two objects, it will compare the reference and not the actual object.
+        - Example:
+            const obj1 = { name: 'Sakthi' };
+            const obj2 = { name: 'Sakthi' };
+            const obj3 = obj1;
+            console.log(obj1 === obj2); // Output: false (different references)
+            console.log(obj1 === obj3); // Output: true (same reference)
+
+    **** OBJECT.ASSIGN (SHALLOW COPY)****
+        - Object.assign() is used to copy all the properties from source object to target object.
+        - Syntax: Object.assign(targetObject, sourceObject1, sourceObject2, ...)
+        - Example:
+            const target = { a: 1, b: 2 };
+            const source = { b: 4, c: 5 };
+            const returnedTarget = Object.assign(target, source);
+            console.log(target); // Output: { a: 1, b: 4, c: 5 }
+            console.log(returnedTarget); // Output: { a: 1, b: 4, c: 5 } (returned target object)
+            // Note: target object is modified and returnedTarget is same as target object.
+            // If there are multiple source objects, the properties of the later source objects will overwrite the properties of the earlier source objects.
+            const target2 = { a: 1, b: 2 };
+            const source1 = { b: 4, c: 5 };
+            const source2 = { c: 6, d: 7 };
+            Object.assign(target2, source1, source2);
+            console.log(target2); // Output: { a: 1, b: 4, c: 6, d: 7 } 
+
+            let target = { a: 1, b: 2 };
+            let source = { c: 3, d: 4 };
+            let returnedObj = Object.assign(target, source);
+            console.log(returnedObj);
+            console.log(target);
+            console.log(target === returnedObj); // true - because target is modified
+
+            const obj3 = { name: "Sakthi" };
+            const obj4 = Object.assign({}, obj3);
+            console.log(obj4);
+            console.log(obj3 === obj4); // false - because target is empty object
+
+        - In case of nested objects, Object.assign() will only do a shallow copy.
+            - Means, if the source object has some key with primitives and some key with object as value,
+            - Then the primitive value will be copied to the target object,
+            - But the object value will not be copied, instead the reference to that object will be copied to the target object.
+            - So if we modify the nested object in the target object,
+            - It will also modify the nested object in the source object, because both target and source objects are pointing to the same nested object in heap memory.
+            - Example:
+                const target = { a: 1, b: 2, nested: { x: 10 } };
+                const source = { c: 3, d: 4, nested: { y: 20 } };
+                Object.assign(target, source);
+                console.log(target); // Output: { a: 1, b: 2, c: 3, d: 4, nested: { y: 20 } }
+                source.nested.y = 30;
+                console.log(target.nested.y); // Output: 30 (nested object is modified in target object)
+                console.log(source.nested.y); // Output: 30 (nested object is modified in source object)
+                // To avoid this, we can use deep copy libraries like lodash or structuredClone() method (ES2021).
+
+    **** DEEP COPY ****
+        - Deep copy is a process of copying all the properties of an object, including the nested objects, to a new object.
+        - So the new object will have its own copy of the nested objects and not the reference to the original nested objects.
+        - We can use libraries like lodash or structuredClone() method (ES2021) to create a deep copy of an object.
+        - Example using structuredClone():
+            const original = { a: 1, b: { c: 2 } };
+            const deepCopied = structuredClone(original);
+            console.log(deepCopied); // Output: { a: 1, b: { c: 2 } }
+            deepCopied.b.c = 3;
+            console.log(original.b.c); // Output: 2 (original object is not modified)
+            console.log(deepCopied.b.c); // Output: 3 (deep copied object is modified)
+    
+    **** OBJECT.ENTRIES ****
+        - Object.entries is used to get an array of key-value pairs of an object.
+        - Syntax: Object.entries(objectName)
+        - Example:
+            const person = {
+                name: 'Sakthi',
+                age: 25,
+                city: 'Chennai'
+            };
+            const entries = Object.entries(person);
+            console.log(entries); // Output: [['name', 'Sakthi'], ['age', 25], ['city', 'Chennai']]
+            // We can use for...of loop to iterate over the entries array.
+            for (let [key, value] of entries) {
+                console.log(key + ': ' + value);
+            }
+            // Output:
+            // name: Sakthi
+            // age: 25
+            // city: Chennai
+
+    **** OBJECT.FROMENTRIES ****
+        - Object.fromEntries is used to create an object from an array of key-value pairs.
+        - Syntax: Object.fromEntries(arrayName)
+        - Example:
+            const entries = [['name', 'Sakthi'], ['age', 25], ['city', 'Chennai']];
+            const person = Object.fromEntries(entries);
+            console.log(person); // Output: { name: 'Sakthi', age: 25, city: 'Chennai' }
+
+    **** OBJECT.FREEZE ****
+        - Object.freeze is used to freeze an object, so that its properties cannot be modified or deleted.
+        - Syntax: Object.freeze(objectName)
+        - Example:
+            const person = {
+                name: 'Sakthi',
+                age: 25
+            };
+            Object.freeze(person);
+            person.age = 26; // This will not modify the age property
+            console.log(person.age); // Output: 25
+            delete person.name; // This will not delete the name property
+            console.log(person.name); // Output: Sakthi
+            person.city = 'Chennai'; // This will not add a new property
+            console.log(person.city); // Output: undefined  
+    **** OBJECT.ISFROZEN ****
+        - Object.isFrozen is used to check if an object is frozen or not.
+        - Syntax: Object.isFrozen(objectName)
+        - Example:
+            const person = {
+                name: 'Sakthi',
+                age: 25
+            };
+            console.log(Object.isFrozen(person)); // Output: false
+            Object.freeze(person);
+            console.log(Object.isFrozen(person)); // Output: true
+
+    **** OBJECT.SEAL ****
+        - Object.seal is used to seal the object, so that properties cannot be added or deleted, but the existing properties can be modified.
+        - Syntax: Object.seal(objectName)
+        - Example:
+            const person = {
+                name: 'Sakthi',
+                age: 25
+            };
+            Object.seal(person);
+            person.age = 26; // This will modify the age property
+            console.log(person.age); // Output: 26
+            delete person.name; // This will not delete the name property
+            console.log(person.name); // Output: Sakthi
+            person.city = 'Chennai'; // This will not add a new property
+            console.log(person.city); // Output: undefined  
+    **** OBJECT.ISSEALED ****
+        - Object.isSealed is used to check if an object is sealed or not.
+        - Syntax: Object.isSealed(objectName)
+        - Example:
+            const person = {
+                name: 'Sakthi',
+                age: 25
+            };
+            console.log(Object.isSealed(person)); // Output: false
+            Object.seal(person);
+            console.log(Object.isSealed(person)); // Output: true  
+
+    **** DIFFERENCE BETWEEN FREEZE AND SEAL ****
+        - Object.freeze() makes an object immutable. This means you cannot add, delete, or modify any properties of the object.
+        - Object.seal() prevents adding or deleting properties from an object, but allows modification of existing properties.
+        - In summary, freeze is more restrictive than seal. 
+
+    **** OBJECT.HASOWN ****
+        - Object.hasOwn is used to check if an object has a specific property as its own property (not inherited).
+        - Syntax: Object.hasOwn(objectName, propertyName)
+        - Example:
+            const person = {
+                name: 'Sakthi',
+                age: 25
+            };
+            console.log(Object.hasOwn(person, 'name')); // Output: true
+            console.log(Object.hasOwn(person, 'city')); // Output: false
+            console.log(Object.hasOwn(person, 'toString')); // Output: false (inherited from Object prototype)
+    
+    **** OBJECT DESTRUCTURING ****
+        - In application we store data in objects, then later we extract the data from the object to use it.
+        - Object destructuring is a syntax that allows us to extract properties from an object and assign them to variables in a single statement.
+        - Syntax:
+            const { key1, key2, ... } = objectName;
+       
+       - Example:
+            const person = {
+                name: 'Sakthi',
+                age: 25,
+                city: 'Chennai',
+                location: {
+                    lat: 123,
+                    long: 456
+                }
+            };
+            const { name, age } = person;
+            console.log(name); // Output: Sakthi
+            console.log(age); // Output: 25
+        
+        - USE CASES
+            1. We can create new variable if the property not exists in the object.
+                const { name, country = 'India' } = person;
+                console.log(country); // Output: India (default value)
+            
+            2. We can give alias name to the variable if we want to use different name.
+                const { name: personName, age: personAge } = person;
+                console.log(personName); // Output: Sakthi
+                console.log(personAge); // Output: 25
+            
+            3. We can also create a new variable by using the existing properties of the the object.
+                const { name, capitalizedName = name.toUpperCase() } = person;
+                console.log(capitalizedName); // Output: SAKTHI
+
+            4. We can destructure nested objects.
+                const { location: { lat, long } } = person;
+                console.log(lat); // Output: 123
+                console.log(long); // Output: 456
+            
+            5. We can desture object in function parameters.
+                function displayPerson({ name, age }) {
+                    console.log('Name: ' + name + ', Age: ' + age);
+                }
+                displayPerson(person); // Output: Name: Sakthi, Age: 25
+            
+            6. We can also destructure object in function return value.
+                function getPerson() {
+                    return {
+                        name: 'Sakthi',
+                        age: 25
+                    };
+                }
+                const { name, age } = getPerson();
+                console.log(name); // Output: Sakthi
+                console.log(age); // Output: 25
+
+            7. we can destructure in loops.
+                const students = [
+                    { name: 'Sakthi', age: 25 },
+                    { name: 'Arun', age: 30 },
+                    { name: 'Kumar', age: 28 }
+                ];
+                for (let { name, age } of students) {
+                    console.log('Name: ' + name + ', Age: ' + age);
+                }
+                // Output:
+                // Name: Sakthi, Age: 25
+                // Name: Arun, Age: 30
+                // Name: Kumar, Age: 28
+        
+        **** OPTIONAL CHAINING ****
+            - Optional chaining is a syntax that allows us to access nested properties of an object without having to check if each property in the chain exists.
+            - It is denoted by the ?. operator.
+            - If any property in the chain is null or undefined, the expression short-circuits and returns undefined instead of throwing an error.
+            - Example:
+                const person = {
+                    name: 'Sakthi',
+                    address: {
+                        city: 'Chennai',
+                        country: 'India'
+                    }
+                };
+                console.log(person.address?.city); // Output: Chennai
+                console.log(person.contact?.phone); // Output: undefined (no error thrown)
+                console.log(person.address?.zip?.code); // Output: undefined (no error thrown)
+                
+            - We can also use optional chaining with function calls.
+                const person = {
+                    name: 'Sakthi',
+                    greet: function() {
+                        return 'Hello, ' + this.name + '!';
+                    }
+                };
+                console.log(person.greet?.()); // Output: Hello, Sakthi!
+                console.log(person.farewell?.()); // Output: undefined (no error thrown)
+
+=================================================================================================================================
+14. THIS KEYWORD
+=================================================================================================================================
+    - `this` is the special keyword in JS that refers to the context in which a function is called.
+
+    **** Think of `this` as: "Who is currently calling me?" ****
+
+    - The value of `this` is determined at runtime based on how a function is invoked, not where it is defined.
+
+    **** RULE : When we invoke a method of an object, `this` refers to the object that is calling the method. This is called Implicit binding ****
+
+    - In Objects
+    **** IMPLICIT BINDING ****
+        - When we invoke a method of an object, `this` refers to the object that is calling the method.
+        - Example:
+            const person = {
+                name: 'Sakthi',
+                greet: function() {
+                    console.log('Hello, ' + this.name + '!');
+                }
+            };
+            person.greet(); // Output: Hello, Sakthi! (here `this` refers to `person` object)
+         
+        - *** If we assign the method to a variable and then invoke it, `this` will refer to the global object (window in browsers) or undefined in strict mode.
+        
+        - Example:
+            const greetFunction = person.greet;
+            greetFunction(); // Output: Hello, undefined! (here `this` refers to global object or undefined in strict mode)
+
+        - To fix this, we can use bind() method to bind the method to the object. (Explicit binding)
+            const boundGreetFunction = person.greet.bind(person);
+            boundGreetFunction(); // Output: Hello, Sakthi!
+
+    - In Functions
+    **** DEFAULT BINDING ****
+        - When we invoke a regular function (not a method of an object), `this` refers to the global object (window in browsers) or undefined in strict mode.
+        - in any level of function nesting, if we call a function directly, `this` will refer to global object or undefined in strict mode.
+        - In strict mode, `this` will be undefined in regular functions.
+        - Example:
+            function showThis() {
+                console.log(this);
+            }
+            showThis(); // Output: Window object (or undefined in strict mode) 
+
+    - In Arrow Functions
+    **** LEXICAL BINDING ****
+        - Arrow functions do not have their own `this` value.
+        - Instead, they inherit `this` from the surrounding (lexical) scope where they are defined.
+        - Important : even in strict mode, arrow functions will inherit `this` from the surrounding scope.
+        - Example:
+            const person = {
+                name: 'Sakthi',
+                greet: () => {
+                    console.log('Hello, ' + this.name + '!'); // `this` does not refer to `person` object
+                }
+            };
+            person.greet(); // Output: Hello, undefined! (here `this` refers to global object or undefined in strict mode)
+            // To fix this, we can use regular function instead of arrow function.
+            const person2 = {
+                name: 'Sakthi',
+                greet: function() {
+                    console.log('Hello, ' + this.name + '!'); // `this` refers to `person2` object
+                }
+            };
+            person2.greet(); // Output: Hello, Sakthi!
+            // Another solution : return an arrow function from a regular function.
+            const person3 = {
+                name: 'Sakthi',
+                greet: function() {
+                    return () => {
+                        console.log('Hello, ' + this.name + '!'); // `this` refers to `person3` object
+                    };
+                }
+            };
+            const greetFunction = person3.greet();
+            greetFunction(); // Output: Hello, Sakthi!
+
+    *** HOW THIS WORKS REGULAR FUNCTIONS VS ARROW FUNCTIONS ***
+        - Regular functions : 
+            - In non-strict mode, `this` refers to the global object (window in browsers).
+            - In strict mode, `this` is undefined. 
+        - Arrow functions :
+            - `this` is inherited from the surrounding (lexical) scope, regardless of whether strict mode is enabled or not.
+
+
+    **** EXPLICIT BINDING - CALL, APPLY, BIND****
+        - means we are explicitly telling the function what `this` should refer to.
+        - We can use call(), apply(), and bind() methods to explicitly set the value of `this`.
+
+        - call() : invokes the function immediately and allows us to pass arguments one by one.
+        - apply() : invokes the function immediately and allows us to pass arguments as an array.
+        - bind() : returns a new function with `this` bound to the specified object, but does not invoke the function immediately.
+
+        - Example:
+            const person1 = {
+                name: 'Sakthi',
+                greet: function() {
+                    console.log('Hello, ' + this.name + '!');
+                }
+            };
+            const person2 = {
+                name: 'Arun'
+            };
+            person1.greet.call(person2); // Output: Hello, Arun! (here `this` refers to `person2` object)
+            person1.greet.apply(person2); // Output: Hello, Arun! (here `this` refers to `person2` object)
+            const boundGreet = person1.greet.bind(person2);
+            boundGreet(); // Output: Hello, Arun! (here `this` refers to `person2` object)
+    
+    **** THIS IN CONSTRUCTOR FUNCTION ****
+        - In constructor functions, `this` refers to the newly created object when the function is called with the new keyword.
+        - Example:
+            function Person(name) {
+                this.name = name;
+                this.greet = function() {
+                    console.log('Hello, ' + this.name + '!');
+                };
+            }
+            const person1 = new Person('Sakthi');
+            const person2 = new Person('Arun');
+            person1.greet(); // Output: Hello, Sakthi! (here `this` refers to `person1` object)
+            person2.greet(); // Output: Hello, Arun! (here `this` refers to `person2` object)
+
+    // PROBLEM 1
+    let user = {
+        name : "Manish",
+        getName: function() {
+            // function inner() {
+            //     console.log(`Hello ${this.name} !`); // this will refers to window object - because this is inside standalone function of object method
+            // }
+            let inner = () => {
+                console.log(`Hello ${this.name} !`); // this will refers to parents scope - because this is inside arrow function
+            }
+            inner()
+        }
+    }
+    user.getName() // this will refers to window object - because this is inside standalone function of object method
+
+    // PROBLEM 2
+    let jhon = {
+        name: 'Jhon',
+        greet: function (){
+            console.log('hi', this.name);
+        }
+    }
+
+    let newFunc = jhon.greet;
+    newFunc() // unbounded with jhon obj nw - this will refers to global object
+
+    // solution
+    newFunc.call(jhon);
+
+    // =======================================================================================================
+    // |                  SITUATION                             |                 VALUE                      |    
+    // =======================================================================================================
+    // |                  At the Global                         |                 Window Object              |    
+    // -------------------------------------------------------------------------------------------------------
+    // |             Inside an Object Method                    |                 Object itself              |    
+    // -------------------------------------------------------------------------------------------------------
+    // |    Inside the Standalone non-Arrow Function            |  Window(In Non strict) - Undefined(strict) |    
+    // -------------------------------------------------------------------------------------------------------
+    // |        Inside an Arrow Function(standalone)            |                 Window                     |    
+    // -------------------------------------------------------------------------------------------------------
+    // |    Inside an Arrow Function(as object method)          |                 Parent's scope             |    
+    // -------------------------------------------------------------------------------------------------------
+    // | Inside an object created with the Constructor Function |                 Created Object             |    
+    // =======================================================================================================
+    // |        Explicitly set using call or apply              |         Object passed as argument          |    
+    // =======================================================================================================
+    // |        Explicitly set using bind                       |         Object passed as argument          |
+    // =======================================================================================================
+=================================================================================================================================
+15. ERROR HANDLING 
+=================================================================================================================================
+
+    Parsing error - are syntax errors that occur when the code is being parsed.
+    - Example: missing a closing parenthesis or a semicolon.
+    - These errors are usually caught by the JavaScript engine before the code is executed. 
+
+    Runtime error - are errors that occur during the execution of the code.
+    - Example: trying to access a property of an undefined object or calling a function that does not exist.
+    - These errors can be caught using try-catch blocks or by using error handling
+
+    - WHAT IS EXCEPTION 
+        - Exceptions are runtime errors that occur during the execution of a program.
+        - Which disrupt the normal flow of the program.
+
+    - WHY ERROR HANDLING IS IMPORTANT
+        - To provide a better user experience by handling errors gracefully.
+        - To prevent the program from crashing due to unhandled exceptions.
+        - To log errors for debugging and analysis.
+        - To recover from errors and continue the program execution.
+    
+    - TRY....CATCH
+        - The try...catch statement is used to handle exceptions in JavaScript.
+        - Flow
+            1. The code inside `try` block is executed.
+            2. If no error in the `try` block, the `catch` block will be ignored. The code inside `catch` block wont be executed.
+            3. If an error occurs in `try` block, the execution of `try` block stops and the control is transferred to the `catch` block.
+            4. The code inside `catch` block is executed.
+            5. The code inside `finally` block is executed regardless of whether an error occurred or not.
+
+        - Syntax:
+            try {
+                // code that may throw an exception
+            } catch (error) {
+                // code to handle the exception
+            } finally {
+                // code that will always be executed, regardless of whether an exception was thrown or not
+            }
+        - Example:
+            try {
+                let result = someFunction(); // someFunction may throw an exception
+                console.log(result);
+            } catch (error) {
+                console.log('An error occurred: ' + error.message);
+            } finally {
+                console.log('This will always be executed');
+            }
+
+        - catch(error)
+            - The catch block takes a single parameter, which is the error object that was thrown.
+            - The error object contains information about the error
+                - message: a string that describes the error
+                - name: a string that represents the type of error (e.g., TypeError, ReferenceError, SyntaxError)
+                - stack: a string that contains the stack trace of the error
+    
+    - THROW 
+        - The throw statement used to throw an exception manually.
+        - We can throw any type of value, but it is recommended to throw Error objects or its subclasses.
+        - `Error` is a constructor function that creates an error object.
+        - Syntax:
+            throw expression;
+        - Example:
+            function divide(a, b) {
+                if (b === 0) {
+                    throw new Error('Division by zero is not allowed');
+                }
+                return a / b;
+            }
+            try {
+                let result = divide(10, 0);
+                console.log(result);
+            } catch (error) {
+                console.log('An error occurred: ' + error.message);
+            }
+            // Output: An error occurred: Division by zero is not allowed   
+
+    - RETHROW
+        - We can rethrow an exception in the catch block using the throw statement.
+        - This is useful when we want to handle the error in a specific way and then propagate it to the caller.
+        - Example:
+            function divide(a, b) {
+                if (b === 0) {
+                    throw new Error('Division by zero is not allowed');
+                }
+                return a / b;
+            }
+            function calculate() {
+                try {
+                    let result = divide(10, 0);
+                    console.log(result);
+                } catch (error) {
+                    console.log('An error occurred: ' + error.message);
+                    throw error; // rethrow the error
+                }
+            }
+            try {
+                calculate();
+            } catch (error) {
+                console.log('Error propagated to caller: ' + error.message);
+            }
+            // Output:
+            // An error occurred: Division by zero is not allowed
+            // Error propagated to caller: Division by zero is not allowed
+
+    - FINALLY 
+        - Finally will always be executed regardless of whether an exception was thrown or not.
+        - Example:
+            try {
+                let result = someFunction(); // someFunction may throw an exception
+                console.log(result);
+            } catch (error) {
+                console.log('An error occurred: ' + error.message);
+            } finally {
+                console.log('This will always be executed');
+            }
+            // Output:
+            // This will always be executed
+            // If someFunction throws an exception, the output will be:
+            // An error occurred: <error message>
+            // This will always be executed
+            
+    - CUSTOM ERROR
+        -  We can create our own custom error by using constructor function
+        - Example:
+            function CustomError(message) {
+                this.name = 'CustomError';
+                this.message = message || 'Default Message';
+                this.stack = (new Error()).stack;
+            }
+            CustomError.prototype = Object.create(Error.prototype);
+
+            function someFunction() {
+                throw new CustomError('This is a custom error');
+            }
+
+            try {
+                someFunction();
+            } catch (error) {
+                    console.log('Caught a custom error: ' + error.message);
+            }
+            // Output: Caught a custom error: This is a custom error
+//==============================================================================================================================
+// Keyword / Object |  Purpose / Usage                                 |   Example                                             |
+//==============================================================================================================================
+// try	            | Wraps code that might throw an error so          | try { riskyCode(); }                                  |
+//                  | it can be handled safely.	                       |                                                       |         
+//------------------------------------------------------------------------------------------------------------------------------
+// catch	        | Handles the error thrown inside a try block.     | catch(error) { console.error(error.message); }        |
+//                  | Provides an error object with details.	       |                                                       |
+//------------------------------------------------------------------------------------------------------------------------------
+// finally	        | Executes the code regardless of try or catch	    | finally { cleaning ... };              |
+//------------------------------------------------------------------------------------------------------------------------------
+// throw	        | Manually creates/throws a new error.	           | throw new Error("Something went wrong");              |
+//------------------------------------------------------------------------------------------------------------------------------
+// rethrow	        | Throws an error again inside a catch block       | catch(er) { console.error(err.message); throw err; }  |
+//                  | to propagate it further.	                                                                               |
+//------------------------------------------------------------------------------------------------------------------------------
+// Error object	    | Provides information about the error, including name, message, and stack.                                |
+//------------------------------------------------------------------------------------------------------------------------------
+
+================================================================================================================================
+16. ARRAY 
+================================================================================================================================
+    - Array is a collection of elements that can be of any data type.
+    - Array is a special type of object in JavaScript.
+    
+    - INDEX
+        - The position of an element in an array is called index.
+        - index starts from 0.
+        - index ends at length-1.
+    
+    let mixed = [1, 'Sakthi', true, null, undefined, { name: 'Sakthi' }, [1, 2, 3]];
+    console.log(mixed);
+    // Output: [1, 'Sakthi', true, null, undefined, { name: 'Sakthi' }, [1, 2, 3]]
+    console.log(mixed.length); // Output: 7
+    console.log(mixed[0]); // Output: 1
+
+    - CREATING AN ARRAY
+
+        1. Using Array Literal
+            let arr = [1, 2, 3, 4, 5];
+            console.log(arr); // Output: [1, 2, 3, 4, 5]
+        
+        2. Using Array Constructor Function
+            let arr = new Array(1, 2, 3, 4, 5);
+            console.log(arr); // Output: [1, 2, 3, 4, 5]
+
+            *** GOTCHA *** : If we pass single number to Array constructor, it will create an empty array of that length.
+
+            let arr2 = new Array(5); // creates an array of length 5 with empty slots
+            console.log(arr2); // Output: [ <5 empty items> ]
+            console.log(arr2.length); // Output: 5
+            arr2[0] = 1;
+            console.log(arr2); // Output: [ 1, <4 empty items> ]
+            console.log(arr2.length); // Output: 5
+
+    - GETTING ELEMENTS FROM ARRAY
+        - We can get elements from an array using index.
+        - Syntax: arrayName[index]
+        - Example:
+            let arr = [1, 2, 3, 4, 5];
+            console.log(arr[0]); // Output: 1
+            console.log(arr[4]); // Output: 5
+            console.log(arr[arr.length - 1]); // Output: 5 (last element)
+            console.log(arr[-1]); // Output: undefined (negative index is not supported in JS)
+            console.log(arr[5]); // Output: undefined (index out of bounds)
+
+    - ADDING ELEMENTS TO ARRAY
+        1. Using push() method
+            - push() method adds one or more elements to end of the array.
+            - It mutattes the original array
+            - It returns the new length of the array as a result.
+            - Syntax: arrayName.push(element1, element2, ..., elementN)
+            - Example:
+                let arr = [1, 2, 3];
+                let newLength = arr.push(4, 5);
+                console.log(arr); // Output: [1, 2, 3, 4, 5]
+                console.log(newLength); // Output: 5
+
+        2. Using unshift() method
+            - unshift() method adds one or more elements to the beginning of the array.
+            - It mutattes the original array
+            - It returns the new length of the array as a result.
+            - Syntax: arrayName.unshift(element1, element2, ..., elementN)
+            - Example:
+                let arr = [3, 4, 5];
+                let newLength = arr.unshift(1, 2);
+                console.log(arr); // Output: [1, 2, 3, 4, 5]
+                console.log(newLength); // Output: 5    
+
+    - REMOVING ELEMENTS FROM ARRAY
+        1. Using pop() method
+            - pop() method removes the last element from the array.
+            - It mutes the original array
+            - It returns removed element as a result. 
+            - Syntax: arrayName.pop()
+            - Example:
+                let arr = [1, 2, 3, 4, 5];
+                let removedElement = arr.pop(); 
+                console.log(arr); // Output: [1, 2, 3, 4]
+                console.log(removedElement); // Output: 5
+        
+        2. Using shift() method
+            - shift() method removes the first element from the array.
+            - It mutes the original array
+            - It returns removed element as a result. 
+            - Syntax: arrayName.shift()
+            - Example:
+                let arr = [1, 2, 3, 4, 5];
+                let removedElement = arr.shift();   
+                console.log(arr); // Output: [2, 3, 4, 5]
+                console.log(removedElement); // Output: 1
+
+    - COPY/CLONE THE ARRAY
+        - We can copy/clone an array using slice() method
+
+        1. Using slice() method
+            - slice() method returns a shallow copy of a portion of an array into new array.
+            - It does not mutate the original array.
+            - Syntax: arrayName.slice(startIndex, endIndex)
+                - startIndex : The index at which to begin extraction. Default is 0.
+                - endIndex : The index at which to end extraction. Default is array.length.
+            - Example:
+                let arr = [1, 2, 3, 4, 5];
+                let newArr = arr.slice(); // copy the entire array
+                console.log(newArr); // Output: [1, 2, 3, 4, 5]
+                console.log(arr === newArr); // Output: false (different references)
+                let partialArr = arr.slice(1, 4); // copy from index 1 to index 3
+                console.log(partialArr); // Output: [2, 3, 4]   
+
+    - HOW TO DETERMINE IF THE GIVEN VARIABLE IS AN ARRAY OR NOT
+        1. Using Array.isArray() Method
+            - Array.isArray() method returns true if the given variable is an array, otherwise false.
+            - Syntax: Array.isArray(variableName)
+            - Example:
+                let arr = [1, 2, 3];
+                console.log(Array.isArray(arr)); // Output: true
+                console.log(Array.isArray([])); // Output: true
+                let obj = { name: 'Sakthi' };
+                console.log(Array.isArray(obj)); // Output: false
+                let str = 'Hello';
+                console.log(Array.isArray(str)); // Output: false
+                let num = 123;
+                console.log(Array.isArray(num)); // Output: false
+                let bool = true;
+                console.log(Array.isArray(bool)); // Output: false
+                let und = undefined;
+                console.log(Array.isArray(und)); // Output: false
+                let nul = null;
+                console.log(Array.isArray(nul)); // Output: false
+                
+    - ARRAY DESTRUCTURING
+        - Array destructuring is a syntax that allows us to extract elements from an array and assign them to variables in a single statement.
+        - Syntax:
+            const [var1, var2, ...] = arrayName;
+
+        - Example:
+            const arr = [1, 2, 3, 4, 5];
+            const [a, b] = arr;
+            console.log(a); // Output: 1
+            console.log(b); // Output: 2    
+
+        - USE CASES
+            1. We can create new variable if the element not exists in the array.
+                const arr = [1, 2];
+                const [a, b, c = 3] = arr;
+                console.log(c); // Output: 3 (default value)
+            2. We can give alias name to the variable if we want to use different name.
+                const arr = [1, 2];
+                const [first, second] = arr;
+                console.log(first); // Output: 1
+                console.log(second); // Output: 2
+            3. We can skip elements in the array.
+                const arr = [1, 2, 3, 4, 5];
+                const [a, , c] = arr;
+                console.log(a); // Output: 1
+                console.log(c); // Output: 3
+            4. We can destructure nested arrays.
+                const arr = [1, [2, 3], 4];
+                const [,[,c]] = arr;
+                console.log(c); // Output: 3
+    
+    - REST PARAMETER & SPREAD OPERTAOR IN ARRAY DESTRUCTURING
+        - Rest parameter 
+            - allows us to collect the remaining elements of an array into a new array.
+            - it will be always in the left side of the destructuring assignment.
+            - also it should be the last element in the destructuring assignment and 
+            - only one rest parameter is allowed in the destructuring assignment.
+            - Syntax:
+                const [var1, var2, ...rest] = arrayName;
+            - Example:
+                const arr = [1, 2, 3, 4, 5];
+                const [a, b, ...rest] = arr;
+                console.log(a); // Output: 1
+                console.log(b); // Output: 2
+                console.log(rest); // Output: [3, 4, 5]
+        - Spread operator
+            - Spread operator used to expand an array into inividual elements.
+            - it will be always in the right side of the destructuring assignment.
+            - Syntax:
+                const arr = [...arrayName];
+            - Example:
+                const arr1 = [1, 2, 3];
+                const arr2 = [...arr1, 4, 5];
+                console.log(arr2); // Output: [1, 2, 3, 4, 5]
+    
+    - USE CASES OF DESTRUCTURING
+        1. SWAP VARIABLES
+            let a = 1;
+            let b = 2;
+            console.log('Before Swap: a = ' + a + ', b = ' + b); // Output: Before Swap: a = 1, b = 2
+            [a, b] = [b, a];
+            console.log('After Swap: a = ' + a + ', b = ' + b); // Output: After Swap: a = 2, b = 1
+        2. MERGE ARRAYS
+            const arr1 = [1, 2, 3];
+            const arr2 = [4, 5, 6];
+            const mergedArr = [...arr1, ...arr2];
+            console.log(mergedArr); // Output: [1, 2, 3, 4, 5, 6];
+
+    - ARRAY.LENGTH 
+
+        - length property of an array return the number of elements in the array.
+        - It is a read-only property.
+        - Syntax: arrayName.length
+        - Example:
+            let arr = [1, 2, 3, 4, 5];
+            console.log(arr.length); // Output: 5
+            let emptyArr = [];
+            console.log(emptyArr.length); // Output: 0
+            let mixedArr = [1, 'Sakthi', true, null, undefined, { name: 'Sakthi' }, [1, 2, 3]];
+            console.log(mixedArr.length); // Output: 7
+
+            - We can shrink or expand the array by changing the length property.
+                let arr = [1, 2, 3, 4, 5];
+                arr.length = 3; // shrink the array
+                console.log(arr); // Output: [1, 2, 3]
+                arr.length = 5; // expand the array
+                console.log(arr); // Output: [1, 2, 3, <2 empty items>]
+                arr[3] = 4;
+                arr[4] = 5;
+                console.log(arr); // Output: [1, 2, 3, 4, 5]    
+            
+            - We can also use length property to add elements to the end of the array.
+                let arr = [1, 2, 3];
+                arr[arr.length] = 4;
+                arr[arr.length] = 5;
+                console.log(arr); // Output: [1, 2, 3, 4, 5]
+
+            - We can also make the array empty by setting the length property to 0.
+                let arr = [1, 2, 3, 4, 5];
+                arr.length = 0;
+                console.log(arr); // Output: []
+                console.log(arr.length); // Output: 0
+
+            - Array can hold 2 ** 32 - 1 elements. If we set the length property to a value greater than 2 ** 32 - 1, it will throw a RangeError.
+                let arr = [];
+                arr.length = 2 ** 32; // throws RangeError: Invalid array length
+
+                - also if we set the length property to a negative value, it will throw a RangeError.
+                let arr = [];
+                arr.length = -1; // throws RangeError: Invalid array length
+            - If we set the length property to a non-integer value, it will be converted to an integer.
+                let arr = [1, 2, 3];
+                arr.length = 3.5;   
+                console.log(arr.length); // Output: 3
+                arr.length = '5';
+                console.log(arr.length); // Output: 5
+                arr.length = 'abc';
+                console.log(arr.length); // Output: 0 (converted to 0)
+
+    ***** ARRAY METHODS *****
+        1. concat
+            - concat() method is used to merge two or more arrays.
+            - It does not mutate the original array.
+            - It returns a new array as a result.
+            - Syntax: arrayName.concat(array1, array2, ..., arrayN)
+            - Example:
+                let arr1 = [1, 2, 3];
+                let arr2 = [4, 5, 6];
+                let mergedArr = arr1.concat(arr2);
+                console.log(mergedArr); // Output: [1, 2, 3, 4, 5, 6]
+                console.log(arr1); // Output: [1, 2, 3] (original array not mutated)
+                console.log(arr2); // Output: [4, 5, 6] (original array not mutated)
+                let arr3 = [7, 8, 9];
+                let mergedArr2 = arr1.concat(arr2, arr3);
+                console.log(mergedArr2); // Output: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        
+        2. join
+            - join() method is used to join all elements of an array into a string.
+            - It does not mutate the original array.
+            - It returns a string as a result.
+            - Syntax: arrayName.join(separator)
+                - separator : optional. A string to separate each element of the array. Default is comma (,)
+            - Example:
+                let arr = [1, 2, 3, 4, 5];
+                let str = arr.join();
+                console.log(str); // Output: "1,2,3,4,5"
+                console.log(arr); // Output: [1, 2, 3, 4, 5] (original array not mutated)
+                let str2 = arr.join(' - ');
+                console.log(str2); // Output: "1 - 2 - 3 - 4 - 5"
+                let str3 = arr.join('');
+                console.log(str3); // Output: "12345"
+                let emptyArr = [];
+                let str4 = emptyArr.join();
+                console.log(str4); // Output: "" (empty string)
+                let singleElementArr = [1];
+                let str5 = singleElementArr.join();
+                console.log(str5); // Output: "1"
+        
+        3. fill
+            - fill() method is used to fill all elements of an array with a static value.
+            - It mutates the original array.
+            - It returns the modified array as a result.
+            - Syntax: arrayName.fill(value, startIndex, endIndex)
+                - value : The value to fill the array with.
+                - startIndex : optional. The index at which to start filling. Default is 0.
+                - endIndex : optional. The index at which to stop filling. Default is array.length.
+            - Example:
+                let arr = [1, 2, 3, 4, 5];
+                let filledArr = arr.fill(0);
+                console.log(filledArr); // Output: [0, 0, 0, 0, 0]
+                console.log(arr); // Output: [0, 0, 0, 0, 0] (original array mutated)
+                let arr2 = [1, 2, 3, 4, 5];
+                let filledArr2 = arr2.fill(0, 1);
+                console.log(filledArr2); // Output: [1, 0, 0, 0, 0]
+                let arr3 = [1, 2, 3, 4, 5];
+                let filledArr3 = arr3.fill(0, 1, 4);
+                console.log(filledArr3); // Output: [1, 0, 0, 0, 5]
+                let emptyArr = [];
+                let filledEmptyArr = emptyArr.fill(0);
+                console.log(filledEmptyArr); // Output: [] (empty array remains empty)
+                let singleElementArr = [1];
+                let filledSingleElementArr = singleElementArr.fill(0);
+                console.log(filledSingleElementArr); // Output: [0]
+        
+        4. includes
+            - includes() method is used to check if an array contains a specific element.
+            - It does not mutate the original array.
+            - It returns true if the array contains the element, otherwise false.
+            - Syntax: arrayName.includes(element, startIndex)
+                - element : The element to search for.
+                - startIndex : optional. The index at which to start searching. Default is 0.
+            - Example:
+                let arr = [1, 2, 3, 4, 5];
+                console.log(arr.includes(3)); // Output: true
+                console.log(arr.includes(6)); // Output: false
+                console.log(arr.includes(1, 1)); // Output: false (search starts from index 1)
+                console.log(arr.includes(2, 1)); // Output: true (search starts from index 1)
+                let emptyArr = [];
+                console.log(emptyArr.includes(1)); // Output: false (empty array)
+                let singleElementArr = [1];
+                console.log(singleElementArr.includes(1)); // Output: true
+                console.log(singleElementArr.includes(2)); // Output: false 
+
+        5. indexOf
+            - indexOf() method is used to find the index of the first occurrence of a specific element in an array.
+            - It does not mutate the original array.
+            - It returns the index of the element if found, otherwise -1.
+            - Syntax: arrayName.indexOf(element, startIndex)
+                - element : The element to search for.
+                - startIndex : optional. The index at which to start searching. Default is 0.
+            - Example:
+                let arr = [1, 2, 3, 4, 5, 3];
+                console.log(arr.indexOf(3)); // Output: 2
+                console.log(arr.indexOf(6)); // Output: -1
+                console.log(arr.indexOf(3, 3)); // Output: 5 (search starts from index 3)
+                console.log(arr.indexOf(2, 2)); // Output: -1 (search starts from index 2)
+                let emptyArr = [];
+                console.log(emptyArr.indexOf(1)); // Output: -1 (empty array)
+                let singleElementArr = [1];
+                console.log(singleElementArr.indexOf(1)); // Output: 0
+                console.log(singleElementArr.indexOf(2)); // Output: -1
+        
+        6. lastIndexOf
+            - lastIndexOf() method is used to find the index of the last occurrence of a specific element in an array.
+            - It does not mutate the original array.
+            - It returns the index of the element if found, otherwise -1.
+            - Syntax: arrayName.lastIndexOf(element, startIndex)
+                - element : The element to search for.
+                - startIndex : optional. The index at which to start searching backwards. Default is array.length - 1.
+            - Example:
+                let arr = [1, 2, 3, 4, 5, 3];
+                console.log(arr.lastIndexOf(3)); // Output: 5
+                console.log(arr.lastIndexOf(6)); // Output: -1
+                console.log(arr.lastIndexOf(3, 3)); // Output: 2 (search starts from index 3 backwards)
+                console.log(arr.lastIndexOf(2, 2)); // Output: 1 (search starts from index 2 backwards)
+                let emptyArr = [];
+                console.log(emptyArr.lastIndexOf(1)); // Output: -1 (empty array)
+                let singleElementArr = [1];
+                console.log(singleElementArr.lastIndexOf(1)); // Output: 0
+                console.log(singleElementArr.lastIndexOf(2)); // Output: -1
+
+        7. reverse
+            - reverse() method is used to reverse the order of elements in an array.
+            - It mutates the original array.
+            - It returns the modified array as a result.
+            - Syntax: arrayName.reverse()
+            - Example:
+                let arr = [1, 2, 3, 4, 5];
+                let reversedArr = arr.reverse();
+                console.log(reversedArr); // Output: [5, 4, 3, 2, 1]
+                console.log(arr); // Output: [5, 4, 3, 2, 1] (original array mutated)
+                let emptyArr = [];
+                let reversedEmptyArr = emptyArr.reverse();
+                console.log(reversedEmptyArr); // Output: [] (empty array remains empty)
+                let singleElementArr = [1];
+                let reversedSingleElementArr = singleElementArr.reverse();
+                console.log(reversedSingleElementArr); // Output: [1] (single element array remains same)
+
+        8. sort
+            - sort() method is used to sort the elements of an array in place and returns the sorted array.
+            - It mutates the original array.
+            - default sort order is ascending.
+            - By default sort() method converts the elements into strings and sorts them in ascending order based on their UTF-16 code unit values.
+            - Syntax: arrayName.sort(compareFunction)
+                - compareFunction : optional. A function that defines the sort order. If omitted, the array elements are converted to strings and sorted in ascending order.
+            - Example:
+                let arr = [5, 3, 8, 1, 2];
+                let sortedArr = arr.sort();
+                console.log(sortedArr); // Output: [1, 2, 3, 5, 8]
+                console.log(arr); // Output: [1, 2, 3, 5, 8] (original array mutated)
+                let strArr = ['banana', 'apple', 'cherry'];
+                let sortedStrArr = strArr.sort();
+                console.log(sortedStrArr); // Output: ['apple', 'banana', 'cherry']
+                let emptyArr = [];
+                let sortedEmptyArr = emptyArr.sort();   
+                console.log(sortedEmptyArr); // Output: [] (empty array remains empty)
+                let singleElementArr = [1];
+                let sortedSingleElementArr = singleElementArr.sort();
+                console.log(sortedSingleElementArr); // Output: [1] (single element array remains same)
+
+                let numsArr = [2,10,21,1000,1,40];
+                let sortedNumsArr = numsArr.sort();
+                console.log(sortedNumsArr); // Output: [1, 10, 1000, 2, 21, 40] (incorrect sorting)
+                // To fix the above issue, we can provide a compare function to sort() method.
+                let numsArr2 = [2,10,21,1000,1,40];
+                let sortedNumsArr2 = numsArr2.sort((a, b) => {
+                    return a === b ? 0 : a < b ? -1 : 1;
+                });
+                console.log(sortedNumsArr2); // Output: [1, 2, 10, 21, 40, 1000] (correct sorting in ascending order) 
+
+        9. splice
+            - splice() method is used to add or remove elements from an array.
+            - It mutates the original array.
+            - It returns an array containing the removed elements, if any.
+            - Syntax: arrayName.splice(startIndex, deleteCount, item1, item2, ..., itemN)
+                - startIndex : The index at which to start changing the array.
+                - deleteCount : optional. The number of elements to remove from the array. Default is 0.
+                - item1, item2, ..., itemN : optional. The elements to add to the array, starting from startIndex.
+            - Example:
+                let arr = [1, 2, 3, 4, 5];
+                let removedElements = arr.splice(2, 2, 6, 7);
+                console.log(arr); // Output: [1, 2, 6, 7, 5] (original array mutated)
+                console.log(removedElements); // Output: [3, 4] (removed elements)
+                let arr2 = [1, 2, 3, 4, 5];
+                let removedElements2 = arr2.splice(2);
+                console.log(arr2); // Output: [1, 2] (original array mutated)
+                console.log(removedElements2); // Output: [3, 4, 5] (removed elements)
+                let arr3 = [1, 2, 3, 4, 5];
+                let removedElements3 = arr3.splice(2, 0, 6, 7);
+                console.log(arr3); // Output: [1, 2, 6, 7, 3, 4, 5] (original array mutated)
+                console.log(removedElements3); // Output: [] (no elements removed)
+                let emptyArr = [];
+                let removedElements4 = emptyArr.splice(0, 1, 1);
+                console.log(emptyArr); // Output: [1] (element added to empty array)
+                console.log(removedElements4); // Output: [] (no elements removed)
+                let singleElementArr = [1];
+                let removedElements5 = singleElementArr.splice(0, 1, 2);
+                console.log(singleElementArr); // Output: [2] (element replaced)
+                console.log(removedElements5); // Output: [1] (removed element)
+
+        10. at
+            - at() method is used to get the element at a specific index in an array.
+            - It does not mutate the original array.
+            - It returns the element at the specified index, or undefined if the index is out of bounds.
+            - Negative index can be used to access elements from the end of the array.
+            - Syntax: arrayName.at(index)
+                - index : The index of the element to retrieve. Negative index can be used to access elements from the end of the array.
+            - Example:
+                let arr = [1, 2, 3, 4, 5];
+                console.log(arr.at(0)); // Output: 1
+                console.log(arr.at(2)); // Output: 3
+                console.log(arr.at(-1)); // Output: 5 (last element)
+                console.log(arr.at(-3)); // Output: 3 (third last element)
+                console.log(arr.at(5)); // Output: undefined (index out of bounds)
+                console.log(arr.at(-6)); // Output: undefined (index out of bounds)
+                let emptyArr = [];
+                console.log(emptyArr.at(0)); // Output: undefined (empty array)
+                let singleElementArr = [1];
+                console.log(singleElementArr.at(0)); // Output: 1
+                console.log(singleElementArr.at(1)); // Output: undefined (index out of bounds)
+
+        11. flat
+            - flat() method is used to flatten a nested array.
+            - It does not mutate the original array.
+            - It returns a new array with all sub-array elements concatenated into it recursively up to the specified depth.
+            - Syntax: arrayName.flat(depth)
+                - depth : optional. The depth level specifying how deep a nested array structure should be flattened. Default is 1.
+            - Example:
+                let arr = [1, 2, [3, 4], [5, 6]];
+                let flattenedArr = arr.flat();
+                console.log(flattenedArr); // Output: [1, 2, 3, 4, 5, 6]
+                console.log(arr); // Output: [1, 2, [3, 4], [5, 6]] (original array not mutated)
+                let arr2 = [1, 2, [3, [4, 5]], [6, 7]];
+                let flattenedArr2 = arr2.flat(2);
+                console.log(flattenedArr2); // Output: [1, 2, 3, 4, 5, 6, 7]
+                let arr3 = [1, 2, [3, [4, [5]]], [6, 7]];
+                let flattenedArr3 = arr3.flat(Infinity);
+                console.log(flattenedArr3); // Output: [1, 2, 3, 4, 5, 6, 7]
+                let emptyArr = [];
+                let flattenedEmptyArr = emptyArr.flat();
+                console.log(flattenedEmptyArr); // Output: [] (empty array remains empty)
+                let singleElementArr = [1];
+                let flattenedSingleElementArr = singleElementArr.flat();
+                console.log(flattenedSingleElementArr); // Output: [1] (single element array remains same)
+
+    ***** GROUPING DATA - OBJECT.GROUPBY *****
+        - Object.groupBy() method is used to group the elements of an array based on a specified key.
+        - It does not mutate the original array.
+        - It returns an object where the keys are the group names and the values are arrays of elements belonging to that group.
+        - Syntax: Object.groupBy(array, keyFunction)
+            - array : The array to be grouped.
+            - keyFunction : A function that takes an element as input and returns the key to group by.
+        - Example:
+            let arr = [
+                { name: 'Alice', age: 25 },
+                { name: 'Bob', age: 30 },
+                { name: 'Charlie', age: 25 },
+                { name: 'David', age: 30 },
+                { name: 'Eve', age: 35 }
+            ];
+            let groupedByAge = Object.groupBy(arr, (item) => item.age);
+            console.log(groupedByAge);
+            // Output:
+            // {
+            //     25: [
+            //         { name: 'Alice', age: 25 },
+            //         { name: 'Charlie', age: 25 }
+            //     ],
+            //     30: [
+            //         { name: 'Bob', age: 30 },
+            //         { name: 'David', age: 30 }
+            //     ],
+            //     35: [
+            //         { name: 'Eve', age: 35 }
+            //     ]
+            // }
+            console.log(arr); // Output: original array remains unchanged
+
+    ***** IMMUTABILTY METHODS *****
+        1. toReversed()
+        2. toSorted()
+        3. toSpliced()
+        4. with()
+        - These methods do not mutate the original array. Instead, they return a new array with the desired changes.
+        - These methods are useful when we want to keep the original array unchanged and create a modified copy of it.
+        - Example:
+            - toReversed()
+                - toReversed() method is used to reverse the order of elements in an array.
+                - It does not mutate the original array.
+                - It returns a new array with the elements in reverse order.
+                - Syntax: arrayName.toReversed()
+                - Example:
+                    let arr = [1, 2, 3, 4, 5];
+                    let reversedArr = arr.toReversed();
+                    console.log(reversedArr); // Output: [5, 4, 3, 2, 1]
+                    console.log(arr); // Output: [1, 2, 3, 4, 5] (original array remains unchanged)
+            
+            - toSorted()
+                - toSorted() method is used to sort the elements of an array.
+                - It does not mutate the original array.
+                - It returns a new array with the elements sorted in ascending order.
+                - Syntax: arrayName.toSorted(compareFunction)
+                    - compareFunction : optional. A function that defines the sort order. If omitted, the array elements are converted to strings and sorted in ascending order.
+                - Example:
+                    let arr = [5, 3, 8, 1, 2];
+                    let sortedArr = arr.toSorted();
+                    console.log(sortedArr); // Output: [1, 2, 3, 5, 8]
+                    console.log(arr); // Output: [5, 3, 8, 1, 2] (original array remains unchanged)
+            - toSpliced()
+                - toSpliced() method is used to add or remove elements from an array.
+                - It does not mutate the original array.
+                - It returns a new array with the desired changes.
+                - Syntax: arrayName.toSpliced(startIndex, deleteCount, item1, item2, ..., itemN)
+                    - startIndex : The index at which to start changing the array.
+                    - deleteCount : optional. The number of elements to remove from the array. Default is 0.
+                    - item1, item2, ..., itemN : optional. The elements to add to the array, starting from startIndex.
+                - Example:
+                    let arr = [1, 2, 3, 4, 5];
+                    let newArr = arr.toSpliced(2, 2, 6, 7);
+                    console.log(newArr); // Output: [1, 2, 6, 7, 5]
+                    console.log(arr); // Output: [1, 2, 3, 4, 5] (original array remains unchanged)
+            - with()
+                - with() method is used to create a new array with a modified element at a specific index.
+                - It does not mutate the original array.
+                - It returns a new array with the desired changes.
+                - Syntax: arrayName.with(index, value)
+                    - index : The index of the element to be modified.
+                    - value : The new value to be set at the specified index.
+                - Example:
+                    let arr = [1, 2, 3, 4, 5];
+                    let newArr = arr.with(2, 6);
+                    console.log(newArr); // Output: [1, 2, 6, 4, 5]
+                    console.log(arr); // Output: [1, 2, 3, 4, 5] (original array remains unchanged)
+                   
+    ***** ARRAY LIKE ****
+        - Array-like looks like an array but it is not an array. It is an object.
+        - The similarities between array and array-like objects are:
+            1. Both have length property.
+            2. Both can be accessed using index.
+        - The differences between array and array-like objects are:
+            1. Array is an instance of Array class, whereas array-like object is an instance of Object class.
+            2. Array has array methods, whereas array-like object does not have array methods.
+        - Example of array-like objects:
+            1. Arguments object
+            2. NodeList object
+            3. HTMLCollection object
+            4. String object
+        - We can convert array-like objects to array using Array.from() method or spread operator.
+
+            let elems = document.getElementsByTagName('li');
+            console.log(elems.length);
+            console.log(elems[0]);
+
+            // error - forEach not a function on this
+            // elems.forEach((item) => {
+            //     console.log(item);
+            // })
+
+            // using Array.from
+            console.log(Array.from(elems)); // Array
+
+            // Using spread
+            let elemsS = [...elems];
+            console.log(elemsS); // Array
+
+        - Inside function we have one special array-like object called arguments object.
+            function demo() {
+                console.log(arguments.length);
+                console.log(arguments[0]);
+                // error - forEach not a function on this
+                // arguments.forEach((item) => {
+                //     console.log(item);
+                // })
+                // using Array.from
+                console.log(Array.from(arguments)); // Array
+                // Using spread
+                let args = [...arguments];
+                console.log(args); // Array
+            }
+            demo(1, 2, 3, 4, 5);
+      
+    
+    ***** ARRAY.FROM *****
+        - Array.from() method is used to convert array-like or iterable objects to an array.
+        - It does not mutate the original array-like or iterable object.
+        - It returns a new array as a result.
+        - Syntax: Array.from(arrayLike, mapFunction, thisValue)
+            - arrayLike : The array-like or iterable object to convert to an array.
+            - mapFunction : optional. A function to call on every element of the array.
+            - thisValue : optional. Value to use as this when executing mapFunction.
+        - Example:
+            let str = 'Hello';
+            let strArray = Array.from(str);
+            console.log(strArray); // Output: ['H', 'e', 'l', 'l', 'o']
+
+    ***** ARRAY.FROMASYNC *****
+        - Array.fromAsync() method is used to convert async iterable objects to an array.
+        - It does not mutate the original async iterable object.
+        - It returns a promise that resolves to a new array as a result.
+        - Syntax: Array.fromAsync(asyncIterable, mapFunction, thisValue)
+            - asyncIterable : The async iterable object to convert to an array.
+            - mapFunction : optional. A function to call on every element of the array.
+            - thisValue : optional. Value to use as this when executing mapFunction.
+        - Example:
+            let arrayLikePromise = Array.fromAsync({
+                0: Promise.resolve("tapaScript"),
+                1: Promise.resolve("Google"),
+                2: Promise.resolve("Apple"),
+                length: 3
+            }).then(res=> console.log(res));
+            // Output: ['tapaScript', 'Google', 'Apple']    
+
+    ***** ARRAY,OF *****
+        - Array.of() method is used to create a new array from a variable number of arguments.
+        - It does not mutate the original array.
+        - It returns a new array as a result.
+        - Syntax: Array.of(element1, element2, ..., elementN)
+            - element1, element2, ..., elementN : The elements to include in the new array.
+        - Example:
+            let arr = Array.of(1, 2, 3, 4, 5);
+            console.log(arr); // Output: [1, 2, 3, 4, 5]
+            let strArr = Array.of('a', 'b', 'c');
+            console.log(strArr); // Output: ['a', 'b', 'c']
+            let mixedArr = Array.of(1, 'a', true, null, undefined, { name: 'Sakthi' }, [1, 2, 3]);
+            console.log(mixedArr); // Output: [1, 'a', true, null, undefined, { name: 'Sakthi' }, [1, 2, 3]]
+            let emptyArr = Array.of();
+            console.log(emptyArr); // Output: [] (empty array)
+            let singleElementArr = Array.of(1);
+            console.log(singleElementArr); // Output: [1] (single element array)
+
+    - Difference between Array.of() and Array() constructor
+        - Array.of() method creates a new array with the given arguments as elements.
+        - Array() constructor creates a new array with the given argument as the length of the array if a single numeric argument is passed, otherwise it creates a new array with the given arguments as elements.
+        - Example:
+            let arr1 = Array.of(3);
+            console.log(arr1); // Output: [3] (array with single element 3)
+            let arr2 = Array(3);
+            console.log(arr2); // Output: [ <3 empty items> ] (array with length 3)
+
+    ***** ARRAY ITERATOR METHODS *****
+        - Array iterator methods are used to iterate over the elements of an array.
+        - They do not mutate the original array.
+        - They return a new array or a single value as a result.
+        - The array iterator methods are:
+            1. entries()
+            2. keys()
+            3. values()
+            4. forEach()
+            5. map()
+            6. filter()
+            7. reduce()
+            8. reduceRight()
+            9. some()
+            10. every()
+            11. find()
+            12. findIndex()
+            13. flatMap()
+        
+        1. filter
+            - filter() method takes a test function. It calls the test function on each element of the array.
+            - If the test function returns true, the element is included in the new array.
+            - If the test function returns false, the element is excluded from the new array.
+            - It does not mutate the original array.
+            - It returns a new array as a result.
+            - Syntax: arrayName.filter(callbackFunction, thisValue)
+                - callbackFunction : A function that is called for every element of the array. It takes three arguments:
+                    1. currentValue : The current element being processed in the array.
+                    2. index : optional. The index of the current element being processed in the array.
+                    3. array : optional. The array filter was called upon.
+                - thisValue : optional. Value to use as this when executing callbackFunction.
+            - Example:
+                let arr = [1, 2, 3, 4, 5];
+                let evenArr = arr.filter((item) => item % 2 === 0);
+                console.log(evenArr); // Output: [2, 4]
+                console.log(arr); // Output: [1, 2, 3, 4, 5] (original array remains unchanged)
+
+        2. map
+            - map() method takes a transform function. It calls the transform function on each element of the array.
+            - It does not mutate the original array.
+            - It returns a new array as a result.
+            - Syntax: arrayName.map(callbackFunction, thisValue)
+                - callbackFunction : A function that is called for every element of the array. It takes three arguments:
+                    1. currentValue : The current element being processed in the array.
+                    2. index : optional. The index of the current element being processed in the array.
+                    3. array : optional. The array map was called upon.
+                - thisValue : optional. Value to use as this when executing callbackFunction.
+            - Example:
+                let arr = [1, 2, 3, 4, 5];
+                let squaredArr = arr.map((item) => item * item);
+                console.log(squaredArr); // Output: [1, 4, 9, 16, 25]
+                console.log(arr); // Output: [1, 2, 3, 4, 5] (original array remains unchanged)
+
+        3. reduce
+            - reduce() method takes a reducer function and an optional initial value. 
+            - It calls the reducer function on each element of the array, resulting in a single output value.
+            - Reducer function takes four arguments:
+                1. accumulator : The accumulated value previously returned in the last invocation of the reducer, or initialValue, if supplied.
+                2. currentValue : The current element being processed in the array.
+                3. index : optional. The index of the current element being processed in the array.
+                4. array : optional. The array reduce was called upon.
+
+                -Flow
+                    1. If initialValue is provided, accumulator is set to initialValue and currentValue is set to the first element of the array.
+                    2. If initialValue is not provided, accumulator is set to the first element of the array and currentValue is set to the second element of the array.
+                    3. The reducer function is called for each element of the array, with the current accumulator and currentValue as arguments.
+                    4. The return value of the reducer function is assigned to accumulator, and the process continues until all elements of the array have been processed.
+                    5. The final value of accumulator is returned as the result of the reduce() method.
+            - It does not mutate the original array.
+            - It returns a single value as a result.
+            - Syntax: arrayName.reduce(callbackFunction, initialValue)
+                - callbackFunction : A function that is called for every element of the array. It takes four arguments:
+                    1. accumulator : The accumulated value previously returned in the last invocation of the reducer, or initialValue, if supplied.
+                    2. currentValue : The current element being processed in the array.
+                    3. index : optional. The index of the current element being processed in the array.
+                    4. array : optional. The array reduce was called upon.
+                - initialValue : optional. A value to use as the first argument to the first call of the callbackFunction. If no initialValue is supplied, the first element in the array will be used and skipped.
+            - Example:
+                let arr = [1, 2, 3, 4, 5];
+                let sum = arr.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+                console.log(sum); // Output: 15
+                console.log(arr); // Output: [1, 2, 3, 4, 5] (original array remains unchanged)
+
+        4. reduceRight
+            - reduceRight() method is similar to reduce() method, but it processes the array elements from right to left.
+            - It takes a reducer function and an optional initial value.
+            - It does not mutate the original array.
+            - It returns a single value as a result.
+            - Syntax: arrayName.reduceRight(callbackFunction, initialValue)
+                - callbackFunction : A function that is called for every element of the array. It takes four arguments:
+                    1. accumulator : The accumulated value previously returned in the last invocation of the reducer, or initialValue, if supplied.
+                    2. currentValue : The current element being processed in the array.
+                    3. index : optional. The index of the current element being processed in the array.
+                    4. array : optional. The array reduceRight was called upon.
+                - initialValue : optional. A value to use as the first argument to the first call of the callbackFunction. If no initialValue is supplied, the last element in the array will be used and skipped.
+            - Example:
+                let arr = [1, 2, 3, 4, 5];
+                let sum = arr.reduceRight((accumulator, currentValue) => accumulator - currentValue);
+                console.log(sum); // Output: -5
+                console.log(arr); // Output: [1, 2, 3, 4, 5] (original array remains unchanged)
+
+        5. some
+            - some() method takes a test function. It calls the test function on each element of the array.
+            - If the test function returns true for any element, some() method returns true.
+            - If the test function returns false for all elements, some() method returns false.
+            - It does not mutate the original array.
+            - It returns a boolean value as a result.
+            - Syntax: arrayName.some(callbackFunction, thisValue)
+                - callbackFunction : A function that is called for every element of the array. It takes three arguments:
+                    1. currentValue : The current element being processed in the array.
+                    2. index : optional. The index of the current element being processed in the array.
+                    3. array : optional. The array some was called upon.
+                - thisValue : optional. Value to use as this when executing callbackFunction.
+            - Example:
+                let arr = [1, 2, 3, 4, 5];
+                let hasEven = arr.some((item) => item % 2 === 0);
+                console.log(hasEven); // Output: true
+                let hasGreaterThanFive = arr.some((item) => item > 5);
+                console.log(hasGreaterThanFive); // Output: false
+                console.log(arr); // Output: [1, 2, 3, 4, 5] (original array remains unchanged)
+
+        6. every
+            - every() method takes a test function. It calls the test function on each element of the array.
+            - If the test function returns true for all elements, every() method returns true.
+            - If the test function returns false for any element, every() method returns false.
+            - It does not mutate the original array.
+            - It returns a boolean value as a result.
+            - Syntax: arrayName.every(callbackFunction, thisValue)
+                - callbackFunction : A function that is called for every element of the array. It takes three arguments:
+                    1. currentValue : The current element being processed in the array. 
+                    2. index : optional. The index of the current element being processed in the array.
+                    3. array : optional. The array every was called upon.
+                - thisValue : optional. Value to use as this when executing callbackFunction.
+            - Example:
+                let arr = [1, 2, 3, 4, 5];
+                let allEven = arr.every((item) => item % 2 === 0);
+                console.log(allEven); // Output: false
+                let allLessThanSix = arr.every((item) => item < 6);
+                console.log(allLessThanSix); // Output: true
+                console.log(arr); // Output: [1, 2, 3, 4, 5] (original array remains unchanged) 
+
+        7. find
+            - find() method takes a test function. It calls the test function on each element of the array.
+            - It returns the value of the first element that satisfies the test function.
+            - If no elements satisfy the test function, it returns undefined.
+            - It does not mutate the original array.
+            - It returns a single value as a result.
+            - Syntax: arrayName.find(callbackFunction, thisValue)
+                - callbackFunction : A function that is called for every element of the array. It takes three arguments:
+                    1. currentValue : The current element being processed in the array.
+                    2. index : optional. The index of the current element being processed in the array.
+                    3. array : optional. The array find was called upon.
+                - thisValue : optional. Value to use as this when executing callbackFunction.
+            - Example:
+                let arr = [1, 2, 3, 4, 5];
+                let firstEven = arr.find((item) => item % 2 === 0);
+                console.log(firstEven); // Output: 2
+                let firstGreaterThanFive = arr.find((item) => item > 5);
+                console.log(firstGreaterThanFive); // Output: undefined
+                console.log(arr); // Output: [1, 2, 3, 4, 5] (original array remains unchanged)
+        
+        8. findIndex
+            - findIndex() method takes a test function. It calls the test function on each element of the array.
+            - It returns the index of the first element that satisfies the test function.
+            - If no elements satisfy the test function, it returns -1.
+            - It does not mutate the original array.
+            - It returns a single value as a result.
+            - Syntax: arrayName.findIndex(callbackFunction, thisValue)
+                - callbackFunction : A function that is called for every element of the array. It takes three arguments:
+                    1. currentValue : The current element being processed in the array.     
+                    2. index : optional. The index of the current element being processed in the array.
+                    3. array : optional. The array findIndex was called upon.
+                - thisValue : optional. Value to use as this when executing callbackFunction.
+            - Example:
+                let arr = [1, 2, 3, 4, 5];
+                let firstEvenIndex = arr.findIndex((item) => item % 2 === 0);
+                console.log(firstEvenIndex); // Output: 1
+                let firstGreaterThanFiveIndex = arr.findIndex((item) => item > 5);
+                console.log(firstGreaterThanFiveIndex); // Output: -1
+                console.log(arr); // Output: [1, 2, 3, 4, 5] (original array remains unchanged)
+        
+        9. findLast
+            - findLast() method is similar to find() method, but it processes the array elements from right to left.
+            - It takes a test function. It calls the test function on each element of the array.
+            - It returns the value of the first element (from the end) that satisfies the test function.
+            - If no elements satisfy the test function, it returns undefined.
+            - It does not mutate the original array.
+            - It returns a single value as a result.
+            - Syntax: arrayName.findLast(callbackFunction, thisValue)
+                - callbackFunction : A function that is called for every element of the array. It takes three arguments:
+                    1. currentValue : The current element being processed in the array.
+                    2. index : optional. The index of the current element being processed in the array.
+                    3. array : optional. The array findLast was called upon.
+                - thisValue : optional. Value to use as this when executing callbackFunction.
+            - Example:
+                let arr = [1, 2, 3, 4, 5];
+                let lastEven = arr.findLast((item) => item % 2 === 0);
+                console.log(lastEven); // Output: 4
+                let lastGreaterThanFive = arr.findLast((item) => item > 5);
+                console.log(lastGreaterThanFive); // Output: undefined
+                console.log(arr); // Output: [1, 2, 3, 4, 5] (original array remains unchanged)
+
+        10. findLastIndex
+            - findLastIndex() method is similar to findIndex() method, but it processes the array elements from right to left.
+            - It takes a test function. It calls the test function on each element of the array.
+            - It returns the index of the first element (from the end) that satisfies the test function.
+            - If no elements satisfy the test function, it returns -1.
+            - It does not mutate the original array.
+            - It returns a single value as a result.
+            - Syntax: arrayName.findLastIndex(callbackFunction, thisValue)
+                - callbackFunction : A function that is called for every element of the array. It takes three arguments:
+                    1. currentValue : The current element being processed in the array.
+                    2. index : optional. The index of the current element being processed in the array.
+                    3. array : optional. The array findLastIndex was called upon.
+                - thisValue : optional. Value to use as this when executing callbackFunction.
+            - Example:
+                let arr = [1, 2, 3, 4, 5];
+                let lastEvenIndex = arr.findLastIndex((item) => item % 2 === 0);
+                console.log(lastEvenIndex); // Output: 3
+                let lastGreaterThanFiveIndex = arr.findLastIndex((item) => item > 5);
+                console.log(lastGreaterThanFiveIndex); // Output: -1
+                console.log(arr); // Output: [1, 2, 3, 4, 5] (original array remains unchanged)
+
+        11. forEach
+            - forEach() method takes a callback function. It calls the callback function on each element of the array.
+            - It does not mutate the original array.
+            - It does not return anything (undefined).
+            - Syntax: arrayName.forEach(callbackFunction, thisValue)
+                - callbackFunction : A function that is called for every element of the array. It takes three arguments:
+                    1. currentValue : The current element being processed in the array.
+                    2. index : optional. The index of the current element being processed in the array.
+                    3. array : optional. The array forEach was called upon.
+                - thisValue : optional. Value to use as this when executing callbackFunction.
+            - Example:
+                let arr = [1, 2, 3, 4, 5];
+                arr.forEach((item) => console.log(item * item));
+                // Output:
+                // 1
+                // 4
+                // 9
+                // 16
+                // 25
+                console.log(arr); // Output: [1, 2, 3, 4, 5] (original array remains unchanged)
+
+        12. entries()
+            - entries() method returns a new Array Iterator object that contains the key/value pairs for each index in the array.
+            - It does not mutate the original array.
+            - It returns an iterator object as a result.
+            - Syntax: arrayName.entries()
+            - Example:
+                let arr = ['a', 'b', 'c'];
+                let iterator = arr.entries();
+                for (let [index, value] of iterator) {
+                    console.log(index, value);
+                }
+                // Output:
+                // 0 'a'
+                // 1 'b'
+                // 2 'c'
+                console.log(arr); // Output: ['a', 'b', 'c'] (original array remains unchanged)
+
+        13. values()
+            - values() method returns a new Array Iterator object that contains the values for each index in the array.
+            - It does not mutate the original array.
+            - It returns an iterator object as a result.
+            - Syntax: arrayName.values()
+            - Example:
+                let arr = ['a', 'b', 'c'];
+                let iterator = arr.values();
+                for (let value of iterator) {
+                    console.log(value);
+                }
+                // Output:
+                // 'a'
+                // 'b'
+                // 'c'
+                console.log(arr); // Output: ['a', 'b', 'c'] (original array remains unchanged)
+
+        14. flatMap
+            - flatMap() method first maps each element using a mapping function, then flattens the result into a new array.
+            - It does not mutate the original array.
+            - It returns a new array as a result.
+            - Syntax: arrayName.flatMap(callbackFunction, thisValue)
+                - callbackFunction : A function that is called for every element of the array. It takes three arguments:
+                    1. currentValue : The current element being processed in the array.
+                    2. index : optional. The index of the current element being processed in the array.
+                    3. array : optional. The array flatMap was called upon.
+                - thisValue : optional. Value to use as this when executing callbackFunction.
+            - Example:
+                let arr = [1, 2, 3];
+                let flatMappedArr = arr.flatMap((item) => [item, item * 2]);
+                console.log(flatMappedArr); // Output: [1, 2, 2, 4, 3, 6]
+                console.log(arr); // Output: [1, 2, 3] (original array remains unchanged)
+
