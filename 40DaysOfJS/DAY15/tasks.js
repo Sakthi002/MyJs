@@ -586,24 +586,204 @@ console.log(mostRepeatedCount);
 
 // T-058: Find the median of [5, 2, 9, 1, 3, 6, 8].
 
+let medArr = [5, 2, 9, 1, 3, 6, 8];
+
+let sortArr = medArr.sort((a,b) => {
+    return a === b ? 0 : a > b ? 1 : -1
+});
+
+let median = sortArr[Math.floor(sortArr.length/2)]
+console.log(median);
+
+// for even
+let medEvenArr =  [5, 2, 9, 1, 3, 6];
+let sortEvenArr = medEvenArr.sort((a,b) => a - b);
+console.log(sortEvenArr);
+let med1 = sortEvenArr[(sortEvenArr.length/2) - 1]
+let med2 = sortEvenArr[(sortEvenArr.length/2)]
+
+console.log((med1+med2)/2);
+
+// Odd array → take the middle element.
+// Even array → take the average of two middle elements.
+
 // T-059: Convert this array [['a', 1], ['b', 2], ['c', 3]], into { a: 1, b: 2, c: 3 } using array method(s).
+
+let nestArr = [['a', 1], ['b', 2], ['c', 3]];
+
+let objCon = Object.fromEntries(nestArr);
+
+console.log(objCon);
+
+// using reduce
+
+let objCon1 = nestArr.reduce((acc, [key, value]) => {
+    acc[key] = value;
+    return acc;
+}, {})
+
+console.log(objCon1);
 
 // T-060: Flatten and convert all letters to uppercase in one step using flatMap(). Here is input array: [['a', 'b'], ['c', 'd']].
 
+let fMapArr = [['a', 'b'], ['c', 'd', ['e']]];
+
+// let capsFlatArr = fMapArr.flatMap((item) => {
+    
+//     return item.map(val => typeof val === 'string' ? val.toUpperCase() : val).flat(Infinity);
+// });
+
+// console.log(capsFlatArr);
+
+function deepUpperCase(arr) {
+
+    return arr.flatMap((item) => {
+        
+        return typeof item === 'string' ? item.toUpperCase() : deepUpperCase(item)
+    })
+}
+
+console.log(deepUpperCase(fMapArr));
+
 // T-061: Count the occurrences of each fruit in this array: ['apple', 'banana', 'apple', 'mango', 'banana', 'banana']
+
+let friutsArr = ['apple', 'banana', 'apple', 'mango', 'banana', 'banana'];
+
+let fruitOccs = friutsArr.reduce((acc, curr) => {
+    acc[curr] = (acc[curr] || 0) + 1;
+    return acc;
+}, {});
+
+console.log(fruitOccs);
 
 // T-062: Extract extract [‘b’, ‘c’, ‘d’] using slice() from this array: ['a', 'b', 'c', 'd', 'e']
 
+let extArr = ['a', 'b', 'c', 'd', 'e'];
+let partArr = extArr.slice(1,4);
+console.log(partArr);
+
 // T-063: Sort the array [9, 3, 1, 6, 8] in ascending order using toSorted()
+
+let arr11 = [9, 3, 1, 6, 8];
+let toSortArr = arr11.toSorted((a,b) => a === b ? 0 : a > b ? 1 : -1);
+console.log(toSortArr);
+console.log(arr11);
 
 // T-064: Reverse [1, 2, 3, 4, 5] using toReversed() and compare it with reverse()
 
-// T-065: Group the follwing array elements based on age(Adult vs Non-Adult):
+let arr12 = [1, 2, 3, 4, 5];
+let toRevArr = arr12.toReversed();
+console.log(toRevArr); // reversed array without mutating original array
+console.log(arr12); // same array
 
-// const users = [
-// { name: 'Alice', age: 55 },
-// { name: 'Bob', age: 3 },
-// { name: 'Charlie', age: 25 },
-// ];
-// T-066: Find the longest word in this sentence using Array and Array methods: "40 Days of JavaScript by tapaScript is a powerful initiative".
+let arr13 = [1, 2, 3, 4, 5];
+let revArr = arr13.reverse();
+console.log(revArr); // reversed but modified original array
+console.log(arr13); // modified
+
+// T-065: Group the follwing array elements based on age(Adult vs Non-Adult):
+const users = [
+    { name: 'Alice', age: 55 },
+    { name: 'Bob', age: 3 },
+    { name: 'Charlie', age: 25 },
+];
+
+let gropupsByAge = Object.groupBy(users, function({ age }) {
+    return age > 18 ? "Adult" : "Non-Adult"
+});
+
+console.log(gropupsByAge);
+
+// Using reduce
+
+let adultsNonAdults = users.reduce((acc, curr) => {
+
+    let group = curr.age > 18 ? "Adult" : 'Non-Adult';
+
+    if(!acc[group]) {
+        acc[group] = [];
+    }
+    
+    acc[group].push(curr);
+
+    return acc;
+}, {})
+
+console.log(adultsNonAdults);
+
+
+// T-066: Find the longest word in this sentence using Array and Array methods: 
+// "40 Days of JavaScript by tapaScript is a powerful initiative".
+
+let sentence = "40 Days of JavaScript by tapaScript is a powerful initiative";
+
+let sentenceArr = sentence.split(" ");
+
+console.log(sentenceArr);
+
+let longestWord = sentenceArr[0];
+
+for(let word of sentenceArr) {
+    if(word.length >= longestWord.length) {
+        longestWord = word;
+    }
+}
+
+console.log(longestWord);
+
+// using reduce
+
+let lengthyWord = sentenceArr.reduce((acc, curr) => {
+    
+    return acc.length > curr.length ? acc : curr;
+})
+
+console.log(lengthyWord);
+
+
 // T-067: Find common elements between two arrays, [1, 2, 3, 4], [3, 4, 5, 6]
+let arr14 = [1, 2, 3, 4];
+let arr15 = [3, 4, 5, 6];
+
+let commonElems = arr14.filter((num, i, self) => arr15.includes(num));
+console.log(commonElems);
+
+// deepClone
+
+function deepClone(value) {
+
+    if(value === null || typeof value !== 'object') {
+
+        return value;
+    }
+
+    if(Array.isArray(value)) {
+        
+        return value.map(val => deepClone(val));
+    }
+
+    let clonedObj = {};
+
+    for(let key in value) {        
+
+        if (value.hasOwnProperty(key)) {
+
+            clonedObj[key] = deepClone(value[key])
+        }
+    }
+
+    return clonedObj;
+    
+}
+
+const original = { a: 1, b: { c: 2 }, d: [ 3, 4 ] }
+
+const cloneTest=deepClone(original)
+
+console.log(cloneTest) //{a:1,b:{c:2},d:[3,4]}
+
+console.log(cloneTest !== original) //true
+
+console.log(cloneTest.b !== original.b) //true
+
+console.log(cloneTest.d !== original.d) //true
