@@ -125,3 +125,23 @@ const uniqueCount = Object.keys(uniqueLinksObj).length;
 
 // Display the count
 document.getElementById("linkCount").innerText = `Unique links: ${uniqueCount}`;
+
+console.log(3 > 2 > 1); //
+console.log(true > 1);
+console.log(1 > 1); // false
+
+console.log([] + []); //""
+console.log(true + "false"); // truefalse
+console.log(true + false); // truefalse
+console.log({} + {}); // [Object object]
+
+console.log([1,2] + [3,4]);
+console.log("1,2" + "3,4"); //"1,23,4"
+console.log([1,2] + 3);
+
+
+
+
+
+
+

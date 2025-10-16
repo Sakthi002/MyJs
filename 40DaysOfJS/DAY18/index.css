@@ -1,0 +1,16 @@
+.main-class {
+    border: 3px solid red;
+    background: pink;
+    color: black;
+}
+
+.green-class {
+    border: 3px solid green;
+    background: lightblue;
+    color: black;
+}
+
+.layout {
+    border-radius: .5rem;
+    padding: 20px;
+}

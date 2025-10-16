@@ -2946,4 +2946,267 @@
             2. HTMLCollection only contains element nodes, whereas NodeList can contain any type of nodes (element, text, comment etc.).
            *3. HTMLCollection does not have forEach method, whereas NodeList has forEach method.
 
-          
+    - DOM MANIPULATION 
+        - We can manipulate the DOM using the properties and methods of the DOM nodes.
+        - Some of the commonly used properties and methods are:
+            1. element.innerHTML - gets or sets the HTML content of an element.
+            2. element.textContent - gets or sets the text content of an element.
+            3. element.style - gets or sets the inline style of an element.
+            4. element.classList - gets the class list of an element. It has methods to add, remove, toggle and check classes.
+            5. element.setAttribute() - sets the value of an attribute on an element.
+            6. element.getAttribute() - gets the value of an attribute on an element.
+            7. element.removeAttribute() - removes an attribute from an element.
+            8. document.createElement() - creates a new element.
+            9. parentElement.appendChild() - adds a new child element to a parent element.
+            10. parentElement.insertBefore() - inserts a new child element before a specified child element.
+            11. parentElement.removeChild() - removes a child element from a parent element.
+            12. parentElement.replaceChild() - replaces a child element with a new child element.
+
+        1. CREATING ELEMENTS
+            - We can create new elements using the document.createElement() method.
+            - We can then set the attributes and content of the element using the properties and methods of the element node.
+            - Finally, we can add the element to the DOM using the appendChild().
+            - Example:
+                let newDiv = document.createElement('div');
+                newDiv.id = 'newDiv';
+                newDiv.className = 'myClass';
+                newDiv.textContent = 'This is a new div.';
+                document.body.appendChild(newDiv);
+                // Output: <div id="newDiv" class="myClass">This is a new div.</div> added to the body of the document.
+
+        2. INSERTING ELEMENTS
+            - We can insert new elements into the DOM using the appendChild() and insertBefore() methods.
+            - appendChild() method adds a new child element to the end of the parent element.
+            - insertBefore() method inserts a new child element before a specified child element of the parent element.
+            - Example:
+                let anotherParagraph = document.createElement('p');
+                anotherParagraph.textContent = 'This is another paragraph.';
+                let firstParagraph = existingDiv.querySelector('p');
+                existingDiv.insertBefore(anotherParagraph, firstParagraph);
+                // Output: <p>This is another paragraph.</p> added before the first paragraph in the existingDiv.
+
+            *** NOTE: insertBefore() should be called on the parent element of the reference node.***
+                - Exmaple
+                    - If we want to insert an element before a p tag which present body tag, we should call insertBefore() on body tag.
+                        let newParagraph = document.createElement('p');
+                        newParagraph.textContent = 'This is a new paragraph.';
+                        let pTag = document.querySelector('p');
+                        document.body.insertBefore(newParagraph, pTag);
+                    - If a pTag is present inside a div tag, we should call insertBefore() on that div tag not on the body.
+                        let newParagraph = document.createElement('p');
+                        newParagraph.textContent = 'This is a new paragraph.';
+                        let parentDiv = document.querySelector('div');
+                        let pTag = parentDiv.querySelector('p');
+                        parentDiv.insertBefore(newParagraph, pTag);
+
+                - In insertBefore(), if the reference node is null, the new node will be added at the end of the parent element.
+                    - Example:
+                        let newParagraph = document.createElement('p');
+                        newParagraph.textContent = 'This is a new paragraph.';
+                        let parentDiv = document.querySelector('div');
+                        parentDiv.insertBefore(newParagraph, null);
+                        // Output: <p>This is a new paragraph.</p> added at the end of the parentDiv.
+
+                - nextElementSibling
+                    - nextElementSibling property returns the next element sibling of the specified element.
+                    - If there is no next element sibling, it returns null.
+                    - We can use this property to get the reference node for insertBefore() method.
+                    - Example:
+                        let newParagraph = document.createElement('p');
+                        newParagraph.textContent = 'This is a new paragraph.';
+                        let parentDiv = document.querySelector('div');
+                        let referenceNode = parentDiv.firstElementChild.nextElementSibling; // second child of parentDiv
+                        parentDiv.insertBefore(newParagraph, referenceNode);
+                        // Output: <p>This is a new paragraph.</p> added before the second child of parentDiv.
+
+        3. MODIFYING ELEMENTS
+            - We can modify the attributes and content of an element using the properties and methods of the element node.
+            - innerText
+                - We can use innerText property to get or set the text content of an element.
+                - Example:
+                    let myDiv = document.getElementById('myDiv');
+                    console.log(myDiv.innerText); // Output: Hello World
+                    myDiv.innerText = 'Hello JavaScript';
+                    console.log(myDiv.innerText); // Output: Hello JavaScript
+            - innerHTML
+                - We can use innerHTML property to get or set the HTML content of an element.
+                - Example:
+                    let myDiv = document.getElementById('myDiv');
+                    console.log(myDiv.innerHTML); // Output: Hello World
+                    myDiv.innerHTML = '<p>This is a paragraph.</p>';
+                    console.log(myDiv.innerHTML); // Output: <p>This is a paragraph.</p
+                - Security Risk: If we set innerHTML with user input, it can lead to XSS (Cross Site Scripting) attacks. So, be careful while using innerHTML.
+            - textContent
+                - We can use textContent property to get or set the text content of an element.
+                - It is similar to innerText, but it does not consider the CSS styles.
+                - Example:
+                    let myDiv = document.getElementById('myDiv');
+                    console.log(myDiv.textContent); // Output: Hello World
+                    myDiv.textContent = 'Hello JavaScript';
+                    console.log(myDiv.textContent); // Output: Hello JavaScript 
+
+                    - Example for not considering CSS styles:
+                        <div id="myDiv"><h2 style="display:none;">Hello World</h2></div>
+                        <script>
+                            let myDiv = document.getElementById('myDiv');
+                            console.log(myDiv.innerText); // Output: (empty string)
+                            console.log(myDiv.textContent); // Output: Hello World
+                        </script>
+        
+        - REMOVING ELEMENTS
+            - We can remove an element from the DOM using the removeChild() method.
+            - We need to call this method on the parent element of the element we want to remove.
+            - Example:
+                let myDiv = document.getElementById('myDiv');
+                let paragraph = myDiv.querySelector('p');
+                myDiv.removeChild(paragraph);
+                // Output: <p>This is a paragraph.</p> removed from the myDiv.
+            - We can also use the remove() method to remove an element from the DOM.
+            - This method is called on the element we want to remove.
+            - Example:
+                let myDiv = document.getElementById('myDiv');
+                let paragraph = myDiv.querySelector('p');
+                paragraph.remove();
+                // Output: <p>This is a paragraph.</p> removed from the myDiv.
+        - REPLACING ELEMENTS
+            - We can replace an element with a new element using the replaceChild() method.
+            - We need to call this method on the parent element of the element we want to replace.
+            - Example:
+                let myDiv = document.getElementById('myDiv');
+                let oldParagraph = myDiv.querySelector('p');
+                let newParagraph = document.createElement('p');
+                newParagraph.textContent = 'This is a new paragraph.';
+                myDiv.replaceChild(newParagraph, oldParagraph);
+                // Output: <p>This is a new paragraph.</p> replaced the old paragraph in the myDiv.
+        
+        - READ, WRITE AND REMOVE ATTRIBUTES
+            - We can read, write and remove attributes of an element using the getAttribute(), setAttribute() and removeAttribute() methods.
+            - Example:
+                - getAttribute(), setAttribute(), removeAttribute()
+                // HTML
+                let myDiv = document.getElementById('myDiv');
+                // Read attribute
+                console.log(myDiv.getAttribute('id')); // Output: myDiv
+                console.log(myDiv.getAttribute('class')); // Output: myClass
+
+                // Write attribute
+                myDiv.setAttribute('data-info', 'This is some info.');
+                console.log(myDiv.getAttribute('data-info')); // Output: This is some info.
+
+                // Remove attribute
+                myDiv.removeAttribute('data-info');
+                console.log(myDiv.getAttribute('data-info')); // Output: null
+
+                // Has attribute
+                console.log(myDiv.hasAttribute('id')); // Output: true
+
+        - TRAVERSING THE DOM
+            - We can traverse the DOM tree using the properties of the DOM nodes,
+            1. parentNode/parentElement - returns the parent node/element of the specified node/element.
+            2. children/childNodes - returns a collection of child elements/nodes of the specified element/node.
+            3. firstChild/firstElementChild - returns the first child node/element of the specified node/element.
+            4. lastChild/lastElementChild - returns the last child node/element of the specified node/element.
+            5. nextSibling/nextElementSibling - returns the next sibling node/element of the specified node/element.
+            6. previousSibling/previousElementSibling - returns the previous sibling node/element of the specified node/element
+
+            **** VERY IMPORTANT NOTE ****
+                - node means everything (element, text, comment etc.)
+                - element means only element (tags like div, p, span etc.)
+            - Example:
+                <div id="mainId">
+                    <p class="info">Paragraph 1
+                        <span id="text">Span 1</span>
+                    </p>
+                </div>
+
+                <script>
+                    let span = document.getElementById('text');
+
+                    // parentNode and parentElement
+                    console.log(span.parentNode); // Output: <p class="info">Paragraph 1 <span id="text">Span 1</span></p>
+                    console.log(span.parentElement); // Output: <p class="info">Paragraph 1 <span id="text">Span 1</span></p>
+
+                    // children and childNodes
+                    let div = document.getElementById('mainId');
+                    console.log(div.children); // Output: HTMLCollection(1) [p.info]
+                    console.log(div.childNodes); // Output: NodeList(3) [text, p.info, text]
+
+                    // firstChild and firstElementChild
+                    console.log(div.firstChild); // Output: #text (whitespace text node)
+                    console.log(div.firstElementChild); // Output: <p class="info">Paragraph 1 <span id="text">Span 1</span></p>
+                    
+                    // lastChild and lastElementChild
+                    console.log(div.lastChild); // Output: #text (whitespace text node)
+                    console.log(div.lastElementChild); // Output: <p class="info">Paragraph 1 <span id="text">Span 1</span></p>
+
+                    // nextSibling and nextElementSibling
+                    let p = div.firstElementChild;
+                    console.log(p.nextSibling); // Output: #text (whitespace text node)
+                    console.log(p.nextElementSibling); // Output: null (no next element sibling)
+
+                    // previousSibling and previousElementSibling
+                    console.log(p.previousSibling); // Output: #text (whitespace text node)
+                    console.log(p.previousElementSibling); // Output: null (no previous element sibling)
+                </script>
+
+        - MANIPULATING STYLES AND CLASSES
+            - We can manipulate the styles and classes of an element using the style property and classList property.
+            - style property
+                - We can use the style property to get or set the inline styles of an element.
+                - Example:
+                    let myDiv = document.getElementById('myDiv');
+                    // Get style
+                    console.log(myDiv.style.color); // Output: (empty string, if no inline style is set)
+                    // Set style
+                    myDiv.style.color = 'red';
+                    myDiv.style.backgroundColor = 'yellow';
+                    console.log(myDiv.style.color); // Output: red
+                    console.log(myDiv.style.backgroundColor); // Output: yellow
+
+            - className property
+                - We can use the className property to get or set the class of an element.
+                - Example:
+                    let myDiv = document.getElementById('myDiv');
+                    // Get class
+                    console.log(myDiv.className); // Output: myClass
+                    // Set class
+                    myDiv.className = 'newClass';
+                    console.log(myDiv.className); // Output: newClass
+
+            - classList property
+                - We can use the classList property to manipulate the classes of an element.
+                - It has methods to add, remove, toggle and check classes.
+                - Example:
+                    let myDiv = document.getElementById('myDiv');
+                    // Add class
+                    myDiv.classList.add('newClass');
+                    console.log(myDiv.className); // Output: myClass newClass
+
+                    // Remove class
+                    myDiv.classList.remove('myClass');
+                    console.log(myDiv.className); // Output: newClass
+
+                    // Toggle class
+                    myDiv.classList.toggle('anotherClass');
+                    console.log(myDiv.className); // Output: newClass anotherClass
+                    myDiv.classList.toggle('anotherClass');
+                    console.log(myDiv.className); // Output: newClass
+
+                    // Check class
+                    console.log(myDiv.classList.contains('newClass')); // Output: true
+                    console.log(myDiv.classList.contains('myClass')); // Output: false
+
+                    // Replace class
+                    myDiv.classList.replace('newClass', 'replacedClass');
+                    console.log(myDiv.className); // Output: replacedClass
+        
+        - CONTROLLING VISIBILITY
+            - We can control the visibility of an element using the style property.
+            - We can use the display and visibility properties to show or hide an element.
+            - Example:
+                let myDiv = document.getElementById('myDiv');
+                // Hide element
+                myDiv.style.display = 'none'; // or myDiv.style.visibility = 'hidden';
+                // Show element
+                myDiv.style.display = 'block'; // or myDiv.style.visibility = 'visible';
+================================================================================================================================
