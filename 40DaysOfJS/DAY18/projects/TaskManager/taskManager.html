@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager</title>
+    <script src="taskManger.js" defer></script>
+    <link rel="stylesheet" href="taskManager.css">
+</head>
+<body>
+    <h1>Task Manager</h1>
+
+    <div id="task-manager">
+
+        <input type="text" placeholder="Enter task..." name="task" id="task-input" onkeydown="onKeyPress(event)"/>
+
+        <button type="button" id="task-submit" onclick="addTask()">Add</button>
+
+        <input type="text" placeholder="Search task..." name="search" id="searchInput" onkeyup="filterList()"/>
+        
+    </div>
+
+    <ul id="taskList"></ul>
+</body>
+</html>
