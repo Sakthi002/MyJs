@@ -3210,3 +3210,244 @@
                 // Show element
                 myDiv.style.display = 'block'; // or myDiv.style.visibility = 'visible';
 ================================================================================================================================
+19. EVENTS IN JAVASCRIPT
+================================================================================================================================
+    - What is event?
+        - Event is a signal that something has happened in the browser.
+        - Examples of events: click, load, mouseover, keydown, submit etc.
+    - Event Handling
+        - Event handling is the process of responding to events.
+    - Events in MarkUp
+        - We can add event handlers directly in the HTML markup using event attributes.
+        - Example:
+            <button onclick="alert('Button clicked!')">Click Me</button>
+    - Events in Script
+        - We can add event handlers in script using adding onclick to the DOM elements. 
+        - Example:
+            let button = document.getElementById('myButton');
+            button.onclick = function() {
+                alert('Button clicked!');
+            };
+        - If we define multiple event handlers using this method, the last one will overwrite the previous ones.
+            - Example:
+                let button = document.getElementById('myButton');
+                button.onclick = function() {
+                    alert('First handler');
+                };
+                button.onclick = function() {
+                    alert('Second handler');
+                };
+                // Only 'Second handler' will be alerted when button is clicked.
+        - If we pass arguments to the event handler function, we need to use an anonymous function or arrow function.
+            - Example:
+                let button = document.getElementById('myButton');
+                button.onclick = function() {
+                    showMessage('Button clicked!');
+                };
+                function showMessage(message) {
+                    alert(message);
+                }
+
+    - addEventListener() && removeEventListener()
+        - We can add event handlers using the addEventListener() method.
+        - This method allows us to add multiple event handlers for the same event on the same element.
+        - Syntax: element.addEventListener(event, handlerFunction, useCapture)
+            - event : The name of the event (e.g., 'click', 'load', 'mouseover' etc.)
+            - handlerFunction : The function to be called when the event occurs.
+            - useCapture : optional. A boolean value that indicates whether to use event capturing or bubbling. Default is false (bubbling).
+        - Example:
+            let button = document.getElementById('myButton');
+            button.addEventListener('click', function() {
+                alert('Button clicked!');
+            });
+             button.addEventListener('click', function() {
+                alert('Button clicked again!');
+            });
+        - We can remove event handlers using the removeEventListener() method.
+        - Syntax: element.removeEventListener(event, handlerFunction, useCapture)
+            - event : The name of the event (e.g., 'click', 'load', 'mouseover' etc.)
+            - handlerFunction : The function to be removed.
+            - useCapture : optional. A boolean value that indicates whether to use event capturing or bubbling. Default is false (bubbling).
+        - Example:
+            let button = document.getElementById('myButton');
+            function handleClick() {
+                alert('Button clicked!');
+            }
+            button.addEventListener('click', handleClick);
+            // To remove the event handler
+            button.removeEventListener('click', handleClick);
+
+        *** GOTCHA ***
+            - When using removeEventListener(), the handlerFunction must be the same function reference that was used in addEventListener().
+            - If we use an anonymous function or arrow function in addEventListener(), we cannot remove it using removeEventListener().
+            - Example:
+                let button = document.getElementById('myButton');
+                button.addEventListener('click', function() {
+                    alert('Button clicked!');
+                });
+                // This will not work
+                button.removeEventListener('click', function() {
+                    alert('Button clicked!');
+                });
+                // The above removeEventListener() will not remove the event handler because the function references are different.
+        
+    - DOMCONTETLOADED EVENT
+        - The DOMContentLoaded event is fired when the initial HTML document has been completely loaded and parsed, without waiting for stylesheets, images, and subframes to finish loading.
+        - We can use this event to run our JavaScript code after the DOM is fully loaded.
+        - Example:
+            document.addEventListener('DOMContentLoaded', function() {
+                console.log('DOM fully loaded and parsed');
+                let button = document.getElementById('myButton');
+                button.addEventListener('click', function() {
+                    alert('Button clicked!');
+                });
+            });
+        - This ensures that our code runs only after the DOM is ready, preventing errors related to accessing DOM elements that are not yet available.
+
+    - EVENT OBJECT
+        - When an event occurs, an event object is created and passed to the event handler function.
+        - The event object contains information about the event, such as the type of event, the target element, and other properties and methods.
+        - Example:
+            let button = document.getElementById('myButton');
+            button.addEventListener('click', function(event) {
+                console.log('Event type:', event.type); // Output: click
+                console.log('Target element:', event.target); // Output: <button id="myButton">Click Me</button>
+            });
+        - Commonly used properties of the event object:
+            1. type : The type of the event (e.g., 'click', 'load', 'mouseover' etc.)
+            2. target : The target element that triggered the event.
+            3. currentTarget : The element to which the event handler is attached.
+            4. preventDefault() : A method that prevents the default action of the event.
+            5. stopPropagation() : A method that stops the propagation of the event to parent elements.
+
+        **** THIS inside EVENT HANDLER ****
+            - Inside an event handler, the this keyword refers to the element that the event handler is attached to (i.e., currentTarget).
+            - Example:
+                let button = document.getElementById('myButton');
+                button.addEventListener('click', function(event) {
+                    console.log(this); // Output: <button id="myButton">Click Me</button>
+                    console.log(event.currentTarget); // Output: <button id="myButton">Click Me</button>
+                });
+
+    - EVENT BUBBLING AND CAPTURING
+        - Whenever event is triggered on an element, it propagates through the DOM tree.
+        - There are two phases of event propagation: capturing phase and bubbling phase.
+            1. Capturing Phase: The event starts from the root of the DOM tree and propagates down to the target element.
+            2. Bubbling Phase: The event starts from the target element and propagates up to the root of the DOM tree.
+        - By default, event handlers are executed in the bubbling phase.
+        - We can specify whether to use capturing or bubbling phase by passing a third argument to the addEventListener() method.
+            - If the third argument is true, the event handler will be executed in the capturing phase.
+            - If the third argument is false or omitted, the event handler will be executed in the bubbling phase.
+        - Example:
+            <div id="grandparent">
+                <div id="parent">
+                    <button id="child" type="button">Button</button>
+                </div>
+            </div>
+
+            // Bubbling
+            document.getElementById("grandparent").addEventListener("click", () => {
+                console.log("Bubble:: Grand Parent Clicked.");
+            });
+            document.getElementById("parent").addEventListener("click", () => {
+                console.log("Bubble:: Parent Clicked.");
+            });
+            document.getElementById("child").addEventListener("click", () => {
+                console.log("Bubble:: Child Clicked.");
+            });
+
+            // Capturing
+            document.getElementById("grandparent").addEventListener("click", () => {
+                console.log("Capture:: Grand Parent Clicked.");
+            }, { capture:true });
+            document.getElementById("parent").addEventListener("click", () => {
+                console.log("Capture:: Parent Clicked.");
+            }, { capture:true });
+            document.getElementById("child").addEventListener("click", () => {
+                console.log("Capture:: Child Clicked.");
+            }, { capture:true });
+
+            // When we click the button, the output will be:
+                // Capture:: Grand Parent Clicked.
+                // Capture:: Parent Clicked.
+                // Capture:: Child Clicked.
+                // Bubble:: Child Clicked.
+                // Bubble:: Parent Clicked.
+                // Bubble:: Grand Parent Clicked.
+    - EVENT DELEGATION
+        - Event delegation is a technique of using event bubbling to handle events on multiple child elements by attaching a single event handler to their parent element.
+        - This is useful when we have a large number of child elements and we want to avoid attaching event handlers to each child element individually.
+        - Example:
+            <ul id="myList">
+                <li>Item 1</li>
+                <li>Item 2</li>
+                <li>Item 3</li>
+            </ul>
+            let myList = document.getElementById('myList');
+            myList.addEventListener('click', function(event) {
+                if (event.target && event.target.nodeName === 'LI') {
+                    console.log('List item clicked:', event.target.textContent);
+                }
+            });
+        - In the above example, we attach a single click event handler to the parent ul element.
+        - When a li element is clicked, the event bubbles up to the ul element, and we check if the event target is an li element before handling the event.
+        - This way, we can handle click events on all li elements without attaching event handlers to each li element individually.
+    
+    - EVENT.STOPPROPOGATION
+        - The stopPropagation() method of the event object stops the propagation of the event to parent elements.
+        - This means that the event will not bubble up to the parent elements.
+        - Example:
+            <div id="parent">
+                <button id="child" type="button">Button</button>
+            </div>
+
+            document.getElementById("parent").addEventListener("click", () => {
+                console.log("Parent Clicked.");
+            });
+            document.getElementById("child").addEventListener("click", (event) => {
+                event.stopPropagation();
+                console.log("Child Clicked.");
+            });
+
+            // When we click the button, the output will be:
+                // Child Clicked.
+            // The Parent Clicked message will not be logged because the event propagation is stopped.
+
+    - EVENT.PREVENTDEFAULT
+        - The preventDefault() method of the event object prevents the default action of the event.
+        - This is useful when we want to override the default behavior of an element.
+        - Example:
+            <a href="https://www.example.com" id="myLink">Go to Example.com</a>
+
+            let myLink = document.getElementById('myLink');
+            myLink.addEventListener('click', function(event) {
+                event.preventDefault();
+                alert('Link click prevented!');
+            });
+        - In the above example, when the link is clicked, the default action of navigating to the URL is prevented, and an alert is shown instead.
+
+    - CUSTOM EVENTS
+        - We can create and dispatch custom events using the CustomEvent constructor and the dispatchEvent() method.
+        - Example:
+            // Create a custom event
+            let myEvent = new CustomEvent('myCustomEvent', {
+                detail: { message: 'Hello from custom event!' }
+            });
+
+            // Add an event listener for the custom event
+            document.addEventListener('myCustomEvent', function(event) {
+                console.log(event.detail.message); // Output: Hello from custom event!
+            });
+
+            // Dispatch the custom event
+            document.dispatchEvent(myEvent);
+
+    - Summary
+        - Events are signals that something has happened in the browser.
+        - We can handle events using event attributes in HTML markup or by adding event handlers in script.
+        - The addEventListener() method allows us to add multiple event handlers for the same event on the same element.
+        - The removeEventListener() method allows us to remove event handlers.
+        - The DOMContentLoaded event is fired when the initial HTML document has been completely loaded and parsed.
+        - The event object contains information about the event and is passed to the event handler function.
+        - Event propagation occurs in two phases: capturing phase and bubbling phase.
+        - Event delegation is a technique of using event bubbling to handle events on multiple child elements by attaching a single event handler to their parent element.

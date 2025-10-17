@@ -14,3 +14,13 @@
     border-radius: .5rem;
     padding: 20px;
 }
+
+.light { 
+    background: white;
+    color: black;
+}
+
+.dark { 
+    background: black;
+    color: white;
+}
