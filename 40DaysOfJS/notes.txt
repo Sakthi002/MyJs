@@ -3451,3 +3451,127 @@
         - The event object contains information about the event and is passed to the event handler function.
         - Event propagation occurs in two phases: capturing phase and bubbling phase.
         - Event delegation is a technique of using event bubbling to handle events on multiple child elements by attaching a single event handler to their parent element.
+        - The stopPropagation() method stops the propagation of the event to parent elements.
+        - The preventDefault() method prevents the default action of the event.
+        - We can create and dispatch custom events using the CustomEvent constructor and the dispatchEvent() method.
+================================================================================================================================
+20. DOM TRICKS AND BEST PRACTICES
+================================================================================================================================
+    
+    - EFFICIENT DOM TRAVERSING
+        - Use properties like parentElement, children, firstElementChild, lastElementChild, nextElementSibling, and previousElementSibling for efficient DOM traversal.
+        - Avoid using childNodes and firstChild/lastChild as they include text nodes and comments, which can lead to unexpected results.
+        - Use these for efficient traversing: instead of adding id or class to every element, use:
+            - parentElement
+            - children
+            - firstElementChild
+            - lastElementChild
+            - nextElementSibling
+            - previousElementSibling
+
+    - TEMPLATES AND CLONING 
+        - Use <template> element to define reusabe HTML structures.
+        - These templates are not to be added to the DOM until we clone and insert them.
+        - Example:
+            <template id="cardTemplate">
+                <div class="card">
+                    <h2 class="card-title"></h2>
+                    <p class="card-content"></p>
+                </div>
+            </template>
+            let template = document.getElementById('cardTemplate');
+            let clone = template.content.cloneNode(true);
+            clone.querySelector('.card-title').textContent = 'Card Title';
+            clone.querySelector('.card-content').textContent = 'This is the content of the card.';
+            document.body.appendChild(clone);
+        - This approach improves performance by reducing the number of DOM manipulations.
+
+    *** DIFFERENCE BETWEEN document.append & document.appendChild() ***
+        - document.append() can append multiple nodes and strings, while document.appendChild() can only append a single node.
+        - document.append() does not return a value, while document.appendChild() returns the appended node.
+        - Example:
+            let div = document.createElement('div');
+            div.append('Hello ', 'World!'); // Appends two strings
+            document.body.appendChild(div); // Appends the div to the body
+
+            let span = document.createElement('span');
+            span.textContent = 'This is a span.';
+            div.appendChild(span); // Appends the span to the div
+
+    - DOCUMENT FRAGMENTS
+        - Document fragments are lightweight containers for DOM nodes.
+        - They are not part of the main DOM tree, so manipulating them does not cause reflows or repaints.
+        - We can use document.createDocumentFragment() to create a document fragment.
+        - Let say we want to add multiple list items to a ul element:
+            - instead of adding each li element directly to the ul like this:
+                let ul = document.getElementById('myList'); 
+                for (let i = 1; i <= 100; i++) {
+                    let li = document.createElement('li');
+                    li.textContent = 'Item ' + i;
+                    ul.appendChild(li); // This causes multiple reflows and repaints
+                }
+            - We can use a document fragment to batch the updates and minimize reflows and repaints:
+                let ul = document.getElementById('myList');
+                let fragment = document.createDocumentFragment();
+                for (let i = 1; i <= 100; i++) {
+                    let li = document.createElement('li');
+                    li.textContent = 'Item ' + i;
+                    fragment.appendChild(li); // Append li to the fragment
+                }
+                ul.appendChild(fragment); // Append the fragment to the ul (single reflow and repaint)
+        - This approach improves performance by reducing the number of reflows and repaints.
+
+        - **** KEEP : We are repaints the DOM only once when we append the fragment to the ul. ****
+
+    - SHADOW DOM - ****************************
+        - Shadow DOM is a web standard that allows encapsulation of DOM and CSS.
+        - It enables us to create components with their own isolated DOM tree and styles, preventing style leakage and conflicts.
+        - We can create a shadow root using the attachShadow() method on an element.
+        - Example:
+            let host = document.getElementById('shadowHost');
+            let shadowRoot = host.attachShadow({ mode: 'open' });
+            shadowRoot.innerHTML = `
+                <style>
+                    p {
+                        color: blue;
+                    }
+                </style>
+                <p>This is inside the shadow DOM.</p>
+            `;
+        - In this example, the styles defined in the shadow DOM will not affect the main document, and vice versa.
+
+    - ADVANCED CLASS MANIPULATION
+        - Use classList property for advanced class manipulation.
+        - It provides methods like add(), remove(), toggle(), contains(), and replace() for easy class management.
+        - Example:
+            let myDiv = document.getElementById('myDiv');
+            myDiv.classList.add('newClass'); // Add a class
+            myDiv.classList.remove('oldClass'); // Remove a class
+            myDiv.classList.toggle('active'); // Toggle a class
+            if (myDiv.classList.contains('newClass')) {
+                console.log('myDiv has newClass');
+            }
+            myDiv.classList.replace('newClass', 'replacedClass'); // Replace a class
+
+    - HANDLING LARGE SCALE DOM UPDATES
+        - When dealing with large-scale DOM updates, consider the following best practices:
+            1. Minimize DOM manipulations by batching updates using document fragments or templates.
+            2. Use requestAnimationFrame() for animations to ensure smooth rendering.
+            3. Avoid layout thrashing by minimizing reads and writes to the DOM.
+            4. Use virtual DOM libraries (like React, Vue) for efficient UI updates.
+            5. Debounce or throttle event handlers for events that fire frequently (like scroll, resize).
+
+    - MUTATION OBSERVERS
+        - Mutation Observers used to obserse changes in the DOM tree.
+        - We can use MutationObserver API to monitor changes to the DOM and react accordingly.
+
+    WITH VUE
+        - 1. Shadow DOM <=> Custom Elements(defineCustomComponent)
+        - 2. Document Fragments <=> Vue's Virtual DOM
+        - 3. Efficient DOM Traversing <=> Vue's Reactive Data Binding
+        - 4. Mutation Observers <=> Watchers and Computed Properties
+        - 5. Templates and Cloning <=> Vue's Single File Components (SFCs)
+================================================================================================================================
+    
+
+        
