@@ -5,6 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DAY 20 - DOM TRICKS</title>
     <script src="index.js" defer></script>
+    <script src="tasks.js" defer></script>
+
+    <style>
+    #navMenu> {
+        list-style: none;
+        padding: 0;
+    }
+    #navMenu>li {
+        display: inline-block;
+        padding: 8px 16px;
+        cursor: pointer;
+    }
+    #navMenu>li.active {
+        background-color: #007bff;
+        color: white;
+        border-radius: 4px;
+    }
+    </style>
 </head>
 <body>
     <h1>DOM TRICKS</h1>
@@ -22,5 +40,16 @@
     </template>
 
     <ul id="list"></ul>
+
+    <ul id="listUl"></ul>
+
+    <p id="myPara">The Range API allows precise control over text selection and DOM manipulation.</p>
+
+    <ul id="navMenu">
+        <li class="active">Home</li>
+        <li>About</li>
+        <li>Services</li>
+        <li>Contact</li>
+    </ul>
 </body>
 </html>
