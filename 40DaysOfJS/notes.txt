@@ -3572,6 +3572,73 @@
         - 4. Mutation Observers <=> Watchers and Computed Properties
         - 5. Templates and Cloning <=> Vue's Single File Components (SFCs)
 ================================================================================================================================
-    
+21. ASYNCHORONOUS JAVASCRIPT
+================================================================================================================================
+    - Synchronous vs Asynchronous
+        - JavaScript by default is synchronous, meaning it executes one task at a time in a single thread.
+        - However, JavaScript can also handle asynchronous operations, allowing tasks to run in the background without blocking the main thread.
 
-        
+        - Synchronous: 
+            - Code is executed line by line, blocking further execution until the current operation is complete.
+            - Each line of the code waits for the previous line to finish before executing.
+
+        - Asynchronous: 
+            - Code can be executed without blocking further execution, allowing other operations to run concurrently.
+            - Asynchronous operations are typically handled using callbacks, promises, or async/await.
+
+    - Asynchronous Operations
+        - Common asynchronous operations in JavaScript include:
+            1. setTimeout() and setInterval() for scheduling tasks.
+            2. AJAX requests using XMLHttpRequest or Fetch API for network communication.
+            3. Event handling for user interactions.
+            4. Promises for handling asynchronous results.
+            5. Async/Await for writing asynchronous code in a synchronous style.
+
+        - Flow of Asynchronous Operations
+            
+            - When JS encounters an async operations (setTimeout, fetch etc), it sends the operation to the Web API (browser environment) to handle it.
+            - Meanwhile, JS continues executing the rest of the code.
+            - Once the async operation is complete, the Web API pushes the callback function to the Callback Queue.
+            - The Event Loop continuously checks the Call Stack and Callback Queue.
+            - If the Call Stack is empty, the Event Loop pushes the callback function from the Callback Queue to the Call Stack for execution.
+
+    1. Callbacks
+        - A callback is a function that is passed as an argument to another function and is executed after a certain event or operation is completed.
+        - Callbacks are commonly used in asynchronous operations to handle the result of the operation once it is finished.
+        - Example:
+            function fetchData(callback) {
+                setTimeout(() => {
+                    const data = { name: 'John', age: 30 };
+                    callback(data);
+                }, 2000);
+            }
+            fetchData(function(result) {
+                console.log('Data received:', result);
+            });
+        - In the above example, the fetchData function simulates an asynchronous operation using setTimeout.
+        - Once the data is fetched, the callback function is executed with the result.
+
+        - CALLBACK HELL 
+            - Callback hell is a problem that occurs when we have multiple nested callbacks, leading to code that is difficult to read and maintain.
+            - Output of one callback is passed as input to the next callback, resulting in deeply nested code.
+            - Example:
+                function fetchData(callback) {
+                    setTimeout(() => {
+                        const data = { name: 'John', age: 30 };
+                        callback(data);
+                    }, 2000);
+                }
+                fetchData(function(result) {
+                    console.log('Data received:', result);
+                    fetchData(function(result2) {
+                        console.log('Data received again:', result2);
+                        fetchData(function(result3) {
+                            console.log('Data received third time:', result3);
+                        });
+                    });
+                });
+            - To avoid callback hell, we can use Promises or Async/Await for better readability and maintainability.
+            - 
+   
+    - Summary
+        - Asynchronous JavaScript allows for non-blocking code
