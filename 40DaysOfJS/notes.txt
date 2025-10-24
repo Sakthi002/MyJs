@@ -3572,7 +3572,7 @@
         - 4. Mutation Observers <=> Watchers and Computed Properties
         - 5. Templates and Cloning <=> Vue's Single File Components (SFCs)
 ================================================================================================================================
-21. ASYNCHORONOUS JAVASCRIPT
+******** ASYNCHORONOUS JAVASCRIPT ********
 ================================================================================================================================
     - Synchronous vs Asynchronous
         - JavaScript by default is synchronous, meaning it executes one task at a time in a single thread.
@@ -3601,8 +3601,10 @@
             - Once the async operation is complete, the Web API pushes the callback function to the Callback Queue.
             - The Event Loop continuously checks the Call Stack and Callback Queue.
             - If the Call Stack is empty, the Event Loop pushes the callback function from the Callback Queue to the Call Stack for execution.
-
-    1. Callbacks
+================================================================================================================================
+21. CALLBACKS AND CALLBACK HELL
+================================================================================================================================
+    - CALLBACKS
         - A callback is a function that is passed as an argument to another function and is executed after a certain event or operation is completed.
         - Callbacks are commonly used in asynchronous operations to handle the result of the operation once it is finished.
         - Example:
@@ -3618,27 +3620,371 @@
         - In the above example, the fetchData function simulates an asynchronous operation using setTimeout.
         - Once the data is fetched, the callback function is executed with the result.
 
-        - CALLBACK HELL 
-            - Callback hell is a problem that occurs when we have multiple nested callbacks, leading to code that is difficult to read and maintain.
-            - Output of one callback is passed as input to the next callback, resulting in deeply nested code.
-            - Example:
-                function fetchData(callback) {
-                    setTimeout(() => {
-                        const data = { name: 'John', age: 30 };
-                        callback(data);
-                    }, 2000);
-                }
-                fetchData(function(result) {
-                    console.log('Data received:', result);
-                    fetchData(function(result2) {
-                        console.log('Data received again:', result2);
-                        fetchData(function(result3) {
-                            console.log('Data received third time:', result3);
-                        });
+    - CALLBACK HELL 
+        - Callback hell is a problem that occurs when we have multiple nested callbacks, leading to code that is difficult to read and maintain.
+        - Output of one callback is passed as input to the next callback, resulting in deeply nested code.
+        - Example:
+            function fetchData(callback) {
+                setTimeout(() => {
+                    const data = { name: 'John', age: 30 };
+                    callback(data);
+                }, 2000);
+            }
+            fetchData(function(result) {
+                console.log('Data received:', result);
+                fetchData(function(result2) {
+                    console.log('Data received again:', result2);
+                    fetchData(function(result3) {
+                        console.log('Data received third time:', result3);
                     });
                 });
-            - To avoid callback hell, we can use Promises or Async/Await for better readability and maintainability.
-            - 
-   
+            });
+        - To avoid callback hell, we can use Promises or Async/Await for better readability and maintainability.
+================================================================================================================================
+22. PROMISES IN JAVASCRIPT
+================================================================================================================================
+    - PROMISES
+        - A Promise is an object that represents the eventual completion (or failure) of an asynchronous operation and its resulting value.
+        - Syntax: 
+            let promise = new Promise(function(resolve, reject) {
+                // Asynchronous operation
+                if (/* operation successful */) {
+                    resolve(value); // Fulfill the promise with a value
+                } else {
+                    reject(error); // Reject the promise with an error
+                }
+            });
+
+            - new Promise() 
+                - constructor function to create a new Promise object.
+                - It takes a function (executor) as an argument, which has two parameters: resolve and reject.
+                - resolve and reject are functions provided by the JavaScript engine to handle the fulfillment or rejection of the promise.
+                - resolve: A function that is called when the asynchronous operation is successful.
+                - reject: A function that is called when the asynchronous operation fails.
+            
+            - States of a Promise
+                1. Pending: Initially when the executor function starts executing.
+                2. Fulfilled: When the promise is resolved.
+                3. Rejected: When the promise is rejected.
+            
+            - Result of a Promise
+                - undefined: When the promise is still pending. 
+                - value: When a promise is fulfilled, it returns a value.
+                - error: When a promise is rejected, it returns an error.
+
+            - How promises work?
+                - When a promise is created, the executor function is executed immediately.
+                - The promise remains in the pending state until either resolve or reject is called.
+                - Once resolve is called, the promise transitions to the fulfilled state, and the value is passed to the then() method.
+                - If reject is called, the promise transitions to the rejected state, and the error is passed to the catch() method.
+
+            - How promises resolve and reject?
+                - A promise can be resolved by calling the resolve() function with a value.
+                - A promise can be rejected by calling the reject() function with an error.
+
+            - Handling Promises
+
+                - We can handle promises using the then() and catch() and finally() methods.
+            
+                - then() method 
+                    - is called when the promise is fulfilled
+                    - it takes two callback functions as arguments: one for handling the fulfilled value and another for handling the rejected error (optional).
+                        - first callback function 
+                            - receives the fulfilled value as an argument.
+                        - second callback function (optional)
+                            - receives the error as an argument.
+                            - if we want to error in then method, we can provide the second callback function. first will keep null.
+                    - Most commonly, we use only the first callback function to handle the fulfilled value.
+            
+                - catch() method 
+                    - is called when the promise is rejected
+                    - it takes a callback function that receives the error.
+
+                - finally() method
+                    - is called when the promise is settled (either fulfilled or rejected)
+                    - it takes a callback function that is executed regardless of the promise outcome.
+
+            - Example:
+                let loading = false;
+                let myPromise = new Promise(function(resolve, reject) {
+                    let success = true; // Simulating an asynchronous operation
+                    loading = true;
+                    setTimeout(() => {
+                        if (success) {
+                            resolve('Operation successful!');
+                        } else {
+                            reject('Operation failed!');
+                        }
+                    }, 2000);
+                });
+                myPromise
+                    .then(function(value) {
+                        console.log(value); // Output: Operation successful!
+                    })
+                    .catch(function(error) {
+                        console.log(error); // Output: Operation failed!
+                    })
+                    .finally(function() {
+                        console.log('Promise settled.'); // Output: Promise settled.
+                        loading = false;
+                    });
+
+            - PROMISE CHAIN 
+                - We can chain multiple then() methods to handle sequence of asynchronous operations.
+                - then() method can return
+                    - a value, which will be passed to the next then() method in the chain.
+                    - another promise, which will be resolved before the next then() method is called.
+
+                - RULES
+                    Rule 1:
+                        - Every promise gives us a then() handler. Every rejected promise gives us a catch() handler.
+                    Rule 2:
+                        - We can do three valuable things inside a then() handler:
+                            1. Return a value: The returned value will be passed to the next then() handler for synchronous operations.
+                            2. Return a promise: The next then() handler will wait for the promise to resolve and receive its value for async operations.
+                            3. Throw an error: The error will be caught by the nearest catch() handler.
+
+                            - Returning Promise
+                                
+                                let getUser = new Promise(function(resolve, reject) {
+                                    let person = { id: 1, name: 'John' };
+                                    resolve({ id: 1, name: 'John' });
+                                });
+
+                                getUser.then(function(user) {
+                                    console.log('User:', user);
+                                    // Return a new promise to fetch user details
+                                    return new Promise(function(resolve, reject) {
+                                        let userDetails = { age: 30, email: 'test@gmail.com' }
+                                        resolve(userDetails);
+                                    });
+                                })
+                                .then(function(details) {
+                                    console.log('User Details:', details);
+                                })
+                                .catch(function(error) {
+                                    console.log('Error:', error);
+                                });
+
+                            - Returning Value
+                                
+                                let getNumber = new Promise(function(resolve, reject) {
+                                    resolve(5);
+                                });
+
+                                getNumber.then(function(num) {
+                                    console.log('Number:', num); // Output: Number: 5
+                                    return num * 2; // Return a value
+                                })
+                                .then(function(result) {
+                                    console.log('Result:', result); // Output: Result: 10
+                                })
+                                .catch(function(error) {
+                                    console.log('Error:', error);
+                                });
+
+                            - Throwing Error
+                                
+                                let getData = new Promise(function(resolve, reject) {
+                                    resolve('Some data');
+                                });
+
+                                getData.then(function(data) {
+                                    console.log('Data:', data); // Output: Data: Some data
+                                    throw new Error('Something went wrong!'); // Throw an error
+                                })
+                                .then(function() {
+                                    console.log('This will not be executed.');
+                                })
+                                .catch(function(error) {
+                                    console.log('Error:', error.message); // Output: Error: Something went wrong!
+                                });
+                    Rule 3:
+                        - A catch() handler also returns a promise, which can be used to continue the promise chain.
+                        - This allows us to recover from errors and continue with subsequent operations.
+                        - Example:
+                            let fetchData = new Promise(function(resolve, reject) {
+                                let success = false; // Simulating an asynchronous operation
+                                setTimeout(() => {
+                                    if (success) {
+                                        resolve('Data fetched successfully!');
+                                    } else {
+                                        reject('Failed to fetch data!');
+                                    }
+                                }, 2000);
+                            });
+
+                            fetchData
+                                .then(function(data) {
+                                    console.log(data); // This will not be executed
+                                })
+                                .catch(function(error) {
+                                    console.log('Error:', error); // Output: Error: Failed to fetch data!
+                                    return 'Default data'; // Recover from error and return default data
+                                })
+                                .then(function(data) {
+                                    console.log('Continuing with:', data); // Output: Continuing with: Default data
+                                });
+                    Rule 4:
+                        - We can rethrow errors in a catch() handler to propagate them further down the promise chain.
+                        - This allows us to handle errors at a later stage in the chain.
+                        - In this case control goes to the next closest catch() handler.
+                        - Example:
+                            let processData = new Promise(function(resolve, reject) {
+                                let success = false; // Simulating an asynchronous operation
+                                setTimeout(() => {
+                                    if (success) {
+                                        resolve('Data processed successfully!');
+                                    } else {
+                                        reject('Failed to process data!');
+                                    }
+                                }, 2000);
+                            });
+                            processData
+                                .then(function(data) {
+                                    console.log(data); // This will not be executed
+                                })
+                                .catch(function(error) {
+                                    console.log('Error:', error); // Output: Error: Failed to process data!
+                                    throw new Error('Rethrowing error'); // Rethrow the error
+                                })
+                                .then(function() {
+                                    console.log('This will not be executed.');
+                                })
+                                .catch(function(error) {
+                                    console.log('Caught rethrown error:', error.message); // Output: Caught rethrown error: Rethrowing error
+                                });
+
+                    Rule 5: 
+                        - Unlike .then() and .catch() handlers, the .finally() handler does not process any value or error.
+                        - it just passes the result to the next handler in the chain.
+                        - Example:
+                            let loadData = new Promise(function(resolve, reject) {
+                                let success = true; // Simulating an asynchronous operation
+                                setTimeout(() => {
+                                    if (success) {
+                                        resolve('Data loaded successfully!');
+                                    } else {
+                                        reject('Failed to load data!');
+                                    }
+                                }, 2000);
+                            }); 
+
+                            loadData
+                                .finally(function() {
+                                    console.log('Cleanup actions can be performed here.'); // Output: Cleanup actions can be performed here.
+                                }).then(function(data) {
+                                    console.log(data); // Output: Data loaded successfully!
+                                })
+                                .catch(function(error) {
+                                    console.log('Error:', error);
+                                })
+                    
+                    Rule 6:
+                        - Calling .then() handler multiple times on the same promise is not chaining.
+                        - Each .then() handler will receive the same resolved value independently.
+                        - Example:
+                            let fetchInfo = new Promise(function(resolve, reject) {
+                                setTimeout(() => {
+                                    resolve('Info fetched successfully!');
+                                }, 2000);
+                            });
+                            fetchInfo.then(function(data) {
+                                console.log('First handler:', data); // Output: First handler: Info fetched successfully!
+                            });
+                            fetchInfo.then(function(data) {
+                                console.log('Second handler:', data); // Output: Second handler: Info fetched successfully!
+                            });
+
+                - HANDLING MULTIPLE PROMISES
+                    - We can handle multiple promises using 
+                        1. Promise.all()
+                        2. Promise.any()
+                        3. Promise.race()
+                        4. Promise.allSettled()
+
+                    - Promise.all()
+                        - takes an array of promises as input and returns a new promise that resolves when all the input promises are fulfilled.
+                        - If any of the input promises are rejected, the returned promise is rejected with the reason of the first rejected promise.
+                        - There will be no result if any one of the promises is rejected.
+                        - Example:
+                            let promise1 = Promise.resolve(3);
+                            let promise2 = 42;
+                            let promise3 = new Promise(function(resolve, reject) {
+                                setTimeout(resolve, 1000, 'foo');
+                            });
+                            Promise.all([promise1, promise2, promise3]).then(function(values) {
+                                console.log(values); // Output: [3, 42, "foo"]
+                            });
+                    - Promise.any()
+                        - takes an array of promises as input and returns a new promise that resolves as soon as any of the input promises is fulfilled.
+                        - If all the input promises are rejected, the returned promise is rejected with an AggregateError.
+                        - Example:
+                            let promiseA = new Promise(function(resolve, reject) {
+                                setTimeout(reject, 100, 'Error A');
+                            });
+                            let promiseB = new Promise(function(resolve, reject) {
+                                setTimeout(resolve, 200, 'Success B');
+                            });
+                            let promiseC = new Promise(function(resolve, reject) {
+                                setTimeout(reject, 300, 'Error C');
+                            });
+                            Promise.any([promiseA, promiseB, promiseC]).then(function(value) {
+                                console.log(value); // Output: Success B
+                            }).catch(function(error) {
+                                console.log(error);
+                            });
+                    - Promise.race()
+                        - takes an array of promises as input and returns a new promise that resolves or rejects as soon as any of the input promises is settled (fulfilled or rejected).
+                        - Example:
+                            let promiseX = new Promise(function(resolve, reject) {
+                                setTimeout(resolve, 500, 'Result X');
+                            });
+                            let promiseY = new Promise(function(resolve, reject) {
+                                setTimeout(reject, 100, 'Error Y');
+                            });
+                            Promise.race([promiseX, promiseY]).then(function(value) {
+                                console.log(value); // Output: Result X
+                            }).catch(function(error) {
+                                console.log(error); // Output: Error Y
+                            });
+                    - Promise.allSettled()
+                        - takes an array of promises as input and returns a new promise that resolves when all the input promises are settled (either fulfilled or rejected).
+                        - The returned promise resolves with an array of objects that describe the outcome of each input promise.
+                        - Example:
+                            let promiseM = Promise.resolve('Success M');
+                            let promiseN = Promise.reject('Error N');
+                            Promise.allSettled([promiseM, promiseN]).then(function(results) {
+                                results.forEach(function(result) {
+                                    if (result.status === 'fulfilled') {
+                                        console.log('Fulfilled:', result.value);
+                                    } else {
+                                        console.log('Rejected:', result.reason);
+                                    }
+                                });
+                                // Output:
+                                // Fulfilled: Success M
+                                // Rejected: Error N
+                            });
+                
+                - HOW TO CANCEL PROMISE?
+                    - Promises cannot be canceled once they are created.
+                    - However, we can implement a workaround using a flag or by using AbortController for fetch requests.
+                   
+            **** IMPORTANT ****
+               
+                - If we do not handle a rejected promise using catch() or the second callback of then(), it will result in an unhandled promise rejection error.
+               
+                - It is important to always handle promise rejections to avoid unexpected errors in our code.
+               
+                - But for resolve we don't need to handle it explicitly.
+               
+                - Chaining works even if the previous .then() doesn’t return a value.
+
+                - If a .then() returns a Promise, the next .then() waits until that Promise resolves — this is how you handle sequential async tasks.
+                            
+
+
+
     - Summary
         - Asynchronous JavaScript allows for non-blocking code
