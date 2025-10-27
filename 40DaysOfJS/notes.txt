@@ -3982,9 +3982,71 @@
                 - Chaining works even if the previous .then() doesn’t return a value.
 
                 - If a .then() returns a Promise, the next .then() waits until that Promise resolves — this is how you handle sequential async tasks.
-                            
+================================================================================================================================
+23. ASYNC AWAIT IN JAVASCRIPT
+================================================================================================================================
+    - Problems with Promises
+        - While promises provide a cleaner way to handle asynchronous operations compared to callbacks, they can still lead to complex and hard-to-read code when chaining multiple asynchronous operations.
+        - Nested .then() calls can make the code look cluttered and difficult to follow.
+        - Error handling can also become cumbersome with multiple .catch() blocks.
+        - Syntax of promises can be verbose, especially for simple asynchronous operations.
 
+    - Why ASYNC/AWAIT
+        - Async/Await exists because of promise exists
+        - It is built on top of promises
+        - It provides a more synchronous-like syntax for writing asynchronous code, making it easier to read and maintain.
+        - It allows us to write asynchronous code that looks and behaves like synchronous code, making it easier to understand.
+        - It simplifies error handling by allowing us to use try/catch blocks instead of multiple .catch() methods.
+    - ASYNC/AWAIT
+        - The async keyword is used to declare a function as asynchronous.
+        - Async functions always return a promise. even if we return a non-promise value, it will be wrapped in a resolved promise.
+        - The await keyword is used to pause the execution of an async function until a promise is resolved or rejected.
+        - It can only be used inside async functions.
+        - When the await keyword is encountered, the async function is paused, and the JavaScript engine continues executing other code until the awaited promise is settled.
+        - Once the promise is settled, the async function resumes execution, and the resolved value is returned.
+        - Example:
+            function fetchData() {
+                return new Promise(function(resolve, reject) {
+                    setTimeout(() => {
+                        const data = { name: 'John', age: 30 };
+                        resolve(data);
+                    }, 2000);
+                });
+            }
+            async function getData() {
+                try {
+                    const result = await fetchData();
+                    console.log('Data received:', result);
+                } catch (error) {
+                    console.log('Error:', error);
+                }
+            }
+            getData();
+        - In the above example, the getData function is declared as async.
+        - Inside the function, we use the await keyword to pause execution until the fetchData promise is resolved.
+        - The resolved value is then logged to the console.
 
-
-    - Summary
-        - Asynchronous JavaScript allows for non-blocking code
+        - *** IMPORTANT ***
+            - Await only pauses the async function, not the entire program.
+            - Other code can continue executing while the async function is paused.
+        
+    - TOP LEVEL AWAIT
+        - Top-level await allows us to use the await keyword outside of async functions, at the top level of a module.
+        - It is supported in ES modules (using type="module" in script tag or .mjs file extension).
+        - Example:
+            // In an ES module
+            const data = await fetchData();
+            console.log('Data received:', data);
+        - In this example, we can use await directly at the top level of the module to wait for the fetchData promise to resolve.
+        
+        - If we try to use top-level await in a non-module script, it will result in a syntax error.
+        - We can use IIFEs (Immediately Invoked Function Expressions) to achieve similar functionality in non-module scripts.
+        - Example:
+            (
+                async () => {
+                    let data = await fetch('http://localhost:3000/api/pizzahub');
+                    let stores = await data.json();
+                    console.log(stores);
+                }
+            )()
+        - In this example, we define and immediately invoke an async function to use await at the top level.
