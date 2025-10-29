@@ -4050,3 +4050,238 @@
                 }
             )()
         - In this example, we define and immediately invoke an async function to use await at the top level.
+================================================================================================================================
+24. FETCH API IN JAVASCRIPT
+================================================================================================================================
+    - FETCH API
+        - The Fetch API is a modern interface for making HTTP requests in JavaScript.
+        - It provides a more powerful and flexible way to interact with servers compared to the older XMLHttpRequest.
+        - The Fetch API is built on promises, making it easier to work with asynchronous requests.
+        - Syntax:
+            fetch(url, options)
+            - url: The URL of the resource to fetch.
+            - options (optional): An object containing any custom settings for the request, such as method, headers, body, etc.
+        - Example:
+            fetch('https://api.example.com/data')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(data);
+                })
+                .catch(error => {
+                    console.error('There has been a problem with your fetch operation:', error);
+                });
+        - In the above example, we make a GET request to the specified URL using fetch.
+        - The response is checked for success using the ok property.
+        - If the response is successful, we parse the response body as JSON using the json() method.
+        - The parsed data is then logged to the console.
+        - If there is an error during the fetch operation, it is caught and logged to the console.
+        
+        - HTTP METHODS
+            - The Fetch API supports various HTTP methods, including:
+                1. GET: Retrieve data from the server.
+                2. POST: Send data to the server to create a new resource.
+                3. PUT: Update an existing resource on the server.
+                4. DELETE: Remove a resource from the server.
+                5. PATCH: Partially update an existing resource on the server.
+            - We can specify the HTTP method in the options object when making a fetch request.
+
+        1. GET Request
+            - The default method for fetch is GET.
+            - Used to retrieve data from a server.
+
+            - MAKING QUERY STRING:
+                const queryParams = { _limit : 5 }
+                const queryString = new URLSearchParams(queryParams).toString();
+
+                - URLSearchParams is a built-in JavaScript object that provides methods to work with the query string of a URL.
+                - It allows us to easily create, manipulate, and retrieve query parameters from a URL.
+                - In the above example, we create a new URLSearchParams object with the query parameters.
+                - We then convert the object to a query string using the toString() method.
+                - The resulting query string can be appended to the URL when making a fetch request.
+                - Example:
+                    const queryParams = { _limit : 5, _sort: 'name' }
+                    const queryString = new URLSearchParams(queryParams).toString();
+                    fetch(`https://api.example.com/data?${queryString}`)
+        
+        2. POST Request
+            - Used to send data to the server to create a new resource.
+            - To make a POST request, we need to specify the method and provide the request body
+                fetch('https://api.example.com/data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name: 'John', age: 30 })
+                })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error('Error:', error));
+
+        3. PUT Request
+            - Used to update an existing resource on the server.
+            - Used to replace the entire resource with the new data.
+            - Similar to POST request, but the method is set to PUT.
+                fetch('https://api.example.com/data/1', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name: 'Jane', age: 25 })
+                })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error('Error:', error));
+        
+        4. PATCH Request
+            - Used to partially update an existing resource on the server.
+            - Similar to PUT request, but only the specified fields are updated.
+                fetch('https://api.example.com/data/1', {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ age: 26 })
+                })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error('Error:', error));
+        
+        5. DELETE Request
+            - Used to remove a resource from the server.
+                fetch('https://api.example.com/data/1', {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (response.ok) {
+                        console.log('Resource deleted successfully');
+                    } else {
+                        console.log('Failed to delete resource');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+    - CUSTOM HEADERS IN FETCH API
+        - We can set custom headers in a fetch request using the headers property in the options object.
+        - Headers are key-value pairs that provide additional information about the request or response.
+        - Example:
+            fetch('https://api.example.com/data', {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer your-token-here',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.error('Error:', error));
+        - In the above example, we set custom headers for authorization and content type in the fetch request.
+        - token can be anything like JWT or API key. It will depend on the server what kind of token it is expecting.
+
+    - REQUEST OBJECT
+        - JS provides a constructor function called Request to create a request object.
+        - It is exactly same as the fetch method.
+        - Example:
+            const request1 = new Request('https://jsonplaceholder.typicode.com/posts', {
+                method: "POST",
+                headers: { 'Content-type' : 'application/json'},
+                body: JSON.stringify({ title: "Test", body: "Test", userId: 1 })
+            })
+
+            const request2 = new Request(request1, {
+                body: JSON.stringify({ title: "Test One", body: "Test One", userId: 1 })
+            })
+
+            async function post(request) {
+
+                try {
+                
+                    const response = await fetch(request);
+                    
+                    const result = await response.json();
+
+                    console.log(result);
+                
+                } catch (error) {
+                
+                    console.error(error)
+                }
+            }
+
+    - HANDLING RESPONSE 
+        - The fetch function returns a promise that resolves to the Response object representing the response to the request.
+        - The Response object contains information about the response, such as status code, headers, and body.
+        - We can use various methods of the Response object to handle the response data.
+        - Commonly used methods:
+            1. json(): Parses the response body as JSON and returns a promise that resolves to a JavaScript object.
+            2. text(): Reads the response body as plain text and returns a promise that resolves to a string.
+            3. blob(): Reads the response body as a Blob (binary data) and returns a promise that resolves to a Blob object.
+            4. arrayBuffer(): Reads the response body as an ArrayBuffer and returns a promise that resolves to an ArrayBuffer object.
+        - Example:
+            fetch('https://api.example.com/data')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    let contentType = response.headers.get('content-type');
+                    if(!contentType.includes('application/json')) {
+                        throw new TypeError("Mot a valid JSON")
+                    }
+                    return response.json();
+                })
+               
+        - In the above example, we check if the response is successful using the ok property.
+        - If successful, we parse the response body as JSON using the json() method and log the data to the console.
+        - If there is an error during the fetch operation, it is caught and logged to the console.
+
+    - CANCEL FETCH REQUEST
+        - We can cancel fetch requests using AbortController.
+        - AbortController is a built-in Javascript object that allows us to abort fetch requests.
+        - It has a signal property that can be passed to the fetch request.
+        - And it has an abort() method that can be called to cancel the request.
+        - Example:
+        
+            let controller;
+            const downloadBtn = document.getElementById("download");
+            const abortBtn = document.getElementById("abort");
+
+            downloadBtn.addEventListener('click', downloadFile);
+
+            abortBtn.addEventListener('click', function() {
+                if(controller.signal) {
+                    controller.abort("User aborted the download action!!!");
+                    console.warn("Download aborted");
+                }
+            })
+
+            const url = "./download/file.txt";
+
+            async function downloadFile() {
+
+                controller = new AbortController();
+                const signal = controller.signal;
+
+                try {
+                
+                    await new Promise(resolve => setTimeout(resolve, 2000))
+
+                    let response = await fetch(url, {signal});
+                    let blob = await response.blob();
+
+                    const objectUrl = URL.createObjectURL(blob);
+                    let link = document.createElement('a');
+                    link.href = objectUrl;
+                    link.download = "file.txt"; 
+                    link.click();
+                    URL.revokeObjectURL(objectUrl);
+
+                } catch (error) {
+                
+                    console.error(error)
+                }
+            }
+    
+

@@ -193,6 +193,91 @@ function sum(arr, i = 0) {
 
 console.log(sum(numbers))
 // ==============================================================================================
+
+// ==============================================================================================
+console.log("Start");
+
+for(let i = 0; i < 3; i++) {
+    setTimeout(() => console.log("Timeout", i), 0);
+    Promise.resolve().then(res=> console.log("Promise", i));
+}
+
+async function asyncTask() {
+    console.log("Async start");
+    await Promise.resolve();
+    console.log("Async end");
+}
+
+asyncTask();
+
+console.log("End");
+
+// Start
+// Async start
+// End
+// promise 0
+// promise 1
+// promise 2
+// Async End
+// timeout 0
+// timeout 1
+// timeout 2
+// =================================================================================================
+// =================================================================================================
+// ## 10. Use `AbortController` to cancel a long-running fetch request
+
+let controller;
+
+let fetchBtn = document.createElement("button");
+fetchBtn.setAttribute('type', "button");
+fetchBtn.innerText = "Fetch";
+document.body.appendChild(fetchBtn)
+
+let abortBtn = document.createElement("button");
+abortBtn.setAttribute('type', "button");
+abortBtn.innerText = "Abort";
+document.body.appendChild(abortBtn);
+
+fetchBtn.addEventListener('click', fetchData);
+
+abortBtn.addEventListener('click', function () {
+
+    if (controller) {
+        controller.abort("User aborted the request.");
+        console.warn("⛔ Fetching aborted by user");
+    }
+})
+
+async function fetchData () {
+
+    controller = new AbortController();
+    const signal = controller.signal;
+
+    try {
+        
+        console.log("Fetching data from server...");
+
+        await new Promise(resolve => setTimeout(resolve, 5000));
+
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts', {signal});
+
+        if(!response.ok) throw new Error("Post not found!!!");
+
+        const result = await response.json();
+
+        console.log("Fetching Completed.", result);
+        
+    } catch (error) {
+
+         if (error.name === "AbortError") {
+            console.warn("⚠️ Request was aborted:", error.message);
+        } else {
+            console.error("❌ Fetch error:", error);
+        }
+    }
+}
+// =================================================================================================
+
 // // form
 // fname
 // lnmame
