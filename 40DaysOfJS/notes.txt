@@ -4243,7 +4243,7 @@
         - It has a signal property that can be passed to the fetch request.
         - And it has an abort() method that can be called to cancel the request.
         - Example:
-        
+
             let controller;
             const downloadBtn = document.getElementById("download");
             const abortBtn = document.getElementById("abort");
@@ -4283,5 +4283,274 @@
                     console.error(error)
                 }
             }
-    
+================================================================================================================================
+25. COMMON MISTAKES IN ASYNC/AWAIT & PROMISES
+================================================================================================================================
+    - MISTAKE 1 - Looping with Promises
+        - Looping promises inside any loop (for, for..of, for..in, while) will not work as expected.
+        - Because the loop will not wait for the promise to resolve before moving to the next iteration.
+        
+        // Traditional Promise way
+            - Whenever JS sees for loop, it will execute all the iterations without waiting for the promises to resolve. As for loop is synchronous.
+            - So, on the first iteration, whatever there in the loop will be executed if promise is there it will be created and moved to the next iteration without waiting for the promise to resolve.
+            - And in further iterations, same thing will happen.
+            - So, all the promises will be created and moved to the next iteration without waiting for the previous promise to resolve.
+            - Finally, all the promises will be resolved at the same time.
+            - So synchronous content which are executed inside the loop will be executed first and then all the promises will be resolved at the same time.
+            - Also promises also wont be resolved in the order of the loop iterations. It will vary based on the time taken to resolve each promise.
+            - it will be huge confusion.
 
+            let ids = [1,2,3,4];
+
+            const fetchData = (id) => {
+                return fetch(`https://jsonplaceholder.typicode.com/users/${id}`)
+            }
+
+            const loopFetches = () => {
+
+                for(let i = 0; i < ids.length; i++) {
+
+                    console.log(`Fetching data of user with id ${ids[i]}`);
+
+                    let response = fetchData(ids[i]);
+
+                    response.then((data)=>{
+
+                        data.json().then(user => {
+                    
+                            console.log(`ID: ${user.id}, Name: ${user.name}, Email: ${user.email}`);
+                        
+                        }).catch(err => {
+
+                            console.err(err);      
+                        })
+                    })
+                }
+            }
+
+            loopFetches();
+
+        // Async/Await way
+
+            - In this approach - for loop will wait for each promise to resolve before moving to the next iteration.
+            - So, on the first iteration, whatever there in the loop will be executed and if promise is there, it will wait for the promise to resolve before moving to the next iteration.
+            - And in further iterations, same thing will happen.
+            - So each promise will be resolved one by one in the order of the loop iterations.
+            - Await halts the execution of the async function until the promise is resolved. but outside the async function, the rest of the code continues to run.
+            - This also not a ideal way to handle multiple async operations. Because it will take more time to complete all the operations as each operation is waiting for the previous one to complete.
+
+            const loopAsyncFetches = async () => {
+
+                for(let i = 0; i < ids.length; i++) {
+
+                    try {
+                    
+                        console.log(`Fetching data of user with id ${ids[i]}`);
+
+                        let response = await fetchData(ids[i]);
+                        let user = await response.json();
+
+                        console.log(`ID: ${user.id}, Name: ${user.name}, Email: ${user.email}`);
+
+                    } catch (err) {
+                    
+                        console.error(err)
+                    }
+                }
+            }
+
+            loopAsyncFetches();
+
+            console.log("test");
+
+        // Correct Way - Using Promise.all() or Promise.allSettled()
+            - In this approach, we create an array of promises and use Promise.all() to wait for all the promises to resolve.
+            - This way, all the promises are created first and then they are resolved in parallel.
+            - This is the most efficient way to handle multiple async operations.
+
+            const loopPromiseAllFetches = async () => {
+
+                let fetchPromises = ids.map(id => fetchData(id));
+
+                try {
+                
+                    let responses = await Promise.all(fetchPromises);
+
+                    for(let response of responses) {
+
+                        let user = await response.json();
+
+                        console.log(`ID: ${user.id}, Name: ${user.name}, Email: ${user.email}`);
+                    }
+
+                } catch (err) {
+                
+                    console.error(err)
+                }
+            }
+
+            loopPromiseAllFetches();
+
+            console.log("test");
+
+    - MISTAKE 2 - Promise chain vs No chain
+        - // Chain
+            ten.then(res => {
+                return res * 10;
+            }).then(res => {
+                return res * 2;
+            }).then(res => {
+                return res - 10;
+            }).then(res => {
+                console.log(res);
+            })
+
+        // No chain
+            ten.then(res => {
+                return res * 10;
+            })
+            ten.then(res => {
+                return res * 2;
+            })
+            ten.then(res => {
+                return res - 10;
+            })
+            ten.then(res => {
+                console.log(res);
+            })
+    - MISTAKE 3 - Not Handling Errors with Promises
+        - If we are not handling errors - it will uncaught error
+        - It will spoil user experience
+        - Always handle errors using catch() or second callback of then()
+            let fetchData = new Promise(function(resolve, reject) {
+                let success = false; // Simulating an asynchronous operation
+                setTimeout(() => {
+                    if (success) {
+                        resolve('Data fetched successfully!');
+                    } else {
+                        reject('Failed to fetch data!');
+                    }
+                }, 2000);
+            });
+            fetchData
+                .then(function(data) {
+                    console.log(data);
+                })
+                .catch(function(error) {
+                    console.log('Error:', error); // Output: Error: Failed to fetch data!
+                });
+
+    - MISTAKE 4 - Missing function in .then() handler
+
+        const hello = Promise.resolve('Hello');
+
+        hello.then("World").then(res => {
+            console.log(res);
+        })
+
+        - In this example, we mistakenly passed a string "World" instead of a function to the first .then() handler.
+        - As a result, the string "World" is ignored, and the resolved value "Hello" is passed directly to the next .then() handler.
+        - The output will be "Hello" instead of the expected "World".
+        - To fix this, we should pass a function that returns the desired value:
+
+        // Correct code
+        hello.then(() => "World").then(res => {
+            console.log(res);
+        })
+
+    - MISTAKE 5 - Using Promises for Synchronous Operations
+        - Promises are designed for handling asynchronous operations.
+        - Using promises for synchronous operations can lead to unnecessary complexity and overhead.
+        - Example of unnecessary promise:
+            let cache = {
+                'sakthi@gmail.com' : {
+                    name: "Sakthi",
+                    org: "Tapas"
+                }
+            }
+
+            const getData = (email) => {
+
+                return new Promise((resolve, reject) => {
+
+                    setTimeout(() => {
+
+                        let userFromCache = cache[email];
+                        if(!userFromCache) {
+                            // resolve
+                            // update cache
+                            console.log("Makes an call an update cache");  
+                        } else {
+                            console.log(`User details ${JSON.stringify(userFromCache)}`);
+                            
+                        }
+                    }, 2000)
+                })
+            }
+
+            - In the above example, we are using a promise to simulate fetching data from a cache.
+            - However, since accessing the cache is a synchronous operation, using a promise here is unnecessary.
+            - Instead, we can simply return the data directly without using a promise:
+                const getData = (email) => {
+
+                    let userFromCache = cache[email];
+                
+                    if(userFromCache) {
+                
+                        console.log(`User details ${JSON.stringify(userFromCache)}`);
+                
+                        return;
+                
+                    } else {
+                
+                        return new Promise((resolve, reject) => {
+
+                            setTimeout(() => {
+
+                                // resolve
+                                // update cache
+                                console.log("Makes an call an update cache");  
+                            
+                            }, 2000)
+                        })
+                    }
+                }
+
+    - MISTAKE 6 - Unnecessary try/catch around Promises
+        - When using promises, we don't need to wrap the promise code in a try/catch block.
+        - Instead, we should use the .catch() method to handle errors.
+        - Example of unnecessary try/catch:
+          
+            new Promise((resolve) => {
+                 try {
+                    // Some asynchronous operation
+                    resolve('Success');
+                } catch (error) {
+                    console.error('Error:', error);
+                 }
+            }).then((result) => {
+                console.log(result);
+            }).catch((error) => {
+                console.error('Caught Error:', error);
+            });
+
+        - In the above example, the try/catch block inside the promise executor function is unnecessary.
+        - Instead, we can simply use the .catch() method to handle any errors that occur during the asynchronous operation:
+            new Promise((resolve) => {
+                // Some asynchronous operation
+                resolve('Success');
+            }).then((result) => {
+                console.log(result);
+            }).catch((error) => {
+                console.error('Caught Error:', error);
+            });
+================================================================================================================================
+            
+
+    
+            
+
+
+         
+
+    
