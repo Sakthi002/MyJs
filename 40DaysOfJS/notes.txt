@@ -4545,9 +4545,96 @@
                 console.error('Caught Error:', error);
             });
 ================================================================================================================================
-            
-
-    
+26. EVENT LOOP IN JAVASCRIPT
+================================================================================================================================
+    - JAVASCRIPT RUNTIME
+        - Javascript is a single-threaded programming language.
+        - It means that it can only execute one task at a time.
+        - However, Javascript can handle asynchronous operations using the event loop.
+        - The Javascript runtime consists of:
+            1. Call Stack
+            2. Web APIs
+            3. Callback Queue (Task Queue)
+            4. Event Loop
+    - COMPONENTS OF JAVASCRIPT RUNTIME
+        1. CALL STACK
+            - The call stack is a data structure that keeps track of the function calls in a program.
+            - It follows the Last In First Out (LIFO) principle.
+            - When a function is called, it is added to the top of the call stack.
+            - When the function completes, it is removed from the top of the call stack.
+            - If a function calls another function, the new function is added to the top of the call stack.
+            - Example:
+                function firstFunction() {
+                    console.log('First Function');
+                    secondFunction();
+                }
+                function secondFunction() {
+                    console.log('Second Function');
+                }
+                firstFunction();
+            - In the above example, when firstFunction is called, it is added to the call stack.
+            - Inside firstFunction, secondFunction is called, so it is added to the call stack on top of firstFunction.
+            - Once secondFunction completes, it is removed from the call stack, and then firstFunction completes and is removed from the call stack.
+        2. WEB APIS
+            - Web APIs are provided by the browser environment (or Node.js) to handle asynchronous operations.
+            - They include functions like setTimeout, fetch, DOM events, etc.
+            - When an asynchronous operation is initiated, it is handed off to the Web API.
+            - The Web API handles the operation in the background and notifies the callback queue when the operation is complete.
+            - Example:
+                setTimeout(function() {
+                    console.log('Timeout completed');
+                }, 2000);
+            - In the above example, when setTimeout is called, it is handed off to the Web API.
+            - The Web API waits for 2 seconds and then adds the callback function to the callback queue.
+        3. CALLBACK QUEUE (TASK QUEUE)
+            - The callback queue is a data structure that holds the callback functions that are ready to be executed.
+            - When an asynchronous operation is complete, the callback function is added to the callback queue.
+            - The callback queue follows the First In First Out (FIFO) principle.
+            - Example:
+                setTimeout(function() {
+                    console.log('Timeout completed');
+                }, 2000);
+            - In the above example, after 2 seconds, the callback function is added to the callback queue.
+        4. EVENT LOOP
+            - The event loop is responsible for checking the call stack and the callback queue.
+            - If the call stack is empty, the event loop takes the first callback function from the callback queue and pushes it onto the call stack for execution.
+            - This process continues until there are no more callback functions in the callback queue.
+            - Example:
+                console.log('Start');
+                setTimeout(function() {
+                    console.log('Timeout completed');
+                }, 2000);
+                console.log('End');
+            - In the above example, the output will be:
+                Start
+                End
+                Timeout completed
+            - The event loop checks the call stack and finds it empty after executing the synchronous code.
+            - It then takes the callback function from the callback queue and pushes it onto the call stack for execution after 2 seconds.
+    - MACROTASKS AND MICROTASKS
+        - In Javascript, tasks can be categorized into macrotasks and microtasks.
+        - Macrotasks include tasks like setTimeout, setInterval, and I/O operations.
+        - Microtasks include tasks like Promise callbacks and MutationObserver callbacks.
+        - The event loop gives priority to microtasks over macrotasks.
+        - After executing a macrotask, the event loop checks the microtask queue and executes all the microtasks before moving on to the next macrotask.
+        - Example:
+            console.log('Start');
+            setTimeout(function() {
+                console.log('Timeout completed');
+            }, 0);
+            Promise.resolve().then(function() {
+                console.log('Promise resolved');
+            });
+            console.log('End');
+        - In the above example, the output will be:
+            Start
+            End
+            Promise resolved
+            Timeout completed
+        - The event loop executes the synchronous code first (Start and End).
+        - Then it checks the microtask queue and executes the Promise callback (Promise resolved).
+        - Finally, it executes the macrotask (Timeout completed).
+================================================================================================================================
             
 
 
