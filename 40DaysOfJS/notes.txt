@@ -4635,9 +4635,124 @@
         - Then it checks the microtask queue and executes the Promise callback (Promise resolved).
         - Finally, it executes the macrotask (Timeout completed).
 ================================================================================================================================
-            
-
-
+27. OOPS IN JAVASCRIPT
+================================================================================================================================
+    - What are OBJECTS?
+        - Object represents a real world entity.
+        - Entities are like car, bike, person, animal etc.
+        - If something can be described as a thing with characteristics and behavior, it can be represented as an object.
+        - Object will have characteristics and behavior.
+        - Characteristics are known as properties/attributes/state.
+        - Behavior is known as methods/actions.
+        - Example: Car
+            - Characteristics/Properties: color, model, brand, speed, fuelType
+            - Behavior/Methods: start(), stop(), accelerate(), brake()
+    - What is CLASS?
+        - Class is a plan or blueprint for creating objects.
+        - It defines how the objects will look like and what they can do.
+        - Class is a template for creating objects.
+        - Class is plan for creating multiple objects with similar characteristics and behavior.
+    - What is FUNCTIONS?
+        - Functions are utility to perform a specific task in a object.
+        - Example: start(), stop(), accelerate(), brake() are functions of car object.
          
+    - OOPS - Object Oriented Programming System 
+        - It is an programming concept that uses objects and classes to structure code.
+        - It is the way that write code where we organize everything around objects and classes.
+        
+        - EXAMPLES
+            - Game Development
+                - In game development, we can use OOP to create classes for different game entities like players, enemies, and items.
+                - Each class can have its own properties and methods to define the behavior of the entity.
 
+            - Ecommerce Application
+                - In an ecommerce application, we can use OOP to create classes for products, customers, and orders.
+                - Each class can have its own properties and methods to manage the data and behavior of the entity.
+
+            - Banking Software
+                - In banking software, we can use OOP to create classes for accounts, transactions, and customers.
+                - Each class can have its own properties and methods to handle the operations and data of the entity.
+
+    - PRINCIPLES OF OOPS
+        1. ABSTRACTION
+            - Is the process of hiding complexity and showing only the essential features of the object.
+            - It helps to reduce complexity and increase efficiency.
+            - Example: TV Remote Control
+                - A TV remote control abstracts the complex functionality of the TV and provides a simple interface for the user to interact with.
+                - The user can change channels, adjust volume, and turn the TV on/off without needing to understand the internal workings of the TV.
+                - COFFEE MACHINE
+                    - We are showing only makeCoffee() method to the user.
+                    - Internally, there are many complex steps involved in making coffee.
+                        - waterTank
+                        - heaterOn
+                        - boil()
+                        - brew()
+                        - dispense()
+                    - But user only need to know makeCoffee() method to get the coffee.
+        
+        2. ENCAPSULATION 
+            - Is the process of bundling data (properties) and methods (functions) that operate on the data into a single unit called class.
+            - It helps to protect the data from outside interference and misuse.
+            - Example: Bank Account
+                - A bank account class encapsulates the account balance and provides methods to deposit and withdraw money.
+                - The account balance is protected from direct access by outside code, ensuring that only valid operations can be performed on it.
+                - The deposit() and withdraw() methods ensure that the account balance is updated correctly and prevent unauthorized access.
+            
+            - Difference between Abstraction and Encapsulation
+                - Abstraction is about hiding complexity and showing only the essential features of the object. (not bothered about how it is implemented)
+                - Encapsulation is about bundling data and methods into a single unit and protecting the data from outside interference. (bundling and protecting)
+
+        3. INHERITANCE && `IS A` Relationship
+            - Inheritance allows one class (child class) to inherit properties and methods from another class (parent class).
+            - It helps to reducing duplication and promoting reusabilty.
+            - Example : Vehicle Class
+                - We have Vehicle class as parent class, with 2 function startEngine() and stopEngine()
+                - We have 2 child classes Car and Bus.
+                - Both Car and Bus classes inherit the properties and methods of Vehicle class.
+                - Car class has its own method openTrunk()
+                - Bus class has its own method openDoor()
+                - This way, we can reuse the code in Vehicle class and avoid duplication.
+            - Finally,
+            ``Clases can inherit properties and methods from parent class and can have their own properties and methods as well.``
+            - `IS A` Relationship
+                - Car is a Vehicle
+                - Bus is a Vehicle
+        
+        4. POLYMORPHISM
+            - `Many forms`
+            - Same word - different meanings based on the context.
+            - Example - `RUN`
+                - Person can run - physical activity
+                - Software can run - execute
+                - Business can run - manage
+            - It allows objects of different classes to be treated as if they are not same type, but behave differently based on their actual class.
+            - Example: Employee Class 
+                - We have Employee class as parent class with method work();
+                - We have 2 child classes Developer and Manager.
+                - Both Developer and Manager classes inherit the work() method from Employee class.
+                - Developer class overrides the work() method to implement coding tasks.
+                - Manager class overrides the work() method to implement management tasks.
+                - This way, we can use the same method name work() for different classes, but have different implementations based on the class.
+            - Finally,
+                ``Polymorphism means different objects can share the same action, but each one does it in its own way..``
+
+        5. COMPOSITION && `HAS A` Relationship
+            - Composition is a design principle where objects are composed of other objects to achieve complex functionality.
+            - It allows us to build complex objects by combining simpler objects.
+            - Example: Car Class
+                - We have Car class that has Engine, Wheels, and Seats as its components.
+                - The Car class can use the methods of Engine, Wheels, and Seats to perform its functionality.
+                - This way, we can build complex objects by combining simpler objects.
+            - `HAS A` Relationship
+                - Car has an Engine
+                - Car has Wheels
+                - Car has Seats
+        
+        // SHORT
+        1. Abstraction - Hiding complexity and showing only essential features.(CoffeMachine)
+        2. Encapsulation - Bundling data and protecting data (ATM)
+        3. Inheritance - Share logic across classes (Vehicle -> Car, Bus)
+        4. Polymorphism - Same action, different behavior (Employee -> Developer, Manager)
+        5. Composition - Building complex objects from simpler objects (Car has Engine, Wheels, Seats)
+================================================================================================================================
     
