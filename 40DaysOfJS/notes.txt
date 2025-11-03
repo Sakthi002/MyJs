@@ -4755,4 +4755,229 @@
         4. Polymorphism - Same action, different behavior (Employee -> Developer, Manager)
         5. Composition - Building complex objects from simpler objects (Car has Engine, Wheels, Seats)
 ================================================================================================================================
+28. CLASSES IN JAVASCRIPT
+================================================================================================================================
+    - Class is a plan or blueprint or template for creating objects.
+    - It defines how the objects will look like and what they can do.
     
+    - Syntax
+        class ClassName {
+            // constructor
+            constructor(parameters) {
+                // initialization code
+            }
+
+            // methods
+            method1() {
+                // method code
+            }
+
+            method2() {
+                // method code
+            }
+        }
+        
+        - Need to start class keyword with capital letter.
+        - It has constructor method to initialize the object properties.
+        - It can have multiple methods to define the behavior of the object.
+        *** Objects which are created from the class are called instances of the class. and they are not EQUAL***
+
+        - Example
+            class Person {
+                // constructor
+                constructor(name, age) {
+                    this.name = name;
+                    this.age = age;
+                }
+
+                // method
+                greet() {
+                    console.log(`Hello, my name is ${this.name} and I am ${this.age} years old.`);
+                }
+            }
+
+            // creating instances of the class
+            const person1 = new Person('Alice', 30);
+            const person2 = new Person('Bob', 25);
+            person1.greet(); // Output: Hello, my name is Alice and I am 30 years old.
+            person2.greet(); // Output: Hello, my name is Bob and I am 25 years old.
+
+        - `THIS` keyword in Class
+            - In Javascript, `this` keyword refers to the current instance of the class.
+            - It is used to access the properties and methods of the class within the class methods.
+            - Example:
+                class Person {
+                    constructor(name, age) {
+                        this.name = name;
+                        this.age = age;
+                    }
+
+                    greet() {
+                        console.log(`Hello, my name is ${this.name} and I am ${this.age} years old.`);
+                    }
+                }
+            - In the above example, `this.name` and `this.age` refer to the properties of the current instance of the Person class.
+        
+        - Class as Expression
+            - In Javascript, classes can also be defined using class expressions.
+            - Class expressions allow us to define a class and assign it to a variable.
+            - Example:
+                const Person = class {
+                    constructor(name, age) {
+                        this.name = name;
+                        this.age = age;
+                    }
+                    greet() {
+                        console.log(`Hello, my name is ${this.name} and I am ${this.age} years old.`);
+                    }
+                };
+            - In the above example, we define a class using a class expression and assign it to the variable Person.
+            - We can then create instances of the class using the new keyword.
+        
+        - Named Class Expression
+            - In Javascript, we can also define named anonymous class expressions.
+            - Named anonymous class expressions allow us to define a class with a name, but without assigning it to a variable.
+            - Example:
+                const Person = class PersonClass {
+                    constructor(name, age) {
+                        this.name = name;
+                        this.age = age;
+                    }
+                    greet() {
+                        console.log(`Hello, my name is ${this.name} and I am ${this.age} years old.`);
+                    }
+                };
+            - In the above example, we define a named anonymous class expression with the name PersonClass.
+            - We can then create instances of the class using the new keyword and the variable Person.
+
+        - Class Fields
+            - We can define class fields (properties) directly within the class body, outside of the constructor.
+            - Example:
+                class Phone {
+                    brand = 'Apple'; 
+                    make() {
+                        console.log(this.brand);
+                    }
+                }
+            - In the above example, we define a class field brand with a default value of 'Apple'.
+            - We can access the class field using `this.brand` within the class methods.
+
+        - Getters and Setters
+            - Getters and setters are special methods that allow us to define how to access and modify the properties of a class.
+            - Getters are used to retrieve the value of a property, while setters are used to set the value of a property.
+            - Example:
+                class Person {
+                    constructor(name) {
+                        this._name = name;
+                    }
+
+                    // getter for name
+                    get name() {
+                        return this._name;
+                    }
+
+                    // setter for name
+                    set name(newName) {
+                        this._name = newName;
+                    }
+
+            
+                }
+            - In the above example, we define getters and setters for the name and age properties.
+            - We use the underscore (_) prefix to indicate that _name is an internal property that 
+                should be accessed only through the getter and setter methods.
+
+        - Static Properties and Methods
+            - Static properties and methods are associated with the class itself, rather than with instances of the class.
+            - They can be accessed directly on the class, without needing to create an instance.
+            - Example:
+                class MathUtils {
+                    static pi = 3.14159;
+
+                    static calculateCircumference(radius) {
+                        return 2 * MathUtils.pi * radius;
+                    }
+                }
+            - In the above example, we define a static property pi and a static method calculateCircumference().
+            - We can access the static property and method directly on the MathUtils class.
+                console.log(MathUtils.pi); // Output: 3.14159
+                console.log(MathUtils.calculateCircumference(5)); // Output: 31.4159
+            - Also we cannot access static properties and methods using `this` keyword inside non-static methods.
+            - We cannot access on instance of the class.
+                const mathUtils = new MathUtils();
+                console.log(mathUtils.pi); // Output: undefined
+                console.log(mathUtils.calculateCircumference(5)); // Error: mathUtils.calculateCircumference is not a function
+
+        - Private and Public Fields
+            - In Javascript, we can define private and public fields in a class.
+            - Public fields are accessible from outside the class, while private fields are only accessible within the class.
+            - We can define private fields using the `#` prefix.
+            - Example:
+                class BankAccount {
+                    #balance = 0; // private field
+
+                    deposit(amount) {
+                        this.#balance += amount;
+                    }
+
+                    getBalance() {
+                        return this.#balance;
+                    }
+                }
+            - In the above example, we define a private field #balance.
+            - We can access the private field only within the class methods.
+            - Attempting to access the private field from outside the class will result in an error.
+                const account = new BankAccount();
+                account.deposit(100);
+                console.log(account.getBalance()); // Output: 100
+                console.log(account.#balance); // Error: Private field '#balance' must be declared in an enclosing class
+        
+        - Extending
+            - We can create a new class by extending an existing class using the `extends` keyword.
+            - The new class will be a child class or sub class.
+            - The child class will inherits the properties and methods of the parent class.
+            - Will it also have its own properties and methods.
+            - Private fields of parent class are not accessible in child class.
+            - Static properties and methods of parent class are accessible in child class using parent class name.
+
+            - Super 
+                - In child class, we can use `super` keyword to call the constructor of the parent class.
+                - We need to call super() before using `this` keyword in child class constructor.
+                - We can also use `super` keyword to call methods of the parent class.
+            - Example:
+                class Human {
+                    constructor(name, age) {
+                        this.name = name;
+                        this.age = age;
+                    }
+                    sleep() {
+                        console.log(`I am ${this.name}, sleeping.`);
+                    }
+                }
+                class Student extends Human {
+                    constructor(name, age, grade) {
+                        super(name, age);
+                        this.grade = grade;
+                    }
+                    introduce() {
+                        console.log(`Hi I am ${this.name}, I am studying ${this.grade}`);
+                    }
+                }
+
+            - Example for calling parent method using super
+                class Animal {
+                    speak() {
+                        console.log("Animal speaks");
+                    }
+                }
+                class Dog extends Animal {
+                    speak() {
+                        super.speak(); // Call the parent class method
+                        console.log("Dog barks");
+                    }
+                }
+                const dog = new Dog();
+                dog.speak();
+                // Output:
+                // Animal speaks
+                // Dog barks    
