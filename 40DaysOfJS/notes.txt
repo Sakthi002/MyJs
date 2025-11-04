@@ -5214,3 +5214,130 @@
 ================================================================================================================================
 30. MODULES IN JAVASCRIPT
 ================================================================================================================================
+    - Modules are reusable pieces of code that can be imported and exported between different files.
+    - They help to organize code into smaller, manageable chunks and promote code reusability.
+    - Modules can contain variables, functions, classes, and other code that can be shared across different parts of an application.
+    
+    - ES6 Modules
+        - Named Exports
+            - ES6 Modules is a module system introduced in ECMAScript 2015 (ES6).
+            - It uses the import and export keywords to import and export modules.
+            - Example:
+                // math.js
+                export function add(a, b) {
+                    return a + b;
+                }   
+                export function subtract(a, b) {
+                    return a - b;
+                }   
+                // app.js
+                import { add, subtract } from './math.js';  
+                console.log(add(2, 3)); // Output: 5
+                console.log(subtract(5, 2)); // Output: 3
+            - In the above example, we define a math module that exports two functions: add and subtract using the export keyword.
+            - We import the math module in app.js using the import keyword and use the exported functions.
+            - *** As it is named export, we need to use the same name while importing. ***
+            - *** If we are exporting multiple things, we need to use curly braces {} while importing. ***
+
+        - Default Exports
+            - If we are exporting a single value or function from a module, we can use default export.
+            - Example:
+                // calc.js
+                export default function multiply(a, b) {
+                    return a * b;
+                }   
+                // app.js
+                import multiply from './calc.js';  
+                console.log(multiply(2, 3)); // Output: 6
+            - In the above example, we define a calc module that exports a single function multiply using default export.
+            - We import the calc module in app.js using the import keyword without curly braces.
+            - *** While importing default export, we can use any name we want. ***
+
+        - Difference between Named Export and Default Export
+            - Named Export allows us to export multiple values from a module using their names.
+            - Default Export allows us to export a single value from a module without using its name.
+            - While importing Named Exports, we need to use curly braces {} and the same name as the exported value.
+            - While importing Default Export, we don't need to use curly braces and can use any name we want.
+
+        - Alias 
+            - We can use alias while importing modules to give them a different name.
+            - Example:
+                // math.js
+                export function add(a, b) {
+                    return a + b;
+                }   
+                export function subtract(a, b) {
+                    return a - b;
+                }   
+                // app.js
+                import { add as sum, subtract as difference } from './math.js';  
+                console.log(sum(2, 3)); // Output: 5
+                console.log(difference(5, 2)); // Output: 3
+            - In the above example, we use alias while importing the add and subtract functions from the math module.
+            - We give them the names sum and difference respectively.
+
+        - Namespace 
+            - We can use namespace while importing modules to import all the exported values from a module as a single object.
+            - Example:
+                // math.js
+                export function add(a, b) {
+                    return a + b;
+                }   
+                export function subtract(a, b) {
+                    return a - b;
+                }   
+                // app.js
+                import * as math from './math.js';  
+                console.log(math.add(2, 3)); // Output: 5
+                console.log(math.subtract(5, 2)); // Output: 3
+            - In the above example, we use namespace while importing the math module.
+            - We import all the exported values from the math module as a single object named math.
+            - We can then access the exported values using the object name.
+
+        - Combined Export
+            - We can combine multiple modules into a single module using combined export.
+            - Example:
+                // combined.js
+                export * as calc from './calc.js';
+                export { default as sayMyName } from './whoami.js';
+            - In the above example, we combine the calc and whoami modules into a single module named combined.js.
+            - We use namespace to import all the exported values from the calc module and give it the name calc.
+            - We use named export to import the default export from the whoami module and give it the name sayMyName.
+            - We can then import the combined module in another file and use the exported values.
+                - Example:
+                    // main.js
+                    import * as combine from './combined.js';
+                    console.log(combine.calc.sum(2, 3)); // Output: 5
+                    console.log(combine.calc.sub(10, 5)); // Output: 5
+                    combine.sayMyName(); // Output: Sakthivel Munusami
+                - In the above example, we import the combined module in main.js using namespace.
+                - We can then access the exported values from the calc and whoami modules using the combine object.
+
+        
+        - Dynamic imports
+            - Dynamics imports allows us to import modules dynamically at runtime using the import() function.
+            - Example:
+                // app.js
+                const {sum, sub} = await import('./main.js);
+
+                - import('./main.js) -  returns a promise that resolves to the module object.
+                - We can use destructuring assignment to extract the exported values from the module object.
+            - Dynamic imports are useful when we want to load modules on demand, rather than loading them all at once.
+            - This can help to improve the performance of our application by reducing the initial load time.
+
+            async function loadModule() {
+                const {sayHi, sayHola} = await import('./greetings.js');
+
+                sayHi();
+                sayHola();
+            }
+
+            // loadModule();
+
+            const promise = Promise.all([import('./greetings.js')]);
+
+            promise.then(res => {
+                res[0].sayHi()
+            })
+
+
