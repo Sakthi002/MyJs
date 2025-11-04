@@ -4981,3 +4981,236 @@
                 // Output:
                 // Animal speaks
                 // Dog barks    
+================================================================================================================================
+29. PROTOTYPES AND OBJECT CREATION PATTERNS IN JAVASCRIPT
+================================================================================================================================
+    - We can create objects in Javascript using different patterns.
+    - Most common patterns are:
+        1. Object Literals
+        2. Constructor Functions
+        3. ES6 Classes
+        4. Object.create() method
+
+    - 1. Object Literals
+        - The simplest way to create an object in Javascript is using object literals.
+        - We define the object using curly braces {} and specify the properties and methods of the object.
+        - Example:
+            const person = {
+                name: 'Alice',
+                age: 30,
+                greet: function() {
+                    console.log(`Hello, my name is ${this.name} and I am ${this.age} years old.`);
+                },
+                'unique-id': 12345
+            };
+            person.greet(); // Output: Hello, my name is Alice and I am 30 years old.
+        - We can access the properties and methods of the object using dot notation or bracket notation.
+        - Example of bracket notation:
+            console.log(person['unique-id']); // Output: 12345
+
+        const count = 10;
+        count = 20; // Error: Assignment to constant variable.
+
+        const user = {
+            name: 'John',
+            age: 25
+        };
+
+        user.age = 26; // This is allowed 
+
+        - this is allowed because we are not reassigning the user variable, we are modifying the properties of the object it references.
+        
+        - How objects are stored in memory?
+            - When we create an object using object literal, the object is stored in heap memory.
+            - The variable that references the object is stored in stack memory.
+            - The variable holds a reference (or pointer) to the location of the object in heap memory.
+            - When we modify the properties of the object, we are modifying the object in heap memory.
+            - The reference in stack memory remains the same.
+            - If we try to reassign the variable to a new object, we will get an error because the variable is declared as a constant using const keyword.
+
+        - What happens when we are storing objects in let or var? What happens in the memory?
+            - When we create an object using let or var, the object is still stored in heap memory.
+            - The variable that references the object is stored in stack memory.
+            - The variable holds a reference (or pointer) to the location of the object in heap memory.
+            - When we modify the properties of the object, we are modifying the object in heap memory.
+            - The reference in stack memory remains the same.
+            - If we reassign the variable to a new object, the reference in stack memory will be updated to point to the new object in heap memory.
+            - Example:
+                let user = {
+                    name: 'John',
+                    age: 25
+                };
+
+                user = {
+                    name: 'Jane',
+                    age: 30
+                }; // This is allowed
+
+            - In the above example, we first create an object and assign it to the user variable.
+            - Then we reassign the user variable to a new object.
+            - This is allowed because the user variable is declared using let keyword.
+
+    - 2. Constructor Functions
+        - Constructor functions are special functions that are used to create objects.
+        - They are defined using the function keyword and are typically named with a capital letter to indicate that they are constructor functions.
+        - We use the new keyword to create an instance of the object using the constructor function.
+        - Example:
+            function Person(name, age) {
+                this.name = name;
+                this.age = age;
+                this.greet = function() {
+                    console.log(`Hello, my name is ${this.name} and I am ${this.age} years old.`);
+                };
+            }
+            const person1 = new Person('Alice', 30);
+            const person2 = new Person('Bob', 25);
+            person1.greet(); // Output: Hello, my name is Alice and I am 30 years old.
+            person2.greet(); // Output: Hello, my name is Bob and I am 25 years old.
+        - In the above example, we define a constructor function Person that takes name and age as parameters.
+        - We use the this keyword to define the properties and methods of the object.
+        - We create instances of the object using the new keyword. 
+   
+        - Composing Objects and References
+            - In JS, objects can contain references to other objects.
+            - This allows us to create complex data structures by composing objects together.
+            - Example:
+                function Car(brand, model, owner) {
+                    this.brand = brand;
+                    this.model = model;
+                    this.owner = owner;
+                    this.wheelNumber = function() {
+                        return 4;
+                    }
+                }
+
+                function Owner(name, age) {
+                    this.name = name;
+                    this.age = age;
+                }
+
+                const sakthi = new Owner('Sakthi', 30);
+                const myCar = new Car('Toyota', 'Camry', sakthi);
+
+                console.log(myCar.owner.name); // Output: Sakthi
+            - In the above example, we define a Car constructor function that takes brand, model, and owner as parameters.
+            - The owner parameter is an instance of the Owner constructor function.
+            - We create an instance of the Owner object and pass it as a reference to the Car object.
+            - We can access the properties of the owner object through the car object.
+            - This way, we can compose objects together to create complex data structures.
+
+            - Now if we modify the owner object, the changes will be reflected in the car object as well.
+                sakthi.age = 31;
+                console.log(myCar.owner.age); // Output: 31
+            - This is because the car object holds a reference to the owner object, not a copy of it.
+            - Any changes made to the owner object will be reflected in the car object as well.
+
+    - PROTOTYPE 
+        - Prototype is an internal property of an Object, which indicates from which structure (Object) this particular object is created.
+        - Every object in Javascript has a prototype.
+        - The prototype is also an object.
+        - When we try to access a property or method of an object, Javascript first looks for it in the object itself.
+        - If it doesn't find it there, it looks for it in the prototype of the object.
+        - This process continues up the prototype chain until it finds the property or method, or reaches the end of the chain (null).
+        - Example:
+            function Person(name, age) {
+                this.name = name;
+                this.age = age;
+            }
+            Person.prototype.greet = function() {
+                console.log(`Hello, my name is ${this.name} and I am ${this.age} years old.`);
+            };
+            const person1 = new Person('Alice', 30);
+            person1.greet(); // Output: Hello, my name is Alice and I am 30 years old.
+        - In the above example, we define a Person constructor function and add a greet method to its prototype.
+        - When we create an instance of the Person object and call the greet method, Javascript looks for it in the person1 object.
+        - It doesn't find it there, so it looks for it in the prototype of the Person object and finds it there.
+        - This is how prototype inheritance works in Javascript. 
+
+        - Let say - if we added greet method directly inside the constructor function using this.greet = function() {...}
+            - In that case, the greet method will be created for each instance of the Person object.
+            - This will lead to memory inefficiency as each instance will have its own copy of the greet method.
+            - By adding the greet method to the prototype, we ensure that there is only one copy of the method shared by all instances of the Person object.
+            - This is more memory efficient and follows the DRY (Don't Repeat Yourself) principle.
+
+    - 3. ES6 Classes
+        - ES6 introduced a new syntax for creating classes in Javascript.
+        - Classes are a syntactical sugar over the existing prototype-based inheritance in Javascript.
+        - We can define a class using the class keyword and create instances of the class using the new keyword.
+        - Example:
+            class Car {
+                constructor(brand, model) {
+                    this.brand = brand;
+                    this.model = model;
+                }
+
+                start() {
+                    console.log(`${this.brand} ${this.model} is starting.`);
+                }
+            }
+            const myCar = new Car('Toyota', 'Camry');
+            myCar.start(); // Output: Toyota Camry is starting.
+        - In the above example, we define a Car class with a constructor and a start method.
+        - We create an instance of the Car class using the new keyword and call the start method.
+        - Under the hood, the class syntax is still using prototype-based inheritance.
+        - *** The methods defined in the class are added to the prototype of the class not to each instance ***.
+        - This means that all instances of the class share the same methods, which is more memory efficient.
+
+    - 4. Object.create() method
+        - The Object.create() method is used to create a new object with a specified prototype object and properties.
+        - It allows us to create objects that inherit from other objects without using constructor functions or classes.
+        - Example:
+            const vehicle = {
+                isLuxury: false,
+                isFourWheeler: false,
+                showInfo : function() {
+                    console.log(`This vehicle ${this.name} is if ${this.color}. Is it luxury vehicle? ${this.isLuxury}. Does it have 4 wheel? ${this.isFourWheeler}`);
+                }
+            }
+
+            const car = Object.create(vehicle);
+            car.name = "Tesla";
+            car.color = "Steel";
+            car.isLuxury = true;
+            car.isFourWheeler = true;
+            car.showInfo()
+            console.log(car);
+        - In the above example, we define a vehicle object with some properties and a method.
+        - We create a new car object using Object.create() method, which inherits from the vehicle object.
+        - We add some properties to the car object and call the showInfo method, which is inherited from the vehicle object.
+        - This way, we can create objects that inherit from other objects without using constructor functions or classes.
+        - The Object.create() method is useful when we want to create objects with a specific prototype chain or when we want to create objects that share common properties and methods.
+        
+    - HOW TO GET PROTOTYPE OF AN OBJECT?
+        - We can get the prototype of an object using Object.getPrototypeOf() method.
+        - Example:
+            const person = {
+                name: 'Alice',
+                age: 30
+            };
+            const prototype = Object.getPrototypeOf(person);
+            console.log(prototype); // Output: {}
+        - In the above example, we define a person object and use Object.getPrototypeOf() method to get its prototype.
+        - The output is an empty object because the person object does not have any properties or methods in its prototype.
+        - For objects created using constructor functions or classes, the prototype will contain the properties and methods
+    
+    - HOW TO SET PROTOTYPE OF AN OBJECT?
+        - We can set the prototype of an object using Object.setPrototypeOf() method.
+        - Example:
+            const vehicle = {
+                isLuxury: false,
+                isFourWheeler: false
+            };
+
+            const car = {
+                name: 'Tesla',
+                color: 'Steel'
+            };
+
+            Object.setPrototypeOf(car, vehicle);
+            console.log(car.isLuxury); // Output: false
+        - In the above example, we define a vehicle object and a car object.
+        - We use Object.setPrototypeOf() method to set the prototype of the car object to the vehicle object.
+        - Now, the car object inherits the properties of the vehicle object, and we can access them using the car object.
+================================================================================================================================
+30. MODULES IN JAVASCRIPT
+================================================================================================================================
