@@ -5339,5 +5339,425 @@
             promise.then(res => {
                 res[0].sayHi()
             })
+=================================================================================================================================
+31. MAP, SET, WEAKMAP, WEAKSET
+=================================================================================================================================
 
+    - Recap of Object and Array
+        
+        - In JS Objects are used to store multiple key-value pairs as complex data structures.
+        - Object values can be of any data type, including other objects and functions.
+        - Object properties are accessed using dot notation or bracket notation.
 
+        - Arrays are used to store ordered collections of values.
+        - Array elements are accessed using numeric indices.
+        - Arrays are ordered, meaning the order of elements is preserved.
+        - Arrays have built-in methods for manipulating and iterating over the elements.
+
+        - By using Objects and Arrays Data structures we can create n level nestings of data structures.
+
+        - But Few Shortcomings of Objects
+            - Keys are limited to strings and symbols only.
+            - No built-in methods to get size of an object.
+            - No built-in methods to iterate over the properties of an object.
+
+        - Few Shortcomings of Arrays
+            - Arrays are indexed by numbers only.
+            - No built-in methods to ensure uniqueness of elements.
+            - It allows duplicate elements.
+
+    To overcome these shortcomings, ES6 introduced Map and Set data structures.
+        
+    - What is MAP?
+
+        - Map is collection key-value pairs.
+        - In Map, keys can be of any data type (primitive or reference).
+        - Map maintains the order of insertion of key-value pairs.
+        - Map has built-in methods to get size, iterate over key-value pairs, and perform other operations.
+
+        - Map has the characteristics of both Objects and Arrays.
+            - Like Objects, Map stores key-value pairs.
+            - Like Arrays, Map maintains the order of insertion.
+
+            - Taking the best of both we have a new data structure called MAP.
+
+        - Creating and Initializing a Map
+           
+            - We can create a Map using the Map constructor.
+
+                const myMap = new Map();
+
+            - We can also initialize a Map with key-value pairs using an array of arrays.
+
+                const map = new Map([
+                    ['name', 'Alice'],
+                    ['age', 30],
+                    [1, 'one'],
+                    [true, 'boolean true']
+                ])
+            - In the above example, we create a Map with four key-value pairs.
+
+        - How to add key-value pairs to a Map?
+            - We can add key-value pairs to a Map using the set() method.
+            - Example:
+                const myMap = new Map();
+                myMap.set('name', 'Alice');
+                myMap.set('age', 30);
+                myMap.set(1, 'one');
+                myMap.set(true, 'boolean true');
+            - In the above example, we add four key-value pairs to the myMap Map using the set() method.
+
+        - How to get value from a Map using key?
+            - We can get the value from a Map using the get() method and passing the key.
+            - Example:
+                const name = myMap.get('name');
+                console.log(name); // Output: Alice
+            - In the above example, we get the value associated with the key 'name' from the myMap Map using the get() method.
+        
+        - How to check if a key exists in a Map?
+            - We can check if a key exists in a Map using the has() method.
+            - Example:
+                const hasAge = myMap.has('age');
+                console.log(hasAge); // Output: true
+            - In the above example, we check if the key 'age' exists in the myMap Map using the has() method.
+        
+        - How to get the size of a Map?
+            - We can get the size of a Map using the size property.
+            - Example:
+                const size = myMap.size;
+                console.log(size); // Output: 4
+            - In the above example, we get the size of the myMap Map using the size property.
+        
+        - How to delete a key-value pair from a Map?
+            - We can delete a key-value pair from a Map using the delete() method and passing the key.
+            - Example:
+                myMap.delete('age');
+                console.log(myMap.size); // Output: 3
+            - In the above example, we delete the key-value pair with the key 'age' from the myMap Map using the delete() method.
+        
+        - How to clear all key-value pairs from a Map?
+            - We can clear all key-value pairs from a Map using the clear() method.
+            - Example:
+                myMap.clear();
+                console.log(myMap.size); // Output: 0
+            - In the above example, we clear all key-value pairs from the myMap Map using the clear() method.
+        
+        - How to iterate over the key-value pairs of a Map?
+            - We can iterate over the key-value pairs of a Map using the for...of loop.
+            - Example:
+                for (const [key, value] of myMap) {
+                    console.log(`${key}: ${value}`);
+                }
+            - In the above example, we iterate over the key-value pairs of the myMap Map using the for...of loop.
+            - We use destructuring assignment to extract the key and value from each entry.
+
+        - Other built-in methods of Map
+            - keys() - returns an iterator of the keys in the Map.
+            - values() - returns an iterator of the values in the Map.
+            - entries() - returns an iterator of the key-value pairs in the Map.
+            - forEach() - executes a provided function once for each key-value pair in the Map.
+
+        - Convertions
+
+            - Object to Map
+                const obj = { a: 1, b: 2, c: 3 };
+                const mapFromObj = new Map(Object.entries(obj));
+                console.log(mapFromObj);
+
+            - Map to Object
+                const map = new Map([['a', 1], ['b', 2], ['c', 3]]);
+                const objFromMap = Object.fromEntries(map);
+                console.log(objFromMap);
+            
+            - Map to Array
+                const map = new Map([['a', 1], ['b', 2], ['c', 3]]);
+                const arrFromMap = Array.from(map);
+                console.log(arrFromMap);
+                - We can use spread operator as well
+                    const arrFromMap2 = [...map];
+                    console.log(arrFromMap2);
+
+            - Array to Map
+                const arr = [['a', 1], ['b', 2], ['c', 3]];
+                const mapFromArr = new Map(arr);
+                console.log(mapFromArr);
+
+        - MAP vs OBJECT? When to use which one?
+            - Use Map when you need to store key-value pairs where keys can be of any data type.
+            - Use Map when you need to maintain the order of insertion of key-value pairs.
+            - Use Map when you need built-in methods for size, iteration, and other operations.
+            - Use Object when you need a simple key-value pair structure with string or symbol keys.
+            - Use Object when you need to work with JSON data or when you need to serialize/deserialize data.
+            - In general, if you need more advanced features and flexibility, use Map. If you need a simple and lightweight structure, use Object.
+
+    - What is SET?
+        - Set is collection of unique elements.
+        - In Set, elements can be of any data type (primitive or reference).
+        - Set maintains the order of insertion of elements.
+        - Set has built-in methods to get size, iterate over elements, and perform other operations
+
+        - Creating and Initializing a Set
+            - We can create a Set using the Set constructor.
+                const mySet = new Set();
+            - We can also initialize a Set with elements using an array.
+                const mySet = new Set([1, 2, 3, 4, 5]);
+            - In the above example, we create a Set with five elements.
+
+        - How to add elements to a Set?
+            - We can add elements to a Set using the add() method.
+            - Example:
+                const mySet = new Set();
+                mySet.add(1);
+                mySet.add(2);
+                mySet.add(3);
+            - In the above example, we add three elements to the mySet Set using the add() method.
+        
+        - How to check if an element exists in a Set?
+            - We can check if an element exists in a Set using the has() method.
+            - Example:
+                const hasTwo = mySet.has(2);
+                console.log(hasTwo); // Output: true
+            - In the above example, we check if the element 2 exists in the mySet Set using the has() method.
+        
+        - How to get the size of a Set?
+            - We can get the size of a Set using the size property.
+            - Example:
+                const size = mySet.size;
+                console.log(size); // Output: 3
+            - In the above example, we get the size of the mySet Set using the size property.
+        
+        - How to get the element from a Set?
+            - Sets do not have a get() method like Maps, as they are collections of unique values without associated keys.
+            - To access elements in a Set, we typically iterate over the Set using methods like for...of loop or the forEach() method.
+            - Example:
+                for (const value of mySet) {
+                    console.log(value);
+                }
+            - In the above example, we iterate over the elements of the mySet Set using the for...of loop and log each value to the console.
+
+        - How to delete an element from a Set?
+            - We can delete an element from a Set using the delete() method and passing the element.
+            - Example:
+                mySet.delete(2);
+                console.log(mySet.size); // Output: 2
+            - In the above example, we delete the element 2 from the mySet Set using the delete() method.
+        
+        - How to clear all elements from a Set?
+            - We can clear all elements from a Set using the clear() method.
+            - Example:
+                mySet.clear();
+                console.log(mySet.size); // Output: 0
+            - In the above example, we clear all elements from the mySet Set using the clear() method.
+        
+        - How to iterate over the elements of a Set?
+            - We can iterate over the elements of a Set using the for...of loop.
+            - Example:
+                for (const value of mySet) {
+                    console.log(value);
+                }
+            - In the above example, we iterate over the elements of the mySet Set using the for...of loop.
+            - We log each value to the console.
+        
+        - Other built-in methods of Set
+            - values() - returns an iterator of the values in the Set.
+            - entries() - returns an iterator of the [value, value] pairs in the Set.
+            - forEach() - executes a provided function once for each value in the Set.
+
+        - Set doesnt have key-value pairs like Map, so methods like keys() and get() are not applicable to Set.
+        - Even though Set has an entries() method, it returns [value, value] pairs instead of [key, value] pairs.
+
+        - Convert between Set and Array
+            - Set to Array
+                const mySet = new Set([1, 2, 3, 4, 5]);
+                const arrFromSet = Array.from(mySet);
+                console.log(arrFromSet);
+                - We can use spread operator as well
+                    const arrFromSet2 = [...mySet];
+                    console.log(arrFromSet2);
+
+            - Array to Set
+                const arr = [1, 2, 3, 4, 5];
+                const setFromArr = new Set(arr);
+                console.log(setFromArr);
+
+        - Union | Intersection | Difference of Sets
+
+            let set1 = new Set([1,2,3]);
+            let set2 = new Set([3,4,5]);
+
+            // union
+            let union = set1.union(set2);
+            console.log(union);
+
+            let union1 = new Set([...set1, ...set2]);
+            console.log(union1);
+
+            // intersection
+            let inter = set1.intersection(set2);
+            console.log(inter);
+
+            let inter1 = new Set([...set1].filter(item => set2.has(item)));
+            console.log(inter1);
+
+            // difference
+            let diff = set1.difference(set2);
+            console.log(diff);
+
+            let diff1 = new Set([...set1].filter(item => !set2.has(item)));
+            console.log(diff1);
+
+        - Superset and Subset of Sets
+            - A Set A is a subset of Set B if all elements of Set A are present in Set B.
+            - A Set B is a superset of Set A if it contains all elements of Set A.
+
+            let numbers = new Set([2,4,6,8,10,12,14,16,18]);
+            let the4Table = new Set([4,8,12,16]);
+
+            console.log(numbers.isSupersetOf(the4Table));
+
+            // fallback
+            function isSuperSet() {
+
+                for(let num of the4Table) {
+                
+                    if(!numbers.has(num)) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            console.log(isSuperSet());  
+
+    - Arrays with SET characteristics
+        - We can create an array with unique elements using Set.
+        - Example:
+            const arr = [1, 2, 2, 3, 4, 4, 5];
+            const uniqueArr = [...new Set(arr)];
+            console.log(uniqueArr); // Output: [1, 2, 3, 4, 5]
+        - In the above example, we create an array with duplicate elements.
+        - We then create a Set from the array to remove duplicates and convert it back to an array using the spread operator.
+        - The resulting uniqueArr array contains only unique elements.
+
+    - When to use SET?
+        - Use Set when you need to store a collection of unique elements.
+        - Use Set when you need to maintain the order of insertion of elements.
+        - Use Set when you need built-in methods for size, iteration, and other operations.
+        - Use Array when you need an ordered collection of elements that can contain duplicates.
+        - In general, if you need to ensure uniqueness of elements, use Set. If you need an ordered collection that allows duplicates, use Array.
+
+    - Note
+        - Set is not a replacement for Array. They are different data structures with different use cases.
+        - Similarly, Map is not a replacement for Object. They are different data structures with different use cases.
+        - Choose the appropriate data structure based on your specific requirements and use cases.
+    
+    *************************************************************************************************************************
+    🧩 JavaScript Map vs WeakMap — Reference & Garbage Collection Notes
+    *************************************************************************************************************************
+        🔹 Objects and References
+        ==========================
+            - Objects are stored in the heap (memory).
+            - Variables store a reference (pointer) to the object in the stack.
+            - Assigning let obj = {} creates an object in the heap and stores a reference in obj.
+            - Reassigning (obj = null or obj = {}) changes only the reference, not the actual object.
+
+        🔹 How Map Works
+        ===========================
+            - Map holds strong references to its keys.
+            - As long as an object is used as a key in a Map, it cannot be garbage collected, even if no variable references it.
+            - .has(key) checks if the exact same reference exists in the Map.
+            - If you reassign the variable (user = null), you lose your reference, but the Map still holds the object.
+                let user = { name: "Sakthi" };
+                const map = new Map();
+                map.set(user, true);
+                user = null; // variable lost reference
+                console.log(map.size); // still 1 (object still in memory)
+        
+        🔹 How WeakMap Works
+        ===========================
+            - WeakMap holds weak references to its keys.
+            - Keys must be objects (not primitives).
+            - If there are no other references to the key object, it becomes eligible for garbage collection.
+            - Entries in a WeakMap disappear automatically after GC runs.
+            - WeakMap does not prevent garbage collection.
+            - .has(key) also checks the same reference — if you set the variable to null, the key is gone.
+                let user = { name: "Sakthi" };
+                const weakMap = new WeakMap();
+                weakMap.set(user, true);
+                user = null; // object can now be garbage collected
+
+        🔹 Summary of Differencs
+            | Feature               | Map                          | WeakMap                       |
+            |-----------------------|------------------------------|-------------------------------|
+            | Key Types            | Any type (primitives & objects)| Only objects                 |
+            | Reference Type       | Strong references             | Weak references               |
+            | Garbage Collection   | Prevents GC of key objects    | Allows GC of key objects      |
+            | Size Property        | Has size property             | No size property              |
+            | Iteration            | Iterable (for..of, etc.)      | Not iterable                  |
+    *************************************************************************************************************************
+        
+    - WeakMap
+        - WeakMap is a collection of key-value pairs
+        - In WeakMap, keys must be objects (not primitives)
+        - WeakMap holds weak references to its keys
+        - If there are no other references to the key object, it becomes eligible for garbage collection
+        - Entries in a WeakMap disappear automatically after garbage collection runs
+        - WeakMap does not prevent garbage collection
+        - Creating and Initializing a WeakMap
+            - We can create a WeakMap using the WeakMap constructor.
+                const myWeakMap = new WeakMap();
+            - We can also initialize a WeakMap with key-value pairs using an array of arrays.
+                const weakMap = new WeakMap();
+                const obj1 = { name: 'Alice' };
+                const obj2 = { name: 'Bob' };
+                weakMap.set(obj1, true);
+                weakMap.set(obj2, true);
+                console.log(weakMap.get(obj1));
+                weakMap.delete(obj2);
+                console.log(weakMap.has(obj2));
+        
+        - It supports only few methods
+            - set(key, value) - adds a key-value pair to the WeakMap.
+            - get(key) - gets the value associated with the key.
+            - has(key) - checks if the key exists in the WeakMap.
+            - delete(key) - deletes the key-value pair from the WeakMap.
+
+        - Example
+            let user1 = { name: "Sakthi" };
+            const u1Map = new WeakMap();
+            u1Map.set(user1, true);
+            console.log(u1Map.has(user1));
+            user1 = null;
+            console.log(u1Map.has(user1));
+
+            - After garbage collection, the entry for user1 will be removed from the WeakMap.
+
+    - WeakSet 
+        - WeakSet is a collection of unique objects
+        - In WeakSet, elements must be objects (not primitives)
+        - WeakSet holds weak references to its elements
+        - If there are no other references to the object, it becomes eligible for garbage collection
+        - Entries in a WeakSet disappear automatically after garbage collection runs
+        - WeakSet does not prevent garbage collection
+        - Creating and Initializing a WeakSet
+            - We can create a WeakSet using the WeakSet constructor.
+                const myWeakSet = new WeakSet();
+            - We can also initialize a WeakSet with elements using an array.
+                const obj1 = { name: 'Alice' };
+                const obj2 = { name: 'Bob' };
+                const weakSet = new WeakSet([obj1, obj2]);
+        
+        - It supports only few methods
+            - add(value) - adds an object to the WeakSet.
+            - has(value) - checks if the object exists in the WeakSet.
+            - delete(value) - deletes the object from the WeakSet.
+
+        - Example
+            let user1 = { name: "Sakthi" };
+            const u1Set = new WeakSet();
+            u1Set.add(user1);
+            console.log(u1Set.has(user1));
+            user1 = null;
+            console.log(u1Set.has(user1));
+            - After garbage collection, the entry for user1 will be removed from the WeakSet.
