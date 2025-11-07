@@ -5761,3 +5761,27 @@
             user1 = null;
             console.log(u1Set.has(user1));
             - After garbage collection, the entry for user1 will be removed from the WeakSet.
+================================================================================================================================
+32. DEBUGGING SECRETS (DAY 35)
+================================================================================================================================
+    1. ✅ SECRET 1:
+        - When using chained if…else if… conditions that depend on numeric thresholds (like discounts, ranks, or scores) 
+            ***— always check from the highest threshold to the lowest.***
+        - Otherwise, smaller conditions will match first and block larger ones from ever running.
+
+    2. ✅ SECRET 2:
+        - When creating functions inside loops, use let (or an IIFE) to correctly capture the loop variable 
+        - otherwise, all closures will reference the final value of the loop counter.
+
+    3. ✅ SECRET 3:
+        - Avoid using arrow functions for object methods when you need access to this.
+        - Use regular functions (method shorthand) so this correctly refers to the object
+
+    4. ✅ SECRET 4:
+        - Always throw Error objects (not strings)
+        - throw "Invalid amount!" - throws string
+        - throw new Error("Payment method missing!") - throws error object
+
+    5. ✅ SECRET 5:
+        - Async functions always return a promise.
+        - If you forget to await an async function, you’ll get a pending promise instead of the actual result.
