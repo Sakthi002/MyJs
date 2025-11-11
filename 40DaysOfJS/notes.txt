@@ -5879,3 +5879,96 @@
             - Chrome DevTools Memory Panel
             - Firefox Developer Tools Memory Tab
             - Memory profiling tools like Heap Profiler and Memory Analyzer
+
+    5. LAZY LOADING
+        - Lazy loading is a design pattern that defers the loading of resources until they are actually needed.
+        - Improves initial load time and reduces memory usage.
+        - Common use cases for lazy loading:
+            - Images: Load images only when they are about to enter the viewport.
+            - Modules: Load JavaScript modules only when they are needed.
+            - Data: Fetch data only when it is required for rendering.
+    
+    6. CODE SPLITTING
+        - Code splitting is a technique that breaks down large JavaScript bundles into smaller chunks that can be loaded on demand.
+        - Improves initial load time and reduces memory usage.
+        - Common use cases for code splitting:
+            - Route-based splitting: Load different chunks for different routes in a single-page application.
+            - Component-based splitting: Load different chunks for different components in a React or Vue application.
+            - Vendor splitting: Separate third-party libraries into their own chunks.
+
+    7. USING WEB WORKERS
+        - Web Workers allow us to run JavaScript code in a separate thread from the main UI thread.
+        - Improves performance by offloading heavy computations to a separate thread.
+        - Common use cases for Web Workers:
+            - Data processing: Perform heavy data processing tasks in a Web Worker.
+            - Image processing: Perform image manipulation tasks in a Web Worker.
+            - Background tasks: Perform background tasks like syncing data or sending notifications in a Web Worker.
+    
+================================================================================================================================
+34. WEB APIS IN JAVASCRIPT
+================================================================================================================================
+    - What are Web APIs?
+        - Web APIs are a set of APIs provided by web browsers that allow developers to interact with the browser and perform various tasks.
+        - Web APIs are built on top of JavaScript and provide additional functionality that is not available in the core JavaScript language.
+        - Web APIs are used to create dynamic and interactive web applications.
+    - How Web APIs Work?
+        - Web APIs are implemented by web browsers and are accessible through the global window object in JavaScript.
+        - When a web page is loaded, the browser creates a global window object that contains various Web APIs.
+        - Developers can access these APIs using JavaScript code running in the browser.
+    - Commonly Used Web APIS
+        a. DOM
+        b. Events
+        c. Timer
+        d. Fetch
+        e. Local Storage
+        f. Geolocation
+        g. Console
+        h. History
+
+        - ClipBoard
+           - The Clipboard API provides a way to interact with the clipboard, allowing web applications to read from and write to the clipboard.
+           - It provides methods to copy text or images to the clipboard and to read text or images from the clipboard.
+           - Example: navigator.clipboard.writeText("Hello, World!")
+
+        - Storage
+              - The Storage API provides a way to store data in the browser's local storage or session storage.
+              - It allows web applications to store key-value pairs in the browser, which can be accessed later.
+              
+              - Local Storage
+                  - Local Storage is a Web API that allows web applications to store data in the browser's local storage.
+                  - Data stored in local storage persists even after the browser is closed and reopened.
+                  - Data persists in different tabs and windows. because local storage is shared across all tabs and windows of the same origin.
+                  - Based on origin (protocol + host + port)
+                  - Example:
+                        // Store data in local storage
+                        localStorage.setItem('name', 'Alice');
+                        // Retrieve data from local storage
+                        const name = localStorage.getItem('name');
+                        console.log(name); // Output: Alice
+                        // Remove data from local storage
+                        localStorage.removeItem('name');
+                        // Clear all data from local storage
+                        localStorage.clear();
+
+                - Note : Local Storage can only store string data. 
+                    If you want to store objects or arrays, you need to convert them to strings using JSON.stringify() before storing them, 
+                    and then parse them back using JSON.parse() when retrieving them.
+
+            - Session Storage
+                - Session Storage is a Web API that allows web applications to store data in the browser's session storage.
+                - Data stored in session storage is cleared when the browser tab or window is closed.
+                - Data is specific to a single tab or window. Each tab or window has its own session storage.
+                - Example:
+                    // Store data in session storage
+                    sessionStorage.setItem('name', 'Bob');
+                    // Retrieve data from session storage
+                    const name = sessionStorage.getItem('name');
+                    console.log(name); // Output: Bob
+                    // Remove data from session storage
+                    sessionStorage.removeItem('name');
+                    // Clear all data from session storage
+                    sessionStorage.clear();
+                - Note : Session Storage can only store string data. 
+                    If you want to store objects or arrays, you need to convert them to strings using JSON.stringify() before storing them, 
+                    and then parse them back using JSON.parse() when retrieving them.
+                    
