@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Race</title>
+    <script src="race.js" defer></script>
+</head>
+<body>
+
+    <h1>Debounce vs Throttle vs Memozation</h1>
+
+    <div style="margin:10px 0;">
+        <input id="searchBox" type="text" placeholder="Search city..." style="width:100%; padding:8px; font-size:16px;" />
+    </div>
+
+    <div style="margin:10px 0;">
+        <button id="mode-debounce">Debounce</button>
+        <button id="mode-throttle">Throttle</button>
+        <button id="mode-memo">Memoization</button>
+        <strong style="margin-left:10px;">Mode: <span id="mode">Debounce</span></strong>
+    </div>
+
+    <div>
+        <p>🔁 Function Calls: <span id="calls">0</span></p>
+        <p>⏱️ Last Execution Time: <span id="time">0</span> ms</p>
+    </div>
+
+    <ul id="results" style="height: 200px; overflow-y: auto; padding: 8px; border:1px solid #ddd;"></ul>
+</body>
+</html>

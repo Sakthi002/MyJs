@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAY 36</title>
+    <script src="index.js" defer></script>
+    <script src="tasks.js" defer></script>
+</head>
+<body>
+    <h1>DAY 36 - Performance Optimization Techniques</h1>
+    <a href="debounce/search.html">Debounce</a>
+    <a href="throttle/throttle.html">Throttle</a>
+    <a href="memoize/memoize.html">Memoization</a>
+    <a href="memory-leak/leak.html">Memory Leak</a>
+
+    <div>
+        <p id="char_count">Characters typed: 0</p>
+        <textarea name="characters" id="characters" style="width: 50%;height: 80px;"></textarea>
+    </div>
+
+    <div>
+
+        <p>Github Users</p>
+        
+        <p><input type="text" name="users" id="users"></p>
+
+        <div class="loading" id="loading">Loading...</div>
+
+        <ul id="usersList"></ul>
+    </div>
+
+    <div style="margin: 20px;">
+        <button id="sortBtn">Sort</button>
+        <button id="filterBtn">Filter (>500)</button>
+        <button id="shuffleBtn">Shuffle</button>
+        <div id="stats" style="margin-top: 10px;"></div>
+        <ul id="listContainer" style="max-height: 500px; overflow-y: auto; padding: 0; list-style: none;"></ul>
+    </div>
+</body>
+</html>

@@ -5785,3 +5785,97 @@
     5. ✅ SECRET 5:
         - Async functions always return a promise.
         - If you forget to await an async function, you’ll get a pending promise instead of the actual result.
+        - Always use await when calling async functions (unless you specifically want a promise).
+================================================================================================================================
+33. PERFORMANCE OPTIMIZATION IN JAVASCRIPT
+================================================================================================================================
+    - What is Performance?
+        - Performance isn't just about speed. It is about
+            - Responsiveness: How quickly your application responds to user interactions.
+            - Efficiency: How well your application uses system resources (CPU, memory, etc.).
+            - Scalability: How well your application performs as the load increases.
+            - Resource Usage: How much memory and CPU your application consumes during its operation.
+    - Why Performance Optimization is Important?
+        - User Experience: Fast applications provide a better user experience, leading to higher user satisfaction and retention.
+        - SEO: Search engines consider page load times in their ranking algorithms, affecting your site's visibility.
+        - Resource Efficiency: Optimized applications use fewer resources, reducing costs and improving scalability.
+        - Competitive Advantage: In a crowded market, performance can be a key differentiator for your application.
+
+    - Common Performance Bottlenecks in JavaScript
+        - DOM Manipulation: Frequent and inefficient manipulation of the DOM can lead to performance issues.
+        - Memory Leaks: Unreleased memory can accumulate over time, leading to slowdowns and crashes.
+        - Inefficient Algorithms: Poorly designed algorithms can lead to excessive CPU usage and slow performance.
+        - Network Requests: Excessive or slow network requests can delay data loading and rendering.
+        - Blocking Operations: Synchronous operations that block the main thread can lead to unresponsive UIs.
+        - Slow Rendering: Complex layouts and styles can slow down rendering times.
+    
+    - Performance Optimization Techniques
+
+    1. DEBOUNCE
+        - Limit the rate at which a function is executed.
+        - Ensures that a function is only called/execeuted after a certain delay has passed since the last time is was called.
+        - User is typing something before timing elapses - reset the timer
+        - Useful for optimizing performance of functions that are called frequently, such as event handlers for scrolling, resizing, or typing.
+        - Example:
+            function debounce(func, delay) {
+                let timer;
+                return function(...args) {
+                    clearTimeout(timer);
+                    timer = setTimeout(() => {
+                        func.apply(this, args);
+                    }, delay);
+                }
+            }
+
+    2. THORTTLING
+        - Limits how often function can be called/executed over time.
+        - Ensures that a function is only called/executed once every specified interval.
+        - Useful for optimizing performance of functions that are called frequently, such as event handlers for scrolling, resizing, or typing.
+        - Example:
+            function throttle(func, delay) {
+                let lastCall = 0;
+                return function(...args) {
+                    const now = Data.now();
+                    if(now - lastCall >= delay) {
+                        lastCall = now;
+                        func.apply(this, args);
+                    }
+                }
+            }
+
+    3. MEMOIZATION
+        - Cache the results of expensive function calls and return the cached result when the same inputs occur again.
+        - Useful for optimizing performance of functions that are called frequently with the same inputs.
+        - Example:
+            function memoize(func) {
+                let cache = {};
+                return function(...args) {
+                    let key = JSON.stringify(args);
+                    if(cache[key]) {
+                        console.log("Cache hit");
+                        return cache[key];
+                    } else {
+                        console.log("Cache miss");
+                        let result = func.apply(this, args);
+                        cache[key] = result;
+                        return result;
+                    }
+                }
+            }
+
+    4. MEMORY LEAKS
+        - Memory leaks occurs when JS  retains memory that is no longer needed.
+        - Common causes of memory leaks:
+            - Unused variables: Variables that are no longer needed but still referenced.
+            - Event listeners: Event listeners that are not removed when no longer needed.
+            - Closures: Closures that retain references to variables that are no longer needed.
+            - DOM references: References to DOM elements that are no longer in the document.
+        - How to prevent memory leaks:
+            - Use let and const instead of var to limit variable scope.
+            - Remove event listeners when no longer needed.
+            - Avoid creating unnecessary closures.
+            - Nullify references to DOM elements when no longer needed.
+        - Tools to detect memory leaks:
+            - Chrome DevTools Memory Panel
+            - Firefox Developer Tools Memory Tab
+            - Memory profiling tools like Heap Profiler and Memory Analyzer
