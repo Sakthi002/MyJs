@@ -49,7 +49,7 @@ export class UserService {
     }
 
     getUsersCount() {
-        return this.users.size();
+        return this.users.size;
     }
 
     clear() {
